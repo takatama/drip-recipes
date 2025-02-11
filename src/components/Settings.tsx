@@ -21,8 +21,8 @@ interface SettingsProps {
   setRoastLevel: (level: string) => void;
   flavor: string;
   setFlavor: (flavor: string) => void;
-  strength: string;
-  setStrength: (strength: string) => void;
+  strength?: string;
+  setStrength?: (strength: string) => void;
 }
 
 const Settings: React.FC<SettingsProps> = ({
@@ -120,7 +120,7 @@ const Settings: React.FC<SettingsProps> = ({
             </ToggleButtonGroup>
           </TableCell>
         </TableRow>
-        <TableRow>
+        {strength && setStrength && (<TableRow>
           <TableCell align="right">
             {t.strength}:
           </TableCell>
@@ -137,7 +137,7 @@ const Settings: React.FC<SettingsProps> = ({
               <ToggleButton value="strong">{t.strong}</ToggleButton>
             </ToggleButtonGroup>
           </TableCell>
-        </TableRow>
+        </TableRow>)}
       </TableBody>
     </Table>
   );

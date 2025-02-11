@@ -23,7 +23,7 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
       </Typography>
       <Typography variant="body2" color="text.secondary" gutterBottom>
         <Link
-          href={'https://www.youtube.com/watch?v=lJNPp-onikk'}
+          href={'https://www.youtube.com/watch?v=4FeUp_zNiiY'}
           target="_blank"
           rel="noopener noreferrer"
           color="inherit"
@@ -38,14 +38,14 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 1 }}>
         <Link
-          href="https://github.com/takatama/46timer"
+          href="https://github.com/takatama/drip-recipes"
           target="_blank"
           rel="noopener noreferrer"
           color="inherit"
           sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
         >
           <GitHubIcon fontSize="small" />
-          46timer
+          Drip Recipes
         </Link>
         <Link
           href="https://x.com/takatama_jp"

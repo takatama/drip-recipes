@@ -8,7 +8,7 @@ import Controls from './components/Controls';
 import Timeline from './components/Timeline';
 import Footer from './components/Footer';
 import { translations } from './translations/index'
-import { DynamicTranslations, Step } from './types';
+import { Step } from './types';
 import './App.css';
 import {
   BrowserRouter,
@@ -38,7 +38,87 @@ const getTheme = (mode: 'light' | 'dark') => createTheme({
 });
 
 // Function to calculate timer steps based on the 4:6 method
-function calculateSteps(beansAmount: number, flavor: string, strength: string) {
+// function calculateStepsFor4to6Method(beansAmount: number, flavor: string, strength: string) {
+//   // Total water used = beansAmount * 15
+//   const totalWater = beansAmount * 15;
+//   const flavorWater = totalWater * 0.4;
+//   const strengthWater = totalWater * 0.6;
+//   let flavor1, flavor2;
+//   // Adjust flavor pours based on taste selection
+//   if (flavor === "sweet") {
+//     flavor1 = flavorWater * 0.4;
+//     flavor2 = flavorWater * 0.6;
+//   } else if (flavor === "sour") {
+//     flavor1 = flavorWater * 0.6;
+//     flavor2 = flavorWater * 0.4;
+//   } else {
+//     flavor1 = flavorWater * 0.5;
+//     flavor2 = flavorWater * 0.5;
+//   }
+//   // Determine number of strength pours based on strength selection
+//   let strengthSteps;
+//   if (strength === "light") {
+//     strengthSteps = 1;
+//   } else if (strength === "strong") {
+//     strengthSteps = 3;
+//   } else {
+//     strengthSteps = 2;
+//   }
+//   const steps: Array<Step> = [];
+//   // Flavor pours are fixed at 0s and 45s
+//   steps.push({
+//     time: 0,
+//     pourAmount: flavor1,
+//     cumulative: flavor1,
+//     descriptionKey: "flavorPour1",
+//     status: 'upcoming'
+//   });
+//   steps.push({
+//     time: 45,
+//     pourAmount: flavor2,
+//     cumulative: flavor1 + flavor2,
+//     descriptionKey: "flavorPour2",
+//     status: 'upcoming'
+//   });
+//   // Strength pour 1 is fixed at 90 seconds (1:30)
+//   const strengthPourAmount = strengthWater / strengthSteps;
+//   steps.push({
+//     time: 90,
+//     pourAmount: strengthPourAmount,
+//     cumulative: steps[steps.length - 1].cumulative + strengthPourAmount,
+//     descriptionKey: "strengthPour1",
+//     status: 'upcoming'
+//   });
+//   // If more than one strength pour, calculate remaining pours evenly over the remaining 120 seconds (210 - 90)
+//   if (strengthSteps > 1) {
+//     const remainingPours = strengthSteps - 1;
+//     const remainingTime = 210 - 90; // 120 seconds remaining
+//     const interval = remainingTime / (remainingPours + 1);
+//     for (let i = 2; i <= strengthSteps; i++) {
+//       const t = 90 + interval * (i - 1);
+//       const cumulative: number = steps[steps.length - 1].cumulative + strengthPourAmount;
+//       steps.push({
+//         time: t,
+//         pourAmount: strengthPourAmount,
+//         cumulative: cumulative,
+//         descriptionKey: `strengthPour${i}` as keyof DynamicTranslations,
+//         status: 'upcoming'
+//       });
+//     }
+//   }
+//   // Final step (finish) is fixed at 210 seconds
+//   steps.push({
+//     time: 210,
+//     pourAmount: 0,
+//     cumulative: totalWater,
+//     descriptionKey: "finish",
+//     status: 'upcoming'
+//   });
+//   return steps;
+// }
+
+// Function to calculate timer steps based on the new hybrid method
+function calculateSteps(beansAmount: number, flavor: string) {
   // Total water used = beansAmount * 15
   const totalWater = beansAmount * 15;
   const flavorWater = totalWater * 0.4;
@@ -55,15 +135,9 @@ function calculateSteps(beansAmount: number, flavor: string, strength: string) {
     flavor1 = flavorWater * 0.5;
     flavor2 = flavorWater * 0.5;
   }
-  // Determine number of strength pours based on strength selection
-  let strengthSteps;
-  if (strength === "light") {
-    strengthSteps = 1;
-  } else if (strength === "strong") {
-    strengthSteps = 3;
-  } else {
-    strengthSteps = 2;
-  }
+  // Fixed strength steps
+  let strengthSteps = 2;
+
   const steps: Array<Step> = [];
   // Flavor pours are fixed at 0s and 45s
   steps.push({
@@ -85,28 +159,19 @@ function calculateSteps(beansAmount: number, flavor: string, strength: string) {
   steps.push({
     time: 90,
     pourAmount: strengthPourAmount,
-    cumulative: steps[steps.length - 1].cumulative + strengthPourAmount,
+    cumulative: steps[steps.length - 1].cumulative + strengthWater * 0.444,
     descriptionKey: "strengthPour1",
     status: 'upcoming'
   });
-  // If more than one strength pour, calculate remaining pours evenly over the remaining 120 seconds (210 - 90)
-  if (strengthSteps > 1) {
-    const remainingPours = strengthSteps - 1;
-    const remainingTime = 210 - 90; // 120 seconds remaining
-    const interval = remainingTime / (remainingPours + 1);
-    for (let i = 2; i <= strengthSteps; i++) {
-      const t = 90 + interval * (i - 1);
-      const cumulative: number = steps[steps.length - 1].cumulative + strengthPourAmount;
-      steps.push({
-        time: t,
-        pourAmount: strengthPourAmount,
-        cumulative: cumulative,
-        descriptionKey: `strengthPour${i}` as keyof DynamicTranslations,
-        status: 'upcoming'
-      });
-    }
-  }
-  // Final step (finish) is fixed at 210 seconds
+  // Strength pour 2 is fixed at 130 seconds (2:10)
+  steps.push({
+    time: 130,
+    pourAmount: strengthPourAmount,
+    cumulative: steps[steps.length - 1].cumulative + strengthWater * 0.556,
+    descriptionKey: "strengthPour2",
+    status: 'upcoming'
+  });
+ // Final step (finish) is fixed at 210 seconds
   steps.push({
     time: 210,
     pourAmount: 0,
@@ -136,7 +201,6 @@ function App() {
   const [roastLevel, setRoastLevel] = useState("medium");
   const [beansAmount, setBeansAmount] = useState(20);
   const [flavor, setFlavor] = useState("middle");
-  const [strength, setStrength] = useState("medium");
   const [steps, setSteps] = useState<Step[]>([]);
   const timerRef = useRef<number | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -148,7 +212,6 @@ function App() {
   useEffect(() => {
     const paramBeans = parseInt(searchParams.get('beans') || '', 10);
     const paramFlavor = searchParams.get('flavor');
-    const paramStrength = searchParams.get('strength');
     const paramRoast = searchParams.get('roast');
 
     if (!isNaN(paramBeans)) {
@@ -156,9 +219,6 @@ function App() {
     }
     if (paramFlavor) {
       setFlavor(paramFlavor);
-    }
-    if (paramStrength) {
-      setStrength(paramStrength);
     }
     if (paramRoast) {
       setRoastLevel(paramRoast);
@@ -177,19 +237,18 @@ function App() {
 
   // Recalculate steps whenever coffee parameters change
   useEffect(() => {
-    const newSteps = calculateSteps(beansAmount, flavor, strength);
+    const newSteps = calculateSteps(beansAmount, flavor);
     setSteps(newSteps);
-  }, [beansAmount, flavor, strength]);
+  }, [beansAmount, flavor]);
 
   // Update URL query parameters when state changes
   useEffect(() => {
     const params = new URLSearchParams();
     params.set('beans', beansAmount.toString());
     params.set('flavor', flavor);
-    params.set('strength', strength);
     params.set('roast', roastLevel);
     setSearchParams(params);
-  }, [beansAmount, flavor, strength, roastLevel, setSearchParams]);
+  }, [beansAmount, flavor, roastLevel, setSearchParams]);
 
   // Cleanup timer when component unmounts
   useEffect(() => {
@@ -271,8 +330,6 @@ function App() {
           setRoastLevel={setRoastLevel}
           flavor={flavor}
           setFlavor={setFlavor}
-          strength={strength}
-          setStrength={setStrength}
         />
 
         <Controls
