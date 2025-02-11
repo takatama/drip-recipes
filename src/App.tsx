@@ -14,7 +14,10 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  useSearchParams
+  useSearchParams,
+  useNavigate,
+  Navigate,
+  useParams
 } from 'react-router-dom';
 
 // Create theme with both light and dark modes
@@ -182,11 +185,19 @@ function calculateSteps(beansAmount: number, flavor: string) {
   return steps;
 }
 
+const getUserLang = () => {
+  const userLang = navigator.language || navigator.languages[0];
+  return userLang.startsWith('ja') ? 'ja' : 'en';
+}
+
 function AppWrapper() {
+  const lang = getUserLang();
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route path="/:lang/recipes/new-hybrid-method" element={<App />} />
+        <Route path="*" element={<Navigate to={`/${lang}/recipes/new-hybrid-method`} replace />} />
       </Routes>
     </BrowserRouter>
   );
@@ -208,6 +219,14 @@ function App() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [soundOn, setSoundOn] = useState(true);
   const [voice, setVoice] = useState<'male' | 'female'>('female');
+  const navigate = useNavigate();
+  const { lang } = useParams();
+
+  useEffect(() => {
+    if (lang && (lang === 'en' || lang === 'ja')) {
+      setLanguage(lang);
+    }
+  }, [lang]);
 
   useEffect(() => {
     const paramBeans = parseInt(searchParams.get('beans') || '', 10);
@@ -225,16 +244,6 @@ function App() {
     }
   }, [searchParams]);
   
-  // Detect user's preferred language
-  useEffect(() => {
-    const userLang = navigator.language || navigator.languages[0];
-    if (userLang.startsWith('ja')) {
-      setLanguage('ja');
-    } else {
-      setLanguage('en');
-    }
-  }, []);
-
   // Recalculate steps whenever coffee parameters change
   useEffect(() => {
     const newSteps = calculateSteps(beansAmount, flavor);
@@ -294,6 +303,7 @@ function App() {
   const handleLanguageChange = (_e: React.MouseEvent<HTMLElement>, newLang: "en" | "ja") => {
     if (newLang) {
       setLanguage(newLang);
+      navigate(`/${newLang}/recipes/new-hybrid-method`);
     }
   };
 
