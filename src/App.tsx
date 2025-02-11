@@ -209,7 +209,6 @@ function App() {
   const theme = getTheme(darkMode ? 'dark' : 'light');
   const [language, setLanguage] = useState<"en" | "ja">("en");
   const t = translations[language]; // shorthand for current translations
-  const [roastLevel, setRoastLevel] = useState("medium");
   const [beansAmount, setBeansAmount] = useState(20);
   const [flavor, setFlavor] = useState("middle");
   const [steps, setSteps] = useState<Step[]>([]);
@@ -231,16 +230,12 @@ function App() {
   useEffect(() => {
     const paramBeans = parseInt(searchParams.get('beans') || '', 10);
     const paramFlavor = searchParams.get('flavor');
-    const paramRoast = searchParams.get('roast');
 
     if (!isNaN(paramBeans)) {
       setBeansAmount(paramBeans);
     }
     if (paramFlavor) {
       setFlavor(paramFlavor);
-    }
-    if (paramRoast) {
-      setRoastLevel(paramRoast);
     }
   }, [searchParams]);
 
@@ -255,9 +250,8 @@ function App() {
     const params = new URLSearchParams();
     params.set('beans', beansAmount.toString());
     params.set('flavor', flavor);
-    params.set('roast', roastLevel);
     setSearchParams(params);
-  }, [beansAmount, flavor, roastLevel, setSearchParams]);
+  }, [beansAmount, flavor, setSearchParams]);
 
   // Cleanup timer when component unmounts
   useEffect(() => {
@@ -348,8 +342,6 @@ function App() {
           t={t}
           beansAmount={beansAmount}
           setBeansAmount={setBeansAmount}
-          roastLevel={roastLevel}
-          setRoastLevel={setRoastLevel}
           flavor={flavor}
           setFlavor={setFlavor}
         />

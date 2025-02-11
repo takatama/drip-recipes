@@ -17,8 +17,8 @@ interface SettingsProps {
   t: TranslationType;
   beansAmount: number;
   setBeansAmount: (amount: number) => void;
-  roastLevel: string;
-  setRoastLevel: (level: string) => void;
+  roastLevel?: string;
+  setRoastLevel?: (level: string) => void;
   flavor: string;
   setFlavor: (flavor: string) => void;
   strength?: string;
@@ -36,14 +36,6 @@ const Settings: React.FC<SettingsProps> = ({
   strength,
   setStrength,
 }) => {
-  const getWaterTemperature = (roast: string) => {
-    switch (roast) {
-      case "light": return 93;
-      case "dark": return 83;
-      default: return 88;
-    }
-  };
-
   return (
     <Table sx={{
       '& td, & th': { fontSize: '1.1rem' },
@@ -54,7 +46,7 @@ const Settings: React.FC<SettingsProps> = ({
       mb: 2,
     }}>
       <TableBody>
-        <TableRow>
+        {roastLevel && setRoastLevel && (<TableRow>
           <TableCell align="right">
             {t.roastLevel}:
           </TableCell>
@@ -71,13 +63,13 @@ const Settings: React.FC<SettingsProps> = ({
               <ToggleButton value="dark">{t.darkRoast}</ToggleButton>
             </ToggleButtonGroup>
           </TableCell>
-        </TableRow>
+        </TableRow>)}
         <TableRow>
           <TableCell align="right">
             {t.waterTemp}:
           </TableCell>
           <TableCell align="left">
-            {getWaterTemperature(roastLevel)}℃
+            90℃
           </TableCell>
         </TableRow>
         <TableRow>
