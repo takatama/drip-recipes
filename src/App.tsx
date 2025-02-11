@@ -174,7 +174,7 @@ function calculateSteps(beansAmount: number, flavor: string) {
     descriptionKey: "strengthPour2",
     status: 'upcoming'
   });
- // Final step (finish) is fixed at 210 seconds
+  // Final step (finish) is fixed at 210 seconds
   steps.push({
     time: 210,
     pourAmount: 0,
@@ -243,7 +243,7 @@ function App() {
       setRoastLevel(paramRoast);
     }
   }, [searchParams]);
-  
+
   // Recalculate steps whenever coffee parameters change
   useEffect(() => {
     const newSteps = calculateSteps(beansAmount, flavor);
@@ -332,6 +332,18 @@ function App() {
           {t.title}
         </Typography>
 
+        <Typography variant="body1" align="center" gutterBottom>
+          {t.usesHarioSwitch(
+            <a
+              href={t.harioSwitchLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: theme.palette.primary.main }}
+            >
+              Hario Switch
+            </a>
+          )}
+        </Typography>
         <Settings
           t={t}
           beansAmount={beansAmount}

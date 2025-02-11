@@ -33,6 +33,9 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     footerMethodBy: "The new hybrid method was developed by Tetsu Kasuya",
     footerMethodVideo: "Watch the Method Video",
     footerCreatedBy: "Drip Recipes was developed by Hirokazu Takatama",
+    usesHarioSwitch: (link: JSX.Element) => (<>This recipe uses {link}.</>),
+    harioSwitchLink: "https://amzn.to/40TjUkH",
+    amazonAssociate: "As an Amazon Associate, Drip Recipes earns from qualifying purchases.",
   },
   ja: {
     title: "新しいハイブリッドメソッド",
@@ -66,5 +69,8 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     footerMethodBy: "新しいハイブリッドメソッドは粕谷哲氏が考案しました",
     footerMethodVideo: "メソッドの解説動画",
     footerCreatedBy: "Drip Recipes was developed by Hirokazu Takatama",
+    usesHarioSwitch: (link: JSX.Element) => (<>このレシピは {link} を使います。</>),
+    harioSwitchLink: "https://amzn.to/3QjLse1",
+    amazonAssociate: "Amazonのアソシエイトとして、Drip Recipesは適格販売により収入を得ています。",
   }
 };

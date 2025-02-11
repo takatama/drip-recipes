@@ -58,6 +58,9 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
           @takatama_jp
         </Link>
       </Box>
+      <Typography variant="caption" display="block" align="center" sx={{ mt: 2 }}>
+        {t.amazonAssociate}
+      </Typography>
     </Box>
   );
 };
