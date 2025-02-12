@@ -129,11 +129,11 @@ function calculateSteps(beansAmount: number, flavor: string) {
   let flavor1, flavor2;
   // Adjust flavor pours based on taste selection
   if (flavor === "sweet") {
-    flavor1 = flavorWater * 0.4;
-    flavor2 = flavorWater * 0.6;
+    flavor1 = flavorWater * 0.42;
+    flavor2 = flavorWater * 0.58;
   } else if (flavor === "sour") {
-    flavor1 = flavorWater * 0.6;
-    flavor2 = flavorWater * 0.4;
+    flavor1 = flavorWater * 0.58;
+    flavor2 = flavorWater * 0.42;
   } else {
     flavor1 = flavorWater * 0.5;
     flavor2 = flavorWater * 0.5;
@@ -151,7 +151,7 @@ function calculateSteps(beansAmount: number, flavor: string) {
     status: 'upcoming'
   });
   steps.push({
-    time: 45,
+    time: 40,
     pourAmount: flavor2,
     cumulative: flavor1 + flavor2,
     descriptionKey: "flavorPour2",
@@ -172,6 +172,14 @@ function calculateSteps(beansAmount: number, flavor: string) {
     pourAmount: strengthPourAmount,
     cumulative: steps[steps.length - 1].cumulative + strengthWater * 0.556,
     descriptionKey: "strengthPour2",
+    status: 'upcoming'
+  });
+  // Final step (finish) is fixed at 210 seconds
+  steps.push({
+    time: 165,
+    pourAmount: 0,
+    cumulative: totalWater,
+    descriptionKey: "open",
     status: 'upcoming'
   });
   // Final step (finish) is fixed at 210 seconds
