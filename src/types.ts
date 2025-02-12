@@ -37,6 +37,7 @@ export interface DynamicTranslations {
   strengthPour1: (amount: number) => string;
   strengthPour2: (amount: number) => string;
   strengthPour3: (amount: number) => string;
+  open: () => string;
   finish: () => string;
 }
 

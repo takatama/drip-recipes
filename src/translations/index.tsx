@@ -18,7 +18,7 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     reset: "Reset",
     preparation: "Preparation:",
     preparationSteps: [
-      "Prepare cold water",
+      "Prepare room temperature water",
       "Warm up and rinse dripper",
       "Keep the switch closed"
     ],
@@ -27,7 +27,8 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     strengthPour1: (amount: number) => `Pour up to ${amount}g then cool to 70℃`,
     strengthPour2: (amount: number) => `(Close) Pour up to ${amount}g`,
     strengthPour3: (amount: number) => `Pour up to ${amount}g`,
-    finish: () => "(Open) Finish",
+    open: () => "(Open) Wait until the water drains",
+    finish: () => "Finish",
     language: "Language",
     darkMode: "Dark Mode",
     lightMode: "Light Mode",
@@ -60,7 +61,7 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     reset: "リセット",
     preparation: "準備:",
     preparationSteps: [
-      "冷水を準備",
+      "常温の水を準備",
       "ドリッパーをお湯ですすぐ",
       "スイッチを閉める (Close)"
     ],
@@ -69,7 +70,8 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     strengthPour1: (amount: number) => `${amount}g まで注湯後、70℃まで下げる`,
     strengthPour2: (amount: number) => `(Close) ${amount}g まで注湯`,
     strengthPour3: (amount: number) => `${amount}g まで注湯`,
-    finish: () => "(Open) 完成",
+    open: () => "(Open) お湯が落ち切るまで待つ",
+    finish: () => "完成",
     language: "言語",
     darkMode: "ダークモード",
     lightMode: "ライトモード",
