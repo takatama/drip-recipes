@@ -27,6 +27,7 @@ export interface StaticTranslations {
   usesHarioSwitch: (link: JSX.Element) => JSX.Element;
   harioSwitchLink: string;
   amazonAssociate: string;
+  preparation: string;
 }
 
 export interface DynamicTranslations {
