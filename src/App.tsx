@@ -346,6 +346,24 @@ function App() {
           setFlavor={setFlavor}
         />
 
+        <Typography
+          variant="body2"
+          component="div"
+          sx={{
+            fontSize: '1.1rem',
+            mb: 2,
+            ml: 4,
+          }}
+        >
+          <div style={{ marginBottom: '8px' }}>{t.preparation}</div>
+          {t.preparationSteps.map((step, index) => (
+            <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
+              <span style={{ marginRight: '8px' }}>•</span>
+              {step}
+            </div>
+          ))}
+        </Typography>
+
         <Controls
           t={t}
           onPlay={handlePlay}

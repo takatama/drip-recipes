@@ -28,6 +28,7 @@ export interface StaticTranslations {
   harioSwitchLink: string;
   amazonAssociate: string;
   preparation: string;
+  preparationSteps: string[];
 }
 
 export interface DynamicTranslations {

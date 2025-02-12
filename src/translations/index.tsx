@@ -16,7 +16,12 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     play: "Play",
     pause: "Pause",
     reset: "Reset",
-    preparation: "Prepare cold water. Warm up and rinse dripper. Keep the switch closed",
+    preparation: "Preparation:",
+    preparationSteps: [
+      "Prepare cold water",
+      "Warm up and rinse dripper",
+      "Keep the switch closed"
+    ],
     flavorPour1: (amount: number) => `(Close) Pour up to ${amount}g`,
     flavorPour2: (amount: number) => `(Open) Pour up to ${amount}g`,
     strengthPour1: (amount: number) => `Pour up to ${amount}g then cool to 70℃`,
@@ -53,7 +58,12 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     play: "再生",
     pause: "一時停止",
     reset: "リセット",
-    preparation: "冷水を準備。ドリッパーを温めてお湯を捨てる。スイッチをCloseにしておく",
+    preparation: "準備:",
+    preparationSteps: [
+      "冷水を準備",
+      "ドリッパーをお湯ですすぐ",
+      "スイッチを閉める (Close)"
+    ],
     flavorPour1: (amount: number) => `(Close) ${amount}g まで注湯`,
     flavorPour2: (amount: number) => `(Open) ${amount}g まで注湯`,
     strengthPour1: (amount: number) => `${amount}g まで注湯後、70℃まで下げる`,
