@@ -20,7 +20,7 @@ const ARROW_OFFSET = 45;
 const ARROW_HEIGHT = 25;
 const TIMELINE_LEFT_MARGIN = 80;
 const STEP_TEXT_MARGIN = 20;
-const FIRST_STEP_OFFSET = 10;
+const FIRST_STEP_OFFSET = 60;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 3;
 
@@ -101,11 +101,39 @@ const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, da
       sx={{
         position: 'relative',
         height: `${CONTAINER_HEIGHT}px`,
-        borderLeft: '3px solid #ccc',
         ml: `${TIMELINE_LEFT_MARGIN}px`,
-        mb: 7
+        mb: 12
       }}
     >
+      {/* preparations */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '0px',
+          left: '0px',
+          transform: 'translateY(-50%)'
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{
+            ml: `${STEP_TEXT_MARGIN}px`,
+            fontSize: FONT_SIZE,
+          }}
+        >
+          {t.preparation}
+        </Typography>
+      </Box>
+      {/* Timeline vertical line */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: `${FIRST_STEP_OFFSET - 10}px`,
+          left: -2,
+          height: `${CONTAINER_HEIGHT}px`,
+          borderLeft: '3px solid #ccc'
+        }}
+      />
       {/* Render each step using absolute positioning */}
       {steps.map((step, index) => {
         // Calculate top position (with 0:00 fixed at 5px, others with +5px offset)
