@@ -19,7 +19,7 @@ const TOTAL_TIME = 210;
 const MARKER_SIZE = 8;
 const ARROW_OFFSET = 45;
 const ARROW_HEIGHT = 25;
-const TIMELINE_LEFT_MARGIN = 80;
+const TIMELINE_WIDTH = 300;
 const STEP_TEXT_MARGIN = 20;
 const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
@@ -59,7 +59,7 @@ const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, da
     const topPos = (time / TOTAL_TIME) * CONTAINER_HEIGHT;
     return time === 0 ? FIRST_STEP_OFFSET : topPos + FIRST_STEP_OFFSET;
   };
-  
+
   const playAudio = (isFinish: boolean) => {
     if (notificationMode === 'none' || isPlayingRef.current) return;
     if (notificationMode === 'sound') {
@@ -86,7 +86,7 @@ const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, da
   // Add function to update step statuses
   const updateStepStatuses = (currentTimeValue: number) => {
     if (steps.length === 0) return;
-    
+
     const lastStep = steps[steps.length - 1];
     if (currentTimeValue >= lastStep.time) {
       onTimerComplete();
@@ -121,103 +121,114 @@ const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, da
       sx={{
         position: 'relative',
         height: `${CONTAINER_HEIGHT}px`,
-        ml: `${TIMELINE_LEFT_MARGIN}px`,
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
         mb: 10
       }}
     >
-      {/* Timeline vertical line */}
       <Box
         sx={{
-          position: 'absolute',
-          top: `${FIRST_STEP_OFFSET - 10}px`,
-          left: -2,
-          height: `${CONTAINER_HEIGHT}px`,
-          borderLeft: '3px solid #ccc'
-        }}
-      />
-      {/* Render each step using absolute positioning */}
-      {steps.map((step, index) => {
-        // Calculate top position (with 0:00 fixed at 5px, others with +5px offset)
-        const topPos = getStepPosition(step.time);
-        return (
-          <Box
-            key={index}
-            sx={{
-              position: 'absolute',
-              top: `${topPos}px`,
-              left: '0px',
-              transform: 'translateY(-50%)'
-            }}
-          >
-            {/* Marker (black dot) */}
-            <Box
-              sx={{
-                position: 'absolute',
-                left: -1,
-                top: '25%',
-                width: `${MARKER_SIZE}px`,
-                height: `${MARKER_SIZE}px`,
-                bgcolor: darkMode ? 'white' : 'black',
-                borderRadius: '50%',
-                transform: 'translate(-50%, -50%)'
-              }}
-            />
-            {/* Step text with horizontal line */}
-            <Typography
-              variant="body2"
-              sx={{
-                ml: `${STEP_TEXT_MARGIN}px`,
-                fontSize: FONT_SIZE,
-                ...{
-                  current: { fontWeight: 'bold' },
-                  next: { fontWeight: 'bold', color: 'primary.main' },
-                  completed: { textDecoration: 'line-through', color: 'text.secondary' },
-                  upcoming: { color: 'text.primary' }
-                }[step.status]
-              }}
-            >
-              {formatTime(step.time)}
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                ml: `${STEP_TEXT_MARGIN}px`,
-                fontSize: FONT_SIZE,
-                ...{
-                  current: { fontWeight: 'bold' },
-                  next: { fontWeight: 'bold', color: 'primary.main' },
-                  completed: { textDecoration: 'line-through', color: 'text.secondary' },
-                  upcoming: { color: 'text.primary' }
-                }[step.status]
-              }}
-            >
-              {(t[step.descriptionKey as keyof DynamicTranslations])(Math.round(step.cumulative))}
-            </Typography>
-          </Box>
-        );
-      })}
-      {/* Progress arrow with timer display */}
-      <Box
-        id="arrowContainer"
-        sx={{
-          position: 'absolute',
-          left: `-${ARROW_OFFSET}px`,
-          top: `${getArrowTop()}px`,
-          display: 'flex',
-          alignItems: 'center'
+          position: 'relative',
+          height: '100%',
+          width: TIMELINE_WIDTH,
+          minWidth: TIMELINE_WIDTH,
         }}
       >
-        <Typography variant="body1" sx={{ fontSize: FONT_SIZE }}>
-          {formatTime(currentTime)}
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{ fontSize: FONT_SIZE }}
-          className="blinking"
-        >▼</Typography>
+        {/* Timeline vertical line */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: `${FIRST_STEP_OFFSET - 10}px`,
+            left: -2,
+            height: `${CONTAINER_HEIGHT}px`,
+            borderLeft: '3px solid #ccc'
+          }}
+        />
+        {/* Render each step using absolute positioning */}
+        {steps.map((step, index) => {
+          // Calculate top position (with 0:00 fixed at 5px, others with +5px offset)
+          const topPos = getStepPosition(step.time);
+          return (
+            <Box
+              key={index}
+              sx={{
+                position: 'absolute',
+                top: `${topPos}px`,
+                left: '0px',
+                transform: 'translateY(-50%)'
+              }}
+            >
+              {/* Marker (black dot) */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  left: -1,
+                  top: '25%',
+                  width: `${MARKER_SIZE}px`,
+                  height: `${MARKER_SIZE}px`,
+                  bgcolor: darkMode ? 'white' : 'black',
+                  borderRadius: '50%',
+                  transform: 'translate(-50%, -50%)'
+                }}
+              />
+              {/* Step text with horizontal line */}
+              <Typography
+                variant="body2"
+                sx={{
+                  ml: `${STEP_TEXT_MARGIN}px`,
+                  fontSize: FONT_SIZE,
+                  ...{
+                    current: { fontWeight: 'bold' },
+                    next: { fontWeight: 'bold', color: 'primary.main' },
+                    completed: { textDecoration: 'line-through', color: 'text.secondary' },
+                    upcoming: { color: 'text.primary' }
+                  }[step.status]
+                }}
+              >
+                {formatTime(step.time)}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  ml: `${STEP_TEXT_MARGIN}px`,
+                  fontSize: FONT_SIZE,
+                  ...{
+                    current: { fontWeight: 'bold' },
+                    next: { fontWeight: 'bold', color: 'primary.main' },
+                    completed: { textDecoration: 'line-through', color: 'text.secondary' },
+                    upcoming: { color: 'text.primary' }
+                  }[step.status]
+                }}
+              >
+                {(t[step.descriptionKey as keyof DynamicTranslations])(Math.round(step.cumulative))}
+              </Typography>
+            </Box>
+          );
+        })}
+        {/* Progress arrow with timer display */}
+        <Box
+          id="arrowContainer"
+          sx={{
+            position: 'absolute',
+            left: `-${ARROW_OFFSET}px`,
+            top: `${getArrowTop()}px`,
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <Typography variant="body1" sx={{ fontSize: FONT_SIZE }}>
+            {formatTime(currentTime)}
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{ fontSize: FONT_SIZE }}
+            className="blinking"
+          >▼</Typography>
+        </Box>
       </Box>
     </Box>
-  );
+      );
 };
 
-export default Timeline;
+      export default Timeline;
