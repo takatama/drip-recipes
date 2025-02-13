@@ -43,6 +43,7 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     usesHarioSwitch: (link: JSX.Element) => (<>This recipe uses {link}.</>),
     harioSwitchLink: "https://amzn.to/40TjUkH",
     amazonAssociate: "As an Amazon Associate, Drip Recipes earns from qualifying purchases.",
+    keepScreenOn: "Screen will stay on while playing",
   },
   ja: {
     title: "新しいハイブリッドメソッド",
@@ -86,5 +87,6 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     usesHarioSwitch: (link: JSX.Element) => (<>このレシピは {link} を使います。</>),
     harioSwitchLink: "https://amzn.to/3QjLse1",
     amazonAssociate: "Amazonのアソシエイトとして、Drip Recipesは適格販売により収入を得ています。",
+    keepScreenOn: "再生中は画面をつけたままにします",
   }
 };

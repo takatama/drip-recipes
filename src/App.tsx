@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Typography } from '@mui/material';
+import { Container, Typography, Snackbar } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Header from './components/Header';
@@ -228,6 +228,7 @@ function App() {
   const [voice, setVoice] = useState<'male' | 'female'>('female');
   const navigate = useNavigate();
   const { lang } = useParams();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     if (lang && (lang === 'en' || lang === 'ja')) {
@@ -279,6 +280,7 @@ function App() {
   const handlePlay = () => {
     if (timerRunning) return;
     setTimerRunning(true);
+    setSnackbarOpen(true);
     timerRef.current = setInterval(() => {
       setCurrentTime((prev) => prev + 0.5);
     }, 500);
@@ -299,6 +301,7 @@ function App() {
     }
     setTimerRunning(false);
     setCurrentTime(0);
+    setSnackbarOpen(false);
   };
 
   // Handler for language toggle
@@ -311,6 +314,11 @@ function App() {
 
   const handleToggleSound = (isSoundOn: boolean) => {
     setSoundOn(isSoundOn);
+  };
+
+  // Snackbarを閉じるハンドラー
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -394,6 +402,13 @@ function App() {
         />
 
         <Footer t={t} />
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={5000}
+          onClose={handleSnackbarClose}
+          message={t.keepScreenOn}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        />
       </Container>
     </ThemeProvider>
   );

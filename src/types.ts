@@ -29,6 +29,7 @@ export interface StaticTranslations {
   amazonAssociate: string;
   preparation: string;
   preparationSteps: string[];
+  keepScreenOn: string;
 }
 
 export interface DynamicTranslations {
