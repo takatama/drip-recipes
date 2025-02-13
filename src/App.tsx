@@ -8,7 +8,7 @@ import Controls from './components/Controls';
 import Timeline from './components/Timeline';
 import Footer from './components/Footer';
 import { translations } from './translations/index'
-import { Step } from './types';
+import { NotificationMode, Step } from './types';
 import './App.css';
 import {
   BrowserRouter,
@@ -39,86 +39,6 @@ const getTheme = (mode: 'light' | 'dark') => createTheme({
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
   }
 });
-
-// Function to calculate timer steps based on the 4:6 method
-// function calculateStepsFor4to6Method(beansAmount: number, flavor: string, strength: string) {
-//   // Total water used = beansAmount * 15
-//   const totalWater = beansAmount * 15;
-//   const flavorWater = totalWater * 0.4;
-//   const strengthWater = totalWater * 0.6;
-//   let flavor1, flavor2;
-//   // Adjust flavor pours based on taste selection
-//   if (flavor === "sweet") {
-//     flavor1 = flavorWater * 0.4;
-//     flavor2 = flavorWater * 0.6;
-//   } else if (flavor === "sour") {
-//     flavor1 = flavorWater * 0.6;
-//     flavor2 = flavorWater * 0.4;
-//   } else {
-//     flavor1 = flavorWater * 0.5;
-//     flavor2 = flavorWater * 0.5;
-//   }
-//   // Determine number of strength pours based on strength selection
-//   let strengthSteps;
-//   if (strength === "light") {
-//     strengthSteps = 1;
-//   } else if (strength === "strong") {
-//     strengthSteps = 3;
-//   } else {
-//     strengthSteps = 2;
-//   }
-//   const steps: Array<Step> = [];
-//   // Flavor pours are fixed at 0s and 45s
-//   steps.push({
-//     time: 0,
-//     pourAmount: flavor1,
-//     cumulative: flavor1,
-//     descriptionKey: "flavorPour1",
-//     status: 'upcoming'
-//   });
-//   steps.push({
-//     time: 45,
-//     pourAmount: flavor2,
-//     cumulative: flavor1 + flavor2,
-//     descriptionKey: "flavorPour2",
-//     status: 'upcoming'
-//   });
-//   // Strength pour 1 is fixed at 90 seconds (1:30)
-//   const strengthPourAmount = strengthWater / strengthSteps;
-//   steps.push({
-//     time: 90,
-//     pourAmount: strengthPourAmount,
-//     cumulative: steps[steps.length - 1].cumulative + strengthPourAmount,
-//     descriptionKey: "strengthPour1",
-//     status: 'upcoming'
-//   });
-//   // If more than one strength pour, calculate remaining pours evenly over the remaining 120 seconds (210 - 90)
-//   if (strengthSteps > 1) {
-//     const remainingPours = strengthSteps - 1;
-//     const remainingTime = 210 - 90; // 120 seconds remaining
-//     const interval = remainingTime / (remainingPours + 1);
-//     for (let i = 2; i <= strengthSteps; i++) {
-//       const t = 90 + interval * (i - 1);
-//       const cumulative: number = steps[steps.length - 1].cumulative + strengthPourAmount;
-//       steps.push({
-//         time: t,
-//         pourAmount: strengthPourAmount,
-//         cumulative: cumulative,
-//         descriptionKey: `strengthPour${i}` as keyof DynamicTranslations,
-//         status: 'upcoming'
-//       });
-//     }
-//   }
-//   // Final step (finish) is fixed at 210 seconds
-//   steps.push({
-//     time: 210,
-//     pourAmount: 0,
-//     cumulative: totalWater,
-//     descriptionKey: "finish",
-//     status: 'upcoming'
-//   });
-//   return steps;
-// }
 
 // Function to calculate timer steps based on the new hybrid method
 function calculateSteps(beansAmount: number, flavor: string) {
@@ -224,7 +144,7 @@ function App() {
   const [currentTime, setCurrentTime] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [soundOn, setSoundOn] = useState(true);
+  const [notificationMode, setNotificationMode] = useState<NotificationMode>('none');
   const [voice, setVoice] = useState<'male' | 'female'>('female');
   const navigate = useNavigate();
   const { lang } = useParams();
@@ -343,10 +263,6 @@ function App() {
     }
   };
 
-  const handleToggleSound = (isSoundOn: boolean) => {
-    setSoundOn(isSoundOn);
-  };
-
   // Snackbarを閉じるハンドラー
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -416,7 +332,8 @@ function App() {
           onPlay={handlePlay}
           onPause={handlePause}
           onReset={handleReset}
-          onToggleSound={handleToggleSound}
+          notificationMode={notificationMode}
+          setNotificationMode={setNotificationMode}
           voice={voice}
           setVoice={setVoice}
         />
@@ -427,7 +344,7 @@ function App() {
           setSteps={setSteps}
           currentTime={currentTime}
           darkMode={darkMode}
-          soundOn={soundOn}
+          notificationMode={notificationMode}
           language={language}
           voice={voice}
         />

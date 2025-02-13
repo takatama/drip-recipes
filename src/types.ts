@@ -53,3 +53,5 @@ export interface Step {
   descriptionKey: keyof DynamicTranslations;
   status: StepStatus;
 }
+
+export type NotificationMode = 'none' | 'vibrate' | 'sound';
