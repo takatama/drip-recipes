@@ -347,6 +347,7 @@ function App() {
           notificationMode={notificationMode}
           language={language}
           voice={voice}
+          onTimerComplete={handlePause}
         />
 
         <Footer t={t} />

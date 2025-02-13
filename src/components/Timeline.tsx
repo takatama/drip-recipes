@@ -11,6 +11,7 @@ interface TimelineProps {
   notificationMode: NotificationMode;
   language: 'en' | 'ja';
   voice: 'male' | 'female';
+  onTimerComplete: () => void;
 }
 
 const CONTAINER_HEIGHT = 420;
@@ -24,7 +25,7 @@ const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 3;
 
-const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, darkMode, notificationMode, language, voice }) => {
+const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, darkMode, notificationMode, language, voice, onTimerComplete }) => {
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef(new Audio());
   const finishAudio = useRef(new Audio());
@@ -84,6 +85,13 @@ const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, da
 
   // Add function to update step statuses
   const updateStepStatuses = (currentTimeValue: number) => {
+    if (steps.length === 0) return;
+    
+    const lastStep = steps[steps.length - 1];
+    if (currentTimeValue >= lastStep.time) {
+      onTimerComplete();
+    }
+
     setSteps(prevSteps => prevSteps.map((step, index) => {
       if (currentTimeValue >= step.time && (index === prevSteps.length - 1 || currentTimeValue < prevSteps[index + 1].time)) {
         return { ...step, status: 'current' };
