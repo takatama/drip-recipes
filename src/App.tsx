@@ -229,6 +229,7 @@ function App() {
   const navigate = useNavigate();
   const { lang } = useParams();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [wakeLock, setWakeLock] = useState<any>(null);
 
   useEffect(() => {
     if (lang && (lang === 'en' || lang === 'ja')) {
@@ -262,12 +263,13 @@ function App() {
     setSearchParams(params);
   }, [beansAmount, flavor, setSearchParams]);
 
-  // Cleanup timer when component unmounts
+  // Cleanup timer and wakeLock when component unmounts
   useEffect(() => {
     return () => {
       if (timerRef.current !== null) {
         clearInterval(timerRef.current);
       }
+      releaseWakeLock();
     };
   }, []);
 
@@ -276,32 +278,61 @@ function App() {
     setDarkMode(prefersDarkMode);
   }, [prefersDarkMode]);
 
+  // WakeLockを取得する関数
+  const requestWakeLock = async () => {
+    try {
+      if ('wakeLock' in navigator) {
+        const lock = await navigator.wakeLock.request('screen');
+        console.log('WakeLock acquired');
+        setWakeLock(lock);
+      }
+    } catch (err) {
+      console.error('WakeLock request failed:', err);
+    }
+  };
+
+  // WakeLockを解放する関数
+  const releaseWakeLock = async () => {
+    if (wakeLock) {
+      try {
+        await wakeLock.release();
+        console.log('WakeLock released');
+        setWakeLock(null);
+      } catch (err) {
+        console.error('WakeLock release failed:', err);
+      }
+    }
+  };
+
   // Start or resume the timer
-  const handlePlay = () => {
+  const handlePlay = async () => {
     if (timerRunning) return;
     setTimerRunning(true);
     setSnackbarOpen(true);
+    await requestWakeLock();
     timerRef.current = setInterval(() => {
       setCurrentTime((prev) => prev + 0.5);
     }, 500);
   };
 
   // Pause the timer
-  const handlePause = () => {
+  const handlePause = async () => {
     if (timerRef.current !== null) {
       clearInterval(timerRef.current);
     }
     setTimerRunning(false);
+    await releaseWakeLock();
   };
 
   // Reset the timer
-  const handleReset = () => {
+  const handleReset = async () => {
     if (timerRef.current !== null) {
       clearInterval(timerRef.current);
     }
     setTimerRunning(false);
     setCurrentTime(0);
     setSnackbarOpen(false);
+    await releaseWakeLock();
   };
 
   // Handler for language toggle
