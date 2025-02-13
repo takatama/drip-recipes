@@ -13,7 +13,7 @@ interface TimelineProps {
   voice: 'male' | 'female';
 }
 
-const CONTAINER_HEIGHT = 300;
+const CONTAINER_HEIGHT = 420;
 const TOTAL_TIME = 210;
 const MARKER_SIZE = 8;
 const ARROW_OFFSET = 45;
