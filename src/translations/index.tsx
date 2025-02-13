@@ -20,14 +20,14 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     preparationSteps: [
       "Prepare room temperature water",
       "Warm up and rinse dripper",
-      "Keep the switch closed"
+      "Keep the switch closed (Up)"
     ],
-    flavorPour1: (amount: number) => `(Close) Pour up to ${amount}g`,
-    flavorPour2: (amount: number) => `(Open) Pour up to ${amount}g`,
+    flavorPour1: (amount: number) => `(Close / Up) Pour up to ${amount}g`,
+    flavorPour2: (amount: number) => `(Open / Down) Pour up to ${amount}g`,
     strengthPour1: (amount: number) => `Pour up to ${amount}g then cool to 70℃`,
-    strengthPour2: (amount: number) => `(Close) Pour up to ${amount}g`,
+    strengthPour2: (amount: number) => `(Close / Up) Pour up to ${amount}g`,
     strengthPour3: (amount: number) => `Pour up to ${amount}g`,
-    open: () => "(Open) Wait until the water drains",
+    open: () => "(Open / Down) Wait until the water drains",
     finish: () => "Finish",
     language: "Language",
     darkMode: "Dark Mode",
@@ -43,6 +43,7 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     usesHarioSwitch: (link: JSX.Element) => (<>This recipe uses {link}.</>),
     harioSwitchLink: "https://amzn.to/40TjUkH",
     amazonAssociate: "As an Amazon Associate, Drip Recipes earns from qualifying purchases.",
+    keepScreenOn: "Screen will stay on while playing",
   },
   ja: {
     title: "新しいハイブリッドメソッド",
@@ -63,14 +64,14 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     preparationSteps: [
       "常温の水を準備",
       "ドリッパーをお湯ですすぐ",
-      "スイッチを閉める (Close)"
+      "スイッチを閉める (Close / Up)"
     ],
-    flavorPour1: (amount: number) => `(Close) ${amount}g まで注湯`,
-    flavorPour2: (amount: number) => `(Open) ${amount}g まで注湯`,
+    flavorPour1: (amount: number) => `(Close / Up) ${amount}g まで注湯`,
+    flavorPour2: (amount: number) => `(Open / Down) ${amount}g まで注湯`,
     strengthPour1: (amount: number) => `${amount}g まで注湯後、70℃まで下げる`,
-    strengthPour2: (amount: number) => `(Close) ${amount}g まで注湯`,
+    strengthPour2: (amount: number) => `(Close / Up) ${amount}g まで注湯`,
     strengthPour3: (amount: number) => `${amount}g まで注湯`,
-    open: () => "(Open) お湯が落ち切るまで待つ",
+    open: () => "(Open / Down) お湯が落ち切るまで待つ",
     finish: () => "完成",
     language: "言語",
     darkMode: "ダークモード",
@@ -86,5 +87,6 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     usesHarioSwitch: (link: JSX.Element) => (<>このレシピは {link} を使います。</>),
     harioSwitchLink: "https://amzn.to/3QjLse1",
     amazonAssociate: "Amazonのアソシエイトとして、Drip Recipesは適格販売により収入を得ています。",
+    keepScreenOn: "再生中は画面をつけたままにします",
   }
 };

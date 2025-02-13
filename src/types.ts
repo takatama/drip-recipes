@@ -29,6 +29,7 @@ export interface StaticTranslations {
   amazonAssociate: string;
   preparation: string;
   preparationSteps: string[];
+  keepScreenOn: string;
 }
 
 export interface DynamicTranslations {
@@ -52,3 +53,5 @@ export interface Step {
   descriptionKey: keyof DynamicTranslations;
   status: StepStatus;
 }
+
+export type NotificationMode = 'none' | 'vibrate' | 'sound';

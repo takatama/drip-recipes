@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
-import { Step, TranslationType, DynamicTranslations } from '../types';
+import { Step, TranslationType, DynamicTranslations, NotificationMode } from '../types';
 
 interface TimelineProps {
   t: TranslationType;
@@ -8,12 +8,12 @@ interface TimelineProps {
   currentTime: number;
   darkMode: boolean;
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
-  soundOn: boolean;
+  notificationMode: NotificationMode;
   language: 'en' | 'ja';
   voice: 'male' | 'female';
 }
 
-const CONTAINER_HEIGHT = 300;
+const CONTAINER_HEIGHT = 420;
 const TOTAL_TIME = 210;
 const MARKER_SIZE = 8;
 const ARROW_OFFSET = 45;
@@ -24,7 +24,7 @@ const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 3;
 
-const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, darkMode, soundOn, language, voice }) => {
+const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, darkMode, notificationMode, language, voice }) => {
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef(new Audio());
   const finishAudio = useRef(new Audio());
@@ -60,17 +60,26 @@ const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, da
   };
   
   const playAudio = (isFinish: boolean) => {
-    if (!soundOn || isPlayingRef.current) return;
-    if (isFinish) {
-      finishAudio.current.pause();
-      finishAudio.current.currentTime = 0;
-      finishAudio.current.play();
-    } else {
-      nextStepAudio.current.pause();
-      nextStepAudio.current.currentTime = 0;
-      nextStepAudio.current.play();
+    if (notificationMode === 'none' || isPlayingRef.current) return;
+    if (notificationMode === 'sound') {
+      if (isFinish) {
+        finishAudio.current.pause();
+        finishAudio.current.currentTime = 0;
+        finishAudio.current.play();
+      } else {
+        nextStepAudio.current.pause();
+        nextStepAudio.current.currentTime = 0;
+        nextStepAudio.current.play();
+      }
+      isPlayingRef.current = true;
     }
-    isPlayingRef.current = true;
+  };
+
+  const vibrate = () => {
+    if (notificationMode === 'vibrate') {
+      console.log('Vibrating...');
+      navigator.vibrate([200, 100, 200]);
+    }
   };
 
   // Add function to update step statuses
@@ -80,6 +89,9 @@ const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, da
         return { ...step, status: 'current' };
       }
       if (currentTimeValue >= step.time) {
+        if (step.status === 'current') {
+          vibrate();
+        }
         return { ...step, status: 'completed' };
       }
       if (currentTimeValue >= step.time - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.time) {
