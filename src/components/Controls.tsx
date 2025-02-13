@@ -37,12 +37,15 @@ const Controls: React.FC<ControlsProps> = ({ t, onPlay, onPause, onReset, notifi
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 5 }}>
-      <IconButton onClick={handleToggleNotificationMode}>
-        {notificationMode === 'none' ? (<VolumeOff />) : notificationMode === 'vibrate' ? (<Vibration />) : (<VolumeUp />)}  
-      </IconButton>
-      <IconButton onClick={handleToggleVoice} sx={{ mr: 1 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 5, ml: -6}}>
+      <IconButton
+        onClick={handleToggleVoice}
+        sx={{ visibility: notificationMode === 'sound' ? 'visible' : 'hidden' }}
+      >
         {voice === 'male' ? <Man /> : <Woman />}
+      </IconButton>
+      <IconButton onClick={handleToggleNotificationMode} sx={{ mr: 1 }}>
+        {notificationMode === 'none' ? (<VolumeOff />) : notificationMode === 'vibrate' ? (<Vibration />) : (<VolumeUp />)}  
       </IconButton>
 
       <Button
