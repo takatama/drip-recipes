@@ -140,9 +140,10 @@ function App() {
   const [beansAmount, setBeansAmount] = useState(20);
   const [flavor, setFlavor] = useState("middle");
   const [steps, setSteps] = useState<Step[]>([]);
-  const timerRef = useRef<number | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
+  const startTimeRef = useRef<number | null>(null);
+  const isRunningRef = useRef(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [notificationMode, setNotificationMode] = useState<NotificationMode>('none');
   const [voice, setVoice] = useState<'male' | 'female'>('female');
@@ -186,8 +187,8 @@ function App() {
   // Cleanup timer and wakeLock when component unmounts
   useEffect(() => {
     return () => {
-      if (timerRef.current !== null) {
-        clearInterval(timerRef.current);
+      if (startTimeRef.current !== null) {
+        startTimeRef.current = null;
       }
       releaseWakeLock();
     };
@@ -227,28 +228,39 @@ function App() {
   // Start or resume the timer
   const handlePlay = async () => {
     if (timerRunning) return;
+
     setTimerRunning(true);
     setSnackbarOpen(true);
     await requestWakeLock();
-    timerRef.current = setInterval(() => {
-      setCurrentTime((prev) => prev + 0.5);
-    }, 500);
+
+    startTimeRef.current = Date.now() - (currentTime * 1000);
+    const updateTimer = () => {
+      if(!startTimeRef.current) return;
+      
+      const elapsedTime = (Date.now() - startTimeRef.current) / 1000;
+      setCurrentTime(elapsedTime);
+
+      if (isRunningRef.current) {
+        requestAnimationFrame(updateTimer);
+      }
+    };
+
+    requestAnimationFrame(updateTimer);
   };
 
   // Pause the timer
   const handlePause = async () => {
-    if (timerRef.current !== null) {
-      clearInterval(timerRef.current);
-    }
+    isRunningRef.current = false;
+    startTimeRef.current = null;
     setTimerRunning(false);
+    setSnackbarOpen(false);
     await releaseWakeLock();
   };
 
   // Reset the timer
   const handleReset = async () => {
-    if (timerRef.current !== null) {
-      clearInterval(timerRef.current);
-    }
+    isRunningRef.current = false;
+    startTimeRef.current = null;
     setTimerRunning(false);
     setCurrentTime(0);
     setSnackbarOpen(false);
