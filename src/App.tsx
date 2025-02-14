@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Typography, Snackbar } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Header from './components/Header';
 import Settings from './components/Settings';
 import Controls from './components/Controls';
-import Timeline from './components/Timeline';
+import Timeline from './components/Steps';
 import Footer from './components/Footer';
 import { translations } from './translations/index'
 import { NotificationMode, Step } from './types';
