@@ -70,7 +70,7 @@ interface CoffeeParameter {
 interface CoffeeStep {
   time: number;
   waterFormula: (beansAmount: number, waterRatio: number, flavor?: string) => number;
-  key: string;
+  key: keyof DynamicTranslations;
 }
 
 export interface CoffeeRecipe {
@@ -86,6 +86,6 @@ export interface OutputStep {
   timeSec: number;
   pourWaterMl: number;
   cumulativeWaterMl: number;
-  descriptionKey: string;
+  descriptionKey: keyof DynamicTranslations;
   status: StepStatus;
 }

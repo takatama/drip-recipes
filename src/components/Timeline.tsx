@@ -5,10 +5,12 @@ import Steps from './Steps';
 import { useTimer } from '../hooks/useTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { Step, NotificationMode, TranslationType } from '../types';
-import { calculateSteps } from '../utils/calculateSteps';
 import { Snackbar } from '@mui/material';
+import { CoffeeRecipe } from '../types';
+import { generateNewHybridSteps } from '../utils/recipeProcessor';
 
 interface TimelineProps {
+  recipe: CoffeeRecipe;
   t: TranslationType;
   darkMode: boolean;
   language: 'en' | 'ja';
@@ -17,6 +19,7 @@ interface TimelineProps {
 }
 
 const Timeline: React.FC<TimelineProps> = ({
+  recipe,
   t,
   darkMode,
   language,
@@ -37,7 +40,8 @@ const Timeline: React.FC<TimelineProps> = ({
   };
 
   useEffect(() => {
-    const newSteps = calculateSteps(beansAmount, flavor);
+    // const newSteps = calculateSteps(beansAmount, flavor);
+    const newSteps = generateNewHybridSteps(recipe, beansAmount, flavor);
     setSteps(newSteps);
   }, [beansAmount, flavor]);
 

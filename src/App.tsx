@@ -18,7 +18,6 @@ import {
   useParams
 } from 'react-router-dom';
 import RecipeDescription from './components/RecipeDescription';
-import { generateNewHybridSteps } from './utils/recipeProcessor';
 import { newHybridMethodDSL } from './recipes/new-hybird-method';
 
 // Create theme with both light and dark modes
@@ -70,16 +69,6 @@ function App() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { lang } = useParams();
-
-  const userInputs = {
-    beansAmount: 20,
-    flavor: "neutral" // "sweet" や "sour" に変更可能
-  };
-
-  // 生成結果を確認
-  const stepsOutput = generateNewHybridSteps(newHybridMethodDSL, userInputs);
-  console.log("New Hybrid Method Steps:");
-  console.log(stepsOutput);
 
   useEffect(() => {
     if (lang && (lang === 'en' || lang === 'ja')) {
@@ -192,6 +181,7 @@ function App() {
         </Typography>
 
         <Timeline
+          recipe={newHybridMethodDSL}
           t={t}
           darkMode={darkMode}
           language={language}
