@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography } from '@mui/material';
+import { Container, Typography, Accordion, AccordionSummary, Box } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Header from './components/Header';
@@ -17,6 +17,7 @@ import {
   Navigate,
   useParams
 } from 'react-router-dom';
+import { ExpandMore } from '@mui/icons-material';
 
 // Create theme with both light and dark modes
 const getTheme = (mode: 'light' | 'dark') => createTheme({
@@ -81,7 +82,7 @@ function App() {
       navigate(`/${newLang}/recipes/new-hybrid-method`);
     }
   };
-  
+
   useEffect(() => {
     const paramBeans = searchParams.get('beans');
     const paramFlavor = searchParams.get('flavor');
@@ -137,6 +138,50 @@ function App() {
           {t.title}
         </Typography>
 
+        <Accordion
+          square
+          disableGutters
+          variant='outlined'
+          sx={{
+            bgcolor: 'transparent',
+            boxShadow: 'none',
+            margin: 2
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography variant='body2'>{t.recipeTitle}</Typography>
+          </AccordionSummary>
+          <AccordionSummary>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Typography variant='body2'>{t.recipeDescription}</Typography>
+              <Box
+                sx={{
+                  position: 'relative',
+                  width: '100%',
+                  paddingBottom: '56.25%', // 16:9 aspect ratio
+                  height: 0,
+                  overflow: 'hidden',
+                }}
+              >
+                <iframe
+                  src={t.recipeYouTubeEmbedUrl}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    border: 'none',
+                  }}
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                  title="Recipe Video"
+                />
+              </Box>
+            </Box>
+          </AccordionSummary>
+        </Accordion>
+
         <Typography variant="body1" align="center" gutterBottom>
           {t.usesHarioSwitch(
             <a
@@ -149,7 +194,7 @@ function App() {
             </a>
           )}
         </Typography>
-        
+
         <Settings
           t={t}
           beansAmount={beansAmount}

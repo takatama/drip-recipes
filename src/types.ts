@@ -30,6 +30,9 @@ export interface StaticTranslations {
   preparation: string;
   preparationSteps: string[];
   keepScreenOn: string;
+  recipeTitle: string;
+  recipeDescription: string;
+  recipeYouTubeEmbedUrl: string;
 }
 
 export interface DynamicTranslations {
