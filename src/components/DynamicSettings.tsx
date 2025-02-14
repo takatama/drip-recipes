@@ -55,7 +55,8 @@ const EnumInput: React.FC<{
   value: string;
   options: string[];
   onChange: (value: string) => void;
-}> = ({ value, options, onChange }) => {
+  t: TranslationType;
+}> = ({ value, options, onChange, t }) => {
   return (
     <ToggleButtonGroup
       value={value}
@@ -66,7 +67,7 @@ const EnumInput: React.FC<{
     >
       {options.map((option) => (
         <ToggleButton key={option} value={option}>
-          {option}
+          {String(t[option as keyof TranslationType])}
         </ToggleButton>
       ))}
     </ToggleButtonGroup>
@@ -130,6 +131,7 @@ const DynamicSettings: React.FC<DynamicSettingsProps> = ({
                     value={values[param.key]}
                     options={param.options}
                     onChange={(value) => onChange(param.key, value)}
+                    t={t}
                   />
                 </TableCell>
               </TableRow>
