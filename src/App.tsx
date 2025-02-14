@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Container, Typography, Snackbar } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -143,7 +143,9 @@ function App() {
   const [currentTime, setCurrentTime] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
   const startTimeRef = useRef<number | null>(null);
-  const isRunningRef = useRef(true);
+  const isRunningRef = useRef(false);
+  const animationFrameId = useRef<number | null>(null);
+  const lastUpdateRef = useRef(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [notificationMode, setNotificationMode] = useState<NotificationMode>('none');
   const [voice, setVoice] = useState<'male' | 'female'>('female');
@@ -159,30 +161,36 @@ function App() {
   }, [lang]);
 
   useEffect(() => {
-    const paramBeans = parseInt(searchParams.get('beans') || '', 10);
+    const paramBeans = searchParams.get('beans');
     const paramFlavor = searchParams.get('flavor');
 
-    if (!isNaN(paramBeans)) {
-      setBeansAmount(paramBeans);
+    if (paramBeans) {
+      const beans = parseInt(paramBeans, 10);
+      if (!isNaN(beans) && beans !== beansAmount) {
+        setBeansAmount(beans);
+      }
     }
-    if (paramFlavor) {
+
+    if (paramFlavor && paramFlavor !== flavor) {
       setFlavor(paramFlavor);
     }
   }, [searchParams]);
 
   // Recalculate steps whenever coffee parameters change
   useEffect(() => {
+    // Update URL query parameters when state changes
+    const currentBeans = searchParams.get('beans');
+    const currentFlavor = searchParams.get('flavor');
+    if (currentBeans !== beansAmount.toString() || currentFlavor !== flavor) {
+      const params = new URLSearchParams();
+      params.set('beans', beansAmount.toString());
+      params.set('flavor', flavor);
+      setSearchParams(params, { replace: true });
+    }
+
     const newSteps = calculateSteps(beansAmount, flavor);
     setSteps(newSteps);
   }, [beansAmount, flavor]);
-
-  // Update URL query parameters when state changes
-  useEffect(() => {
-    const params = new URLSearchParams();
-    params.set('beans', beansAmount.toString());
-    params.set('flavor', flavor);
-    setSearchParams(params);
-  }, [beansAmount, flavor, setSearchParams]);
 
   // Cleanup timer and wakeLock when component unmounts
   useEffect(() => {
@@ -199,7 +207,6 @@ function App() {
     setDarkMode(prefersDarkMode);
   }, [prefersDarkMode]);
 
-  // WakeLockを取得する関数
   const requestWakeLock = async () => {
     try {
       if ('wakeLock' in navigator) {
@@ -212,7 +219,6 @@ function App() {
     }
   };
 
-  // WakeLockを解放する関数
   const releaseWakeLock = async () => {
     if (wakeLock) {
       try {
@@ -225,28 +231,39 @@ function App() {
     }
   };
 
+  const updateTimer = useCallback(() => {
+    if (!startTimeRef.current || !isRunningRef.current) return;
+
+    const elapsedTime = (Date.now() - startTimeRef.current) / 1000;
+    // Update the timer every 0.1 seconds
+    if (elapsedTime - lastUpdateRef.current >= 0.1) {
+      lastUpdateRef.current = elapsedTime;
+      setCurrentTime(elapsedTime);
+    }
+
+    animationFrameId.current = requestAnimationFrame(updateTimer);
+  }, []);
+
   // Start or resume the timer
   const handlePlay = async () => {
     if (timerRunning) return;
 
+    isRunningRef.current = true;
     setTimerRunning(true);
     setSnackbarOpen(true);
     await requestWakeLock();
 
     startTimeRef.current = Date.now() - (currentTime * 1000);
-    const updateTimer = () => {
-      if(!startTimeRef.current) return;
-      
-      const elapsedTime = (Date.now() - startTimeRef.current) / 1000;
-      setCurrentTime(elapsedTime);
+    animationFrameId.current = requestAnimationFrame(updateTimer);
+  };
 
-      if (isRunningRef.current) {
-        requestAnimationFrame(updateTimer);
+  useEffect(() => {
+    return () => {
+      if (animationFrameId.current !== null) {
+        cancelAnimationFrame(animationFrameId.current);
       }
     };
-
-    requestAnimationFrame(updateTimer);
-  };
+  }, []);
 
   // Pause the timer
   const handlePause = async () => {
