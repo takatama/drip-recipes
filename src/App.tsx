@@ -17,6 +17,7 @@ import {
   Navigate,
   useParams
 } from 'react-router-dom';
+import RecipeDescription from './components/RecipeDescription';
 
 // Create theme with both light and dark modes
 const getTheme = (mode: 'light' | 'dark') => createTheme({
@@ -81,7 +82,7 @@ function App() {
       navigate(`/${newLang}/recipes/new-hybrid-method`);
     }
   };
-  
+
   useEffect(() => {
     const paramBeans = searchParams.get('beans');
     const paramFlavor = searchParams.get('flavor');
@@ -137,6 +138,8 @@ function App() {
           {t.title}
         </Typography>
 
+        <RecipeDescription t={t} />
+
         <Typography variant="body1" align="center" gutterBottom>
           {t.usesHarioSwitch(
             <a
@@ -149,7 +152,7 @@ function App() {
             </a>
           )}
         </Typography>
-        
+
         <Settings
           t={t}
           beansAmount={beansAmount}

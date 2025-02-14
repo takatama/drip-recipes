@@ -21,8 +21,6 @@ export interface StaticTranslations {
   mediumRoast: string;
   darkRoast: string;
   waterTemp: string;
-  footerMethodBy: string;
-  footerMethodVideo: string;
   footerCreatedBy: string;
   usesHarioSwitch: (link: JSX.Element) => JSX.Element;
   harioSwitchLink: string;
@@ -30,6 +28,9 @@ export interface StaticTranslations {
   preparation: string;
   preparationSteps: string[];
   keepScreenOn: string;
+  recipeTitle: string;
+  recipeDescription: string;
+  recipeYouTubeEmbedUrl: string;
 }
 
 export interface DynamicTranslations {

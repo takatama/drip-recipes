@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import YouTubeIcon from '@mui/icons-material/YouTube';
 import { TranslationType } from '../types';
 
 interface FooterProps {
@@ -18,21 +17,6 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
       borderColor: 'divider',
       textAlign: 'center',
     }}>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
-        {t.footerMethodBy}
-      </Typography>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
-        <Link
-          href={'https://www.youtube.com/watch?v=4FeUp_zNiiY'}
-          target="_blank"
-          rel="noopener noreferrer"
-          color="inherit"
-          sx={{ display: 'flex', alignItems: 'center', gap: 0.5, justifyContent: 'center' }}
-        >
-          <YouTubeIcon fontSize="small" />
-          {t.footerMethodVideo}
-        </Link>
-      </Typography>
       <Typography variant="body2" color="text.secondary" gutterBottom sx={{ mt: 2 }}>
         {t.footerCreatedBy}
       </Typography>
