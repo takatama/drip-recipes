@@ -19,6 +19,8 @@ import {
   Navigate,
   useParams
 } from 'react-router-dom';
+import { useTimer } from './hooks/useTimer';
+import { useWakeLock } from './hooks/useWakeLock';
 
 // Create theme with both light and dark modes
 const getTheme = (mode: 'light' | 'dark') => createTheme({
@@ -132,6 +134,8 @@ function AppWrapper() {
 }
 
 function App() {
+  const { currentTime, isRunning, start, pause, reset } = useTimer();
+  const { requestWakeLock, releaseWakeLock } = useWakeLock();
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [darkMode, setDarkMode] = useState(prefersDarkMode);
   const theme = getTheme(darkMode ? 'dark' : 'light');
@@ -140,20 +144,13 @@ function App() {
   const [beansAmount, setBeansAmount] = useState(20);
   const [flavor, setFlavor] = useState("middle");
   const [steps, setSteps] = useState<Step[]>([]);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [timerRunning, setTimerRunning] = useState(false);
-  const startTimeRef = useRef<number | null>(null);
-  const isRunningRef = useRef(false);
-  const animationFrameId = useRef<number | null>(null);
-  const lastUpdateRef = useRef(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [notificationMode, setNotificationMode] = useState<NotificationMode>('none');
   const [voice, setVoice] = useState<'male' | 'female'>('female');
   const navigate = useNavigate();
   const { lang } = useParams();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [wakeLock, setWakeLock] = useState<any>(null);
-
+  
   useEffect(() => {
     if (lang && (lang === 'en' || lang === 'ja')) {
       setLanguage(lang);
@@ -192,96 +189,29 @@ function App() {
     setSteps(newSteps);
   }, [beansAmount, flavor]);
 
-  // Cleanup timer and wakeLock when component unmounts
-  useEffect(() => {
-    return () => {
-      if (startTimeRef.current !== null) {
-        startTimeRef.current = null;
-      }
-      releaseWakeLock();
-    };
-  }, []);
-
   // Update dark mode when system preference changes
   useEffect(() => {
     setDarkMode(prefersDarkMode);
   }, [prefersDarkMode]);
 
-  const requestWakeLock = async () => {
-    try {
-      if ('wakeLock' in navigator) {
-        const lock = await navigator.wakeLock.request('screen');
-        console.log('WakeLock acquired');
-        setWakeLock(lock);
-      }
-    } catch (err) {
-      console.error('WakeLock request failed:', err);
-    }
-  };
-
-  const releaseWakeLock = async () => {
-    if (wakeLock) {
-      try {
-        await wakeLock.release();
-        console.log('WakeLock released');
-        setWakeLock(null);
-      } catch (err) {
-        console.error('WakeLock release failed:', err);
-      }
-    }
-  };
-
-  const updateTimer = useCallback(() => {
-    if (!startTimeRef.current || !isRunningRef.current) return;
-
-    const elapsedTime = (Date.now() - startTimeRef.current) / 1000;
-    // Update the timer every 0.1 seconds
-    if (elapsedTime - lastUpdateRef.current >= 0.1) {
-      lastUpdateRef.current = elapsedTime;
-      setCurrentTime(elapsedTime);
-    }
-
-    animationFrameId.current = requestAnimationFrame(updateTimer);
-  }, []);
-
-  // Start or resume the timer
   const handlePlay = async () => {
-    if (timerRunning) return;
-
-    isRunningRef.current = true;
-    setTimerRunning(true);
+    if (isRunning) return;
     setSnackbarOpen(true);
     await requestWakeLock();
-
-    startTimeRef.current = Date.now() - (currentTime * 1000);
-    animationFrameId.current = requestAnimationFrame(updateTimer);
+    start();
   };
 
-  useEffect(() => {
-    return () => {
-      if (animationFrameId.current !== null) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-    };
-  }, []);
-
-  // Pause the timer
   const handlePause = async () => {
-    isRunningRef.current = false;
-    startTimeRef.current = null;
-    setTimerRunning(false);
     setSnackbarOpen(false);
     await releaseWakeLock();
+    pause();
   };
 
   // Reset the timer
   const handleReset = async () => {
-    isRunningRef.current = false;
-    startTimeRef.current = null;
-    setTimerRunning(false);
-    setCurrentTime(0);
     setSnackbarOpen(false);
     await releaseWakeLock();
+    reset();
   };
 
   // Handler for language toggle
