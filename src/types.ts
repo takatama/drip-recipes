@@ -1,3 +1,5 @@
+import { Theme } from "@mui/material";
+
 export interface TranslationType {
   beansAmount: string;
   waterAmount: string;
@@ -21,8 +23,6 @@ export interface TranslationType {
   darkRoast: string;
   waterTemp: string;
   footerCreatedBy: string;
-  usesHarioSwitch: (link: JSX.Element) => JSX.Element;
-  harioSwitchLink: string;
   amazonAssociate: string;
   preparation: string;
   keepScreenOn: string;
@@ -52,6 +52,7 @@ export interface CoffeeRecipe {
   name: { en:string; ja:string };
   description: { en:string; ja:string };
   youTubeEmbedUrl: string;
+  equipments: { en: (theme: Theme) => JSX.Element; ja: (theme: Theme) => JSX.Element; };
   params: CoffeeParam[];
   waterRatio: number;
   preparationSteps: { en: string[]; ja: string[] };

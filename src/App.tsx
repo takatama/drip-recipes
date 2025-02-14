@@ -142,16 +142,7 @@ function App() {
         <RecipeDescription recipe={newHybridMethodDSL} language={language} t={t} />
 
         <Typography variant="body1" align="center" gutterBottom>
-          {t.usesHarioSwitch(
-            <a
-              href={t.harioSwitchLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: theme.palette.primary.main }}
-            >
-              Hario Switch
-            </a>
-          )}
+          {newHybridMethodDSL.equipments[language](theme)}
         </Typography>
 
         <DynamicSettings
