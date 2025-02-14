@@ -1,5 +1,4 @@
 export interface TranslationType {
-  title: string;
   beansAmount: string;
   waterAmount: string;
   flavor: string;

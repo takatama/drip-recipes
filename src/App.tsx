@@ -136,7 +136,7 @@ function App() {
         />
 
         <Typography variant="h5" align="center" gutterBottom>
-          {t.title}
+          {newHybridMethodDSL.name[language]}
         </Typography>
 
         <RecipeDescription recipe={newHybridMethodDSL} language={language} t={t} />

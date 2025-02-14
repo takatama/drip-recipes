@@ -2,7 +2,6 @@ import { TranslationType } from "../types";
 
 export const translations: Record<'en' | 'ja', TranslationType> = {
   en: {
-    title: "New Hybrid Method",
     beansAmount: "Beans",
     waterAmount: "Water",
     flavor: "Flavor",
@@ -33,7 +32,6 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     aboutThisRecipe: "☕About this recipe",
   },
   ja: {
-    title: "新しいハイブリッドメソッド",
     beansAmount: "豆の量",
     waterAmount: "湯量",
     flavor: "味わい",
