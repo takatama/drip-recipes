@@ -14,11 +14,11 @@ interface StepsProps {
   onTimerComplete: () => void;
 }
 
-const CONTAINER_HEIGHT = 420;
+const CONTAINER_HEIGHT = 400;
 const TOTAL_TIME = 210;
 const MARKER_SIZE = 8;
 const ARROW_OFFSET = 45;
-const ARROW_HEIGHT = 25;
+const ARROW_HEIGHT = 30;
 const TIMELINE_WIDTH = '65%';
 const STEP_TEXT_MARGIN = 20;
 const FIRST_STEP_OFFSET = 10;
