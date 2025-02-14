@@ -3,7 +3,6 @@ import { Container, Typography } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Header from './components/Header';
-import Settings from './components/Settings';
 import Timeline from './components/Timeline';
 import Footer from './components/Footer';
 import { translations } from './translations/index'
@@ -18,6 +17,8 @@ import {
   useParams
 } from 'react-router-dom';
 import RecipeDescription from './components/RecipeDescription';
+import { newHybridMethodDSL } from './recipes/new-hybird-method';
+import DynamicSettings from './components/DynamicSettings';
 
 // Create theme with both light and dark modes
 const getTheme = (mode: 'light' | 'dark') => createTheme({
@@ -64,7 +65,7 @@ function App() {
   const [language, setLanguage] = useState<"en" | "ja">("en");
   const t = translations[language]; // shorthand for current translations
   const [beansAmount, setBeansAmount] = useState(20);
-  const [flavor, setFlavor] = useState("middle");
+  const [flavor, setFlavor] = useState("neutral");
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { lang } = useParams();
@@ -135,30 +136,31 @@ function App() {
         />
 
         <Typography variant="h5" align="center" gutterBottom>
-          {t.title}
+          {newHybridMethodDSL.name[language]}
         </Typography>
 
-        <RecipeDescription t={t} />
+        <RecipeDescription recipe={newHybridMethodDSL} language={language} t={t} />
 
         <Typography variant="body1" align="center" gutterBottom>
-          {t.usesHarioSwitch(
-            <a
-              href={t.harioSwitchLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: theme.palette.primary.main }}
-            >
-              Hario Switch
-            </a>
-          )}
+          {newHybridMethodDSL.equipments[language](theme)}
         </Typography>
 
-        <Settings
+        <DynamicSettings
           t={t}
-          beansAmount={beansAmount}
-          setBeansAmount={setBeansAmount}
-          flavor={flavor}
-          setFlavor={setFlavor}
+          params={newHybridMethodDSL.params}
+          values={{
+            beansAmount,
+            waterRatio: newHybridMethodDSL.waterRatio,
+            flavor,
+          }}
+          onChange={(key, value) => {
+            if (key === 'beansAmount') {
+              setBeansAmount(value);
+            }
+            if (key === 'flavor') {
+              setFlavor(value);
+            }
+          }}
         />
 
         <Typography
@@ -171,7 +173,7 @@ function App() {
           }}
         >
           <div style={{ marginBottom: '8px' }}>{t.preparation}</div>
-          {t.preparationSteps.map((step, index) => (
+          {newHybridMethodDSL.preparationSteps[language].map((step, index) => (
             <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
               <span style={{ marginRight: '8px' }}>•</span>
               {step}
@@ -180,6 +182,7 @@ function App() {
         </Typography>
 
         <Timeline
+          recipe={newHybridMethodDSL}
           t={t}
           darkMode={darkMode}
           language={language}

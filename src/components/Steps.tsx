@@ -1,9 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
-import { Step, TranslationType, DynamicTranslations, NotificationMode } from '../types';
+import { Step, NotificationMode } from '../types';
 
 interface StepsProps {
-  t: TranslationType;
   steps: Step[];
   currentTime: number;
   darkMode: boolean;
@@ -14,18 +13,18 @@ interface StepsProps {
   onTimerComplete: () => void;
 }
 
-const CONTAINER_HEIGHT = 420;
+const CONTAINER_HEIGHT = 400;
 const TOTAL_TIME = 210;
 const MARKER_SIZE = 8;
 const ARROW_OFFSET = 45;
-const ARROW_HEIGHT = 25;
+const ARROW_HEIGHT = 30;
 const TIMELINE_WIDTH = '65%';
 const STEP_TEXT_MARGIN = 20;
 const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 3;
 
-const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode, notificationMode, language, voice, onTimerComplete }) => {
+const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, darkMode, notificationMode, language, voice, onTimerComplete }) => {
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef(new Audio());
   const finishAudio = useRef(new Audio());
@@ -88,21 +87,21 @@ const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode
     if (steps.length === 0) return;
 
     const lastStep = steps[steps.length - 1];
-    if (currentTimeValue >= lastStep.time) {
+    if (currentTimeValue >= lastStep.timeSec) {
       onTimerComplete();
     }
 
     setSteps(prevSteps => prevSteps.map((step, index) => {
-      if (currentTimeValue >= step.time && (index === prevSteps.length - 1 || currentTimeValue < prevSteps[index + 1].time)) {
+      if (currentTimeValue >= step.timeSec && (index === prevSteps.length - 1 || currentTimeValue < prevSteps[index + 1].timeSec)) {
         return { ...step, status: 'current' };
       }
-      if (currentTimeValue >= step.time) {
+      if (currentTimeValue >= step.timeSec) {
         if (step.status === 'current') {
           vibrate();
         }
         return { ...step, status: 'completed' };
       }
-      if (currentTimeValue >= step.time - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.time) {
+      if (currentTimeValue >= step.timeSec - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.timeSec) {
         const isFinish = index === prevSteps.length - 1;
         playAudio(isFinish);
         return { ...step, status: 'next' };
@@ -148,7 +147,7 @@ const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode
         {/* Render each step using absolute positioning */}
         {steps.map((step, index) => {
           // Calculate top position (with 0:00 fixed at 5px, others with +5px offset)
-          const topPos = getStepPosition(step.time);
+          const topPos = getStepPosition(step.timeSec);
           return (
             <Box
               key={index}
@@ -186,7 +185,7 @@ const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode
                   }[step.status]
                 }}
               >
-                {formatTime(step.time)}
+                {formatTime(step.timeSec)}
               </Typography>
               <Typography
                 variant="body2"
@@ -201,7 +200,7 @@ const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode
                   }[step.status]
                 }}
               >
-                {(t[step.descriptionKey as keyof DynamicTranslations])(Math.round(step.cumulative))}
+                {step.action[language](Math.round(step.cumulativeWaterMl))}
               </Typography>
             </Box>
           );

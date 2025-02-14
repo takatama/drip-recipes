@@ -1,11 +1,12 @@
-export interface StaticTranslations {
-  title: string;
+import { Theme } from "@mui/material";
+
+export interface TranslationType {
   beansAmount: string;
-  waterVolume: string;
-  taste: string;
+  waterAmount: string;
+  flavor: string;
   strength: string;
   sweet: string;
-  middle: string;
+  neutral: string;
   medium: string;
   sour: string;
   light: string;
@@ -22,37 +23,48 @@ export interface StaticTranslations {
   darkRoast: string;
   waterTemp: string;
   footerCreatedBy: string;
-  usesHarioSwitch: (link: JSX.Element) => JSX.Element;
-  harioSwitchLink: string;
   amazonAssociate: string;
   preparation: string;
-  preparationSteps: string[];
   keepScreenOn: string;
-  recipeTitle: string;
-  recipeDescription: string;
-  recipeYouTubeEmbedUrl: string;
+  aboutThisRecipe: string;
 }
 
-export interface DynamicTranslations {
-  flavorPour1: (amount: number) => string;
-  flavorPour2: (amount: number) => string;
-  strengthPour1: (amount: number) => string;
-  strengthPour2: (amount: number) => string;
-  strengthPour3: (amount: number) => string;
-  open: () => string;
-  finish: () => string;
+export type NotificationMode = 'none' | 'vibrate' | 'sound';
+
+export interface CoffeeParam {
+  key: keyof TranslationType;
+  unit?: string;
+  type: 'number' | 'enum';
+  input: boolean;
+  default?: any;
+  formula?: (beansAmount: number, waterRatio: number) => number;
+  options?: string[];
 }
 
-export type TranslationType = StaticTranslations & DynamicTranslations;
+interface CoffeeStep {
+  time: number;
+  waterFormula: (beansAmount: number, waterRatio: number, flavor?: string) => number;
+  action: { en: (cumulativeWaterMl?: number) => string; ja: (cumulativeWaterMl?: number) => string; };
+}
+
+export interface CoffeeRecipe {
+  id: string;
+  name: { en:string; ja:string };
+  description: { en:string; ja:string };
+  youTubeEmbedUrl: string;
+  equipments: { en: (theme: Theme) => JSX.Element; ja: (theme: Theme) => JSX.Element; };
+  params: CoffeeParam[];
+  waterRatio: number;
+  preparationSteps: { en: string[]; ja: string[] };
+  steps: CoffeeStep[];
+}
 
 export type StepStatus = 'completed' | 'current' | 'upcoming' | 'next';
 
 export interface Step {
-  time: number;
-  pourAmount: number;
-  cumulative: number;
-  descriptionKey: keyof DynamicTranslations;
+  timeSec: number;
+  pourWaterMl: number;
+  cumulativeWaterMl: number;
+  action: { en: (amount?: number) => string; ja: (amount?: number) => string; };
   status: StepStatus;
 }
-
-export type NotificationMode = 'none' | 'vibrate' | 'sound';
