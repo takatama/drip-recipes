@@ -107,7 +107,7 @@ const Settings: React.FC<SettingsProps> = ({
               sx={{ '& .MuiToggleButton-root': { fontSize: '1.0rem' } }}
             >
               <ToggleButton value="sweet">{t.sweet}</ToggleButton>
-              <ToggleButton value="middle">{t.middle}</ToggleButton>
+              <ToggleButton value="middle">{t.neutral}</ToggleButton>
               <ToggleButton value="sour">{t.sour}</ToggleButton>
             </ToggleButtonGroup>
           </TableCell>

@@ -5,7 +5,7 @@ export interface StaticTranslations {
   flavor: string;
   strength: string;
   sweet: string;
-  middle: string;
+  neutral: string;
   medium: string;
   sour: string;
   light: string;
@@ -57,10 +57,10 @@ export interface Step {
 
 export type NotificationMode = 'none' | 'vibrate' | 'sound';
 
-interface CoffeeParameter {
-  key: string;
+export interface CoffeeParam {
+  key: keyof StaticTranslations;
   unit?: string;
-  type: string;
+  type: 'number' | 'enum';
   input: boolean;
   default?: any;
   formula?: (beansAmount: number, waterRatio: number) => number;
@@ -77,7 +77,7 @@ export interface CoffeeRecipe {
   id: string;
   name: { en:string; ja:string };
   description: { en:string; ja:string };
-  params: CoffeeParameter[];
+  params: CoffeeParam[];
   waterRatio: number;
   steps: CoffeeStep[];
 }

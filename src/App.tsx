@@ -3,7 +3,6 @@ import { Container, Typography } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Header from './components/Header';
-import Settings from './components/Settings';
 import Timeline from './components/Timeline';
 import Footer from './components/Footer';
 import { translations } from './translations/index'
@@ -19,6 +18,7 @@ import {
 } from 'react-router-dom';
 import RecipeDescription from './components/RecipeDescription';
 import { newHybridMethodDSL } from './recipes/new-hybird-method';
+import DynamicSettings from './components/DynamicSettings';
 
 // Create theme with both light and dark modes
 const getTheme = (mode: 'light' | 'dark') => createTheme({
@@ -65,7 +65,7 @@ function App() {
   const [language, setLanguage] = useState<"en" | "ja">("en");
   const t = translations[language]; // shorthand for current translations
   const [beansAmount, setBeansAmount] = useState(20);
-  const [flavor, setFlavor] = useState("middle");
+  const [flavor, setFlavor] = useState("neutral");
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { lang } = useParams();
@@ -154,12 +154,22 @@ function App() {
           )}
         </Typography>
 
-        <Settings
+        <DynamicSettings
           t={t}
-          beansAmount={beansAmount}
-          setBeansAmount={setBeansAmount}
-          flavor={flavor}
-          setFlavor={setFlavor}
+          params={newHybridMethodDSL.params}
+          values={{
+            beansAmount,
+            waterRatio: newHybridMethodDSL.waterRatio,
+            flavor,
+          }}
+          onChange={(key, value) => {
+            if (key === 'beansAmount') {
+              setBeansAmount(value);
+            }
+            if (key === 'flavor') {
+              setFlavor(value);
+            }
+          }}
         />
 
         <Typography
