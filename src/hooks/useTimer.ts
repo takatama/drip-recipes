@@ -44,6 +44,7 @@ export const useTimer = (updateInterval: number = 0.1) => {
     startTimeRef.current = null;
     setIsRunning(false);
     setCurrentTime(0);
+    lastUpdateRef.current = 0;
     if (animationFrameId.current !== null) {
       cancelAnimationFrame(animationFrameId.current);
     }
