@@ -1,35 +1,30 @@
 // TimerPanel.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Controls from './Controls';
 import Steps from './Steps';
 import { useTimer } from '../hooks/useTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { Step, NotificationMode, TranslationType } from '../types';
 import { Snackbar } from '@mui/material';
-import { CoffeeRecipe } from '../types';
-import { generateNewHybridSteps } from '../utils/recipeProcessor';
 
 interface TimelineProps {
-  recipe: CoffeeRecipe;
   t: TranslationType;
   darkMode: boolean;
   language: 'en' | 'ja';
-  beansAmount: number;
-  flavor: string;
+  steps: Step[];
+  setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
 }
 
 const Timeline: React.FC<TimelineProps> = ({
-  recipe,
   t,
   darkMode,
   language,
-  beansAmount,
-  flavor,
+  steps,
+  setSteps,
 }) => {
   const { currentTime, isRunning, start, pause, reset } = useTimer();
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
 
-  const [steps, setSteps] = useState<Step[]>([]);
   const [notificationMode, setNotificationMode] = useState<NotificationMode>('none');
   const [voice, setVoice] = useState<'male' | 'female'>('female');
 
@@ -38,12 +33,6 @@ const Timeline: React.FC<TimelineProps> = ({
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
-
-  useEffect(() => {
-    // const newSteps = calculateSteps(beansAmount, flavor);
-    const newSteps = generateNewHybridSteps(recipe, beansAmount, flavor);
-    setSteps(newSteps);
-  }, [beansAmount, flavor]);
 
   const handlePlay = async () => {
     if (isRunning) return;
@@ -98,7 +87,6 @@ const Timeline: React.FC<TimelineProps> = ({
         message={t.keepScreenOn}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
-
     </>
   );
 };
