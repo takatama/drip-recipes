@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Step, TranslationType, DynamicTranslations, NotificationMode } from '../types';
 
-interface TimelineProps {
+interface StepsProps {
   t: TranslationType;
   steps: Step[];
   currentTime: number;
@@ -19,13 +19,13 @@ const TOTAL_TIME = 210;
 const MARKER_SIZE = 8;
 const ARROW_OFFSET = 45;
 const ARROW_HEIGHT = 25;
-const TIMELINE_WIDTH = 300;
+const TIMELINE_WIDTH = '65%';
 const STEP_TEXT_MARGIN = 20;
 const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 3;
 
-const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, darkMode, notificationMode, language, voice, onTimerComplete }) => {
+const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode, notificationMode, language, voice, onTimerComplete }) => {
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef(new Audio());
   const finishAudio = useRef(new Audio());
@@ -228,7 +228,7 @@ const Timeline: React.FC<TimelineProps> = ({ t, steps, setSteps, currentTime, da
         </Box>
       </Box>
     </Box>
-      );
+  );
 };
 
-      export default Timeline;
+export default Steps;
