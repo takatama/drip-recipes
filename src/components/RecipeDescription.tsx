@@ -1,13 +1,15 @@
 import React from 'react';
 import { Typography, Accordion, AccordionSummary, Box } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
-import { TranslationType } from '../types';
+import { CoffeeRecipe, TranslationType } from '../types';
 
 type Props = {
+  recipe: CoffeeRecipe,
+  language: 'en' | 'ja',
   t: TranslationType;
 };
 
-const RecipeDescription: React.FC<Props> = ({ t }) => {
+const RecipeDescription: React.FC<Props> = ({ recipe, language, t }) => {
   return (
     <Accordion
       square
@@ -24,7 +26,7 @@ const RecipeDescription: React.FC<Props> = ({ t }) => {
       </AccordionSummary>
       <AccordionSummary>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Typography variant='body2'>{t.recipeDescription}</Typography>
+          <Typography variant='body2'>{recipe.description[language]}</Typography>
           <Box
             sx={{
               position: 'relative',
@@ -35,7 +37,7 @@ const RecipeDescription: React.FC<Props> = ({ t }) => {
             }}
           >
             <iframe
-              src={t.recipeYouTubeEmbedUrl}
+              src={recipe.youTubeEmbedUrl}
               style={{
                 position: 'absolute',
                 top: 0,

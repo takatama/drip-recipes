@@ -29,8 +29,6 @@ export interface StaticTranslations {
   preparationSteps: string[];
   keepScreenOn: string;
   recipeTitle: string;
-  recipeDescription: string;
-  recipeYouTubeEmbedUrl: string;
 }
 
 export interface DynamicTranslations {
@@ -77,6 +75,7 @@ export interface CoffeeRecipe {
   id: string;
   name: { en:string; ja:string };
   description: { en:string; ja:string };
+  youTubeEmbedUrl: string;
   params: CoffeeParam[];
   waterRatio: number;
   steps: CoffeeStep[];

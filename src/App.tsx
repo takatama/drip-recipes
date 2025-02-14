@@ -139,7 +139,7 @@ function App() {
           {t.title}
         </Typography>
 
-        <RecipeDescription t={t} />
+        <RecipeDescription recipe={newHybridMethodDSL} language={language} t={t} />
 
         <Typography variant="body1" align="center" gutterBottom>
           {t.usesHarioSwitch(
