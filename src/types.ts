@@ -30,16 +30,6 @@ export interface TranslationType {
   aboutThisRecipe: string;
 }
 
-export type StepStatus = 'completed' | 'current' | 'upcoming' | 'next';
-
-export interface Step {
-  timeSec: number;
-  pourWaterMl: number;
-  cumulativeWaterMl: number;
-  action: { en: (amount?: number) => string; ja: (amount?: number) => string; };
-  status: StepStatus;
-}
-
 export type NotificationMode = 'none' | 'vibrate' | 'sound';
 
 export interface CoffeeParam {
@@ -55,7 +45,7 @@ export interface CoffeeParam {
 interface CoffeeStep {
   time: number;
   waterFormula: (beansAmount: number, waterRatio: number, flavor?: string) => number;
-  action: { en: (amount?: number) => string; ja: (amount?: number) => string; };
+  action: { en: (cumulativeWaterMl?: number) => string; ja: (cumulativeWaterMl?: number) => string; };
 }
 
 export interface CoffeeRecipe {
@@ -67,4 +57,14 @@ export interface CoffeeRecipe {
   waterRatio: number;
   preparationSteps: { en: string[]; ja: string[] };
   steps: CoffeeStep[];
+}
+
+export type StepStatus = 'completed' | 'current' | 'upcoming' | 'next';
+
+export interface Step {
+  timeSec: number;
+  pourWaterMl: number;
+  cumulativeWaterMl: number;
+  action: { en: (amount?: number) => string; ja: (amount?: number) => string; };
+  status: StepStatus;
 }

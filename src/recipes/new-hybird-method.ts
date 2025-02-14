@@ -35,32 +35,32 @@ export const newHybridMethodDSL: CoffeeRecipe = {
       time: 0,
       waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.42 : (flavor === 'sour' ? 0.58 : 0.5)),
       action: {
-        en: (amount?: number) => `(Close / Up) Pour up to ${amount}g`,
-        ja: (amount?: number) => `(Close / Up) ${amount}g まで注湯`,
+        en: (cumulativeWaterMl?: number) => `(Close / Up) Pour up to ${cumulativeWaterMl}g`,
+        ja: (cumulativeWaterMl?: number) => `(Close / Up) ${cumulativeWaterMl}g まで注湯`,
       },
     },
     {
       time: 40,
       waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.58 : (flavor === 'sour' ? 0.42 : 0.5)),
       action: {
-        en: (amount?: number) => `(Open / Down) Pour up to ${amount}g`,
-        ja: (amount?: number) => `(Open / Down) ${amount}g まで注湯`,
+        en: (cumulativeWaterMl?: number) => `(Open / Down) Pour up to ${cumulativeWaterMl}g`,
+        ja: (cumulativeWaterMl?: number) => `(Open / Down) ${cumulativeWaterMl}g まで注湯`,
       },
     },
     {
       time: 90,
       waterFormula: (beansAmount, waterRatio) => beansAmount * waterRatio * 0.6 / 2,
       action: {
-        en: (amount?: number) => `Pour up to ${amount}g then cool to 70℃`,
-        ja: (amount?: number) => `${amount}g まで注湯後、70℃まで下げる`,
+        en: (cumulativeWaterMl?: number) => `Pour up to ${cumulativeWaterMl}g then cool to 70℃`,
+        ja: (cumulativeWaterMl?: number) => `${cumulativeWaterMl}g まで注湯後、70℃まで下げる`,
       },
     },
     {
       time: 130,
       waterFormula: (beansAmount, waterRatio) => beansAmount * waterRatio * 0.6 / 2,
       action: {
-        en: (amount?: number) => `(Close / Up) Pour up to ${amount}g`,
-        ja: (amount?: number) => `(Close / Up) ${amount}g まで注湯`,
+        en: (cumulativeWaterMl?: number) => `(Close / Up) Pour up to ${cumulativeWaterMl}g`,
+        ja: (cumulativeWaterMl?: number) => `(Close / Up) ${cumulativeWaterMl}g まで注湯`,
       },
     },
     {
