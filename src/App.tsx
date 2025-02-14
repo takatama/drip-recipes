@@ -182,7 +182,7 @@ function App() {
           }}
         >
           <div style={{ marginBottom: '8px' }}>{t.preparation}</div>
-          {t.preparationSteps.map((step, index) => (
+          {newHybridMethodDSL.preparationSteps[language].map((step, index) => (
             <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
               <span style={{ marginRight: '8px' }}>•</span>
               {step}

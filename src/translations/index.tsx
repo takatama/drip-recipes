@@ -17,11 +17,6 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     pause: "Pause",
     reset: "Reset",
     preparation: "Preparation:",
-    preparationSteps: [
-      "Prepare room temperature water",
-      "Warm up and rinse dripper",
-      "Keep the switch closed (Up)"
-    ],
     flavorPour1: (amount: number) => `(Close / Up) Pour up to ${amount}g`,
     flavorPour2: (amount: number) => `(Open / Down) Pour up to ${amount}g`,
     strengthPour1: (amount: number) => `Pour up to ${amount}g then cool to 70℃`,
@@ -42,7 +37,7 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     harioSwitchLink: "https://amzn.to/40TjUkH",
     amazonAssociate: "As an Amazon Associate, Drip Recipes earns from qualifying purchases.",
     keepScreenOn: "Screen will stay on while playing",
-    recipeTitle: "☕About this recipe",
+    aboutThisRecipe: "☕About this recipe",
   },
   ja: {
     title: "新しいハイブリッドメソッド",
@@ -60,11 +55,6 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     pause: "一時停止",
     reset: "リセット",
     preparation: "準備:",
-    preparationSteps: [
-      "常温の水を準備",
-      "ドリッパーをお湯ですすぐ",
-      "スイッチを閉める (Close / Up)"
-    ],
     flavorPour1: (amount: number) => `(Close / Up) ${amount}g まで注湯`,
     flavorPour2: (amount: number) => `(Open / Down) ${amount}g まで注湯`,
     strengthPour1: (amount: number) => `${amount}g まで注湯後、70℃まで下げる`,
@@ -85,6 +75,6 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     harioSwitchLink: "https://amzn.to/3QjLse1",
     amazonAssociate: "Amazonのアソシエイトとして、Drip Recipesは適格販売により収入を得ています。",
     keepScreenOn: "再生中は画面をつけたままにします",
-    recipeTitle: "☕このレシピについて",
+    aboutThisRecipe: "☕このレシピについて",
   }
 };

@@ -22,7 +22,7 @@ const RecipeDescription: React.FC<Props> = ({ recipe, language, t }) => {
       }}
     >
       <AccordionSummary expandIcon={<ExpandMore />}>
-        <Typography variant='body2'>{t.recipeTitle}</Typography>
+        <Typography variant='body2'>{t.aboutThisRecipe}</Typography>
       </AccordionSummary>
       <AccordionSummary>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

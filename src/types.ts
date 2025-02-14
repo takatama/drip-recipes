@@ -26,9 +26,8 @@ export interface StaticTranslations {
   harioSwitchLink: string;
   amazonAssociate: string;
   preparation: string;
-  preparationSteps: string[];
   keepScreenOn: string;
-  recipeTitle: string;
+  aboutThisRecipe: string;
 }
 
 export interface DynamicTranslations {
@@ -78,6 +77,7 @@ export interface CoffeeRecipe {
   youTubeEmbedUrl: string;
   params: CoffeeParam[];
   waterRatio: number;
+  preparationSteps: { en: string[]; ja: string[] };
   steps: CoffeeStep[];
 }
 

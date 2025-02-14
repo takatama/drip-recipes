@@ -18,6 +18,18 @@ export const newHybridMethodDSL: CoffeeRecipe = {
     { key: "flavor", type: "enum", input: true, options: ["sweet", "neutral", "sour"], default: "neutral" }
   ],
   waterRatio: 15,
+  preparationSteps: {
+    en: [
+      "Prepare room temperature water",
+      "Warm up and rinse dripper",
+      "Keep the switch closed (Up)"
+    ],
+    ja: [
+      "常温の水を準備",
+      "ドリッパーをお湯ですすぐ",
+      "スイッチを閉める (Close / Up)"
+    ]
+  },
   steps: [
     {
       time: 0,
