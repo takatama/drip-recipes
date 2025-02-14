@@ -82,7 +82,6 @@ const Timeline: React.FC<TimelineProps> = ({
         setVoice={setVoice}
       />
       <Steps
-        t={t}
         steps={steps}
         setSteps={setSteps}
         currentTime={currentTime}

@@ -14,7 +14,7 @@ export function generateNewHybridSteps(recipe: CoffeeRecipe, beansAmount: number
       timeSec: currentTime,
       pourWaterMl: increment,
       cumulativeWaterMl: cumulative,
-      descriptionKey: step.key,
+      action: step.action,
       status: 'upcoming'
     });
   }

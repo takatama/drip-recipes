@@ -1,9 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
-import { Step, TranslationType, DynamicTranslations, NotificationMode } from '../types';
+import { Step, NotificationMode } from '../types';
 
 interface StepsProps {
-  t: TranslationType;
   steps: Step[];
   currentTime: number;
   darkMode: boolean;
@@ -25,7 +24,7 @@ const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 3;
 
-const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode, notificationMode, language, voice, onTimerComplete }) => {
+const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, darkMode, notificationMode, language, voice, onTimerComplete }) => {
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef(new Audio());
   const finishAudio = useRef(new Audio());
@@ -201,7 +200,7 @@ const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode
                   }[step.status]
                 }}
               >
-                {(t[step.descriptionKey as keyof DynamicTranslations])(Math.round(step.cumulativeWaterMl))}
+                {step.action[language](Math.round(step.cumulativeWaterMl))}
               </Typography>
             </Box>
           );

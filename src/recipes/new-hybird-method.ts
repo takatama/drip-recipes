@@ -34,32 +34,50 @@ export const newHybridMethodDSL: CoffeeRecipe = {
     {
       time: 0,
       waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.42 : (flavor === 'sour' ? 0.58 : 0.5)),
-      key: "flavorPour1"
+      action: {
+        en: (amount?: number) => `(Close / Up) Pour up to ${amount}g`,
+        ja: (amount?: number) => `(Close / Up) ${amount}g まで注湯`,
+      },
     },
     {
       time: 40,
       waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.58 : (flavor === 'sour' ? 0.42 : 0.5)),
-      key: "flavorPour2"
+      action: {
+        en: (amount?: number) => `(Open / Down) Pour up to ${amount}g`,
+        ja: (amount?: number) => `(Open / Down) ${amount}g まで注湯`,
+      },
     },
     {
       time: 90,
       waterFormula: (beansAmount, waterRatio) => beansAmount * waterRatio * 0.6 / 2,
-      key: "strengthPour1"
+      action: {
+        en: (amount?: number) => `Pour up to ${amount}g then cool to 70℃`,
+        ja: (amount?: number) => `${amount}g まで注湯後、70℃まで下げる`,
+      },
     },
     {
       time: 130,
       waterFormula: (beansAmount, waterRatio) => beansAmount * waterRatio * 0.6 / 2,
-      key: "strengthPour2"
+      action: {
+        en: (amount?: number) => `(Close / Up) Pour up to ${amount}g`,
+        ja: (amount?: number) => `(Close / Up) ${amount}g まで注湯`,
+      },
     },
     {
       time: 165,
       waterFormula: (_beansAmount, _waterRatio) => 0,
-      key: "open"
+      action: {
+        en: () => "(Open / Down) Wait until the water drains",
+        ja: () => "(Open / Down) お湯が落ち切るまで待つ",
+      },
     },
     {
       time: 210,
       waterFormula: (_beansAmount, _waterRatio) => 0,
-      key: "finish"
-    }
+      action: {
+        en: () => "Finish",
+        ja: () => "完成",
+      },
+    },
   ]
 };
