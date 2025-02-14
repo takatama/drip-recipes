@@ -21,8 +21,6 @@ export interface StaticTranslations {
   mediumRoast: string;
   darkRoast: string;
   waterTemp: string;
-  footerMethodBy: string;
-  footerMethodVideo: string;
   footerCreatedBy: string;
   usesHarioSwitch: (link: JSX.Element) => JSX.Element;
   harioSwitchLink: string;
