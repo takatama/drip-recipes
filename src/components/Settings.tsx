@@ -88,7 +88,7 @@ const Settings: React.FC<SettingsProps> = ({
         </TableRow>
         <TableRow>
           <TableCell align="right">
-            {t.waterVolume}:
+            {t.waterAmount}:
           </TableCell>
           <TableCell align="left">
             {beansAmount * 15}ml
@@ -96,7 +96,7 @@ const Settings: React.FC<SettingsProps> = ({
         </TableRow>
         <TableRow>
           <TableCell align="right">
-            {t.taste}:
+            {t.flavor}:
           </TableCell>
           <TableCell align="left">
             <ToggleButtonGroup

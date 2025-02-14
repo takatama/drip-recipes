@@ -4,8 +4,8 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
   en: {
     title: "New Hybrid Method",
     beansAmount: "Beans",
-    waterVolume: "Water",
-    taste: "Taste",
+    waterAmount: "Water",
+    flavor: "Flavor",
     strength: "Strength",
     sweet: "Sweet",
     middle: "Middle",
@@ -49,8 +49,8 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
   ja: {
     title: "新しいハイブリッドメソッド",
     beansAmount: "豆の量",
-    waterVolume: "湯量",
-    taste: "味",
+    waterAmount: "湯量",
+    flavor: "味わい",
     strength: "濃さ",
     sweet: "甘味",
     middle: "バランス",

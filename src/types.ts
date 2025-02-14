@@ -1,8 +1,8 @@
 export interface StaticTranslations {
   title: string;
   beansAmount: string;
-  waterVolume: string;
-  taste: string;
+  waterAmount: string;
+  flavor: string;
   strength: string;
   sweet: string;
   middle: string;
@@ -48,11 +48,44 @@ export type TranslationType = StaticTranslations & DynamicTranslations;
 export type StepStatus = 'completed' | 'current' | 'upcoming' | 'next';
 
 export interface Step {
-  time: number;
-  pourAmount: number;
-  cumulative: number;
+  timeSec: number;
+  pourWaterMl: number;
+  cumulativeWaterMl: number;
   descriptionKey: keyof DynamicTranslations;
   status: StepStatus;
 }
 
 export type NotificationMode = 'none' | 'vibrate' | 'sound';
+
+interface CoffeeParameter {
+  key: string;
+  unit?: string;
+  type: string;
+  input: boolean;
+  default?: any;
+  formula?: (beansAmount: number, waterRatio: number) => number;
+  options?: string[];
+}
+
+interface CoffeeStep {
+  time: number;
+  waterFormula: (beansAmount: number, waterRatio: number, flavor?: string) => number;
+  key: string;
+}
+
+export interface CoffeeRecipe {
+  id: string;
+  name: { en:string; ja:string };
+  description: { en:string; ja:string };
+  params: CoffeeParameter[];
+  waterRatio: number;
+  steps: CoffeeStep[];
+}
+
+export interface OutputStep {
+  timeSec: number;
+  pourWaterMl: number;
+  cumulativeWaterMl: number;
+  descriptionKey: string;
+  status: StepStatus;
+}

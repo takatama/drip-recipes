@@ -88,21 +88,21 @@ const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode
     if (steps.length === 0) return;
 
     const lastStep = steps[steps.length - 1];
-    if (currentTimeValue >= lastStep.time) {
+    if (currentTimeValue >= lastStep.timeSec) {
       onTimerComplete();
     }
 
     setSteps(prevSteps => prevSteps.map((step, index) => {
-      if (currentTimeValue >= step.time && (index === prevSteps.length - 1 || currentTimeValue < prevSteps[index + 1].time)) {
+      if (currentTimeValue >= step.timeSec && (index === prevSteps.length - 1 || currentTimeValue < prevSteps[index + 1].timeSec)) {
         return { ...step, status: 'current' };
       }
-      if (currentTimeValue >= step.time) {
+      if (currentTimeValue >= step.timeSec) {
         if (step.status === 'current') {
           vibrate();
         }
         return { ...step, status: 'completed' };
       }
-      if (currentTimeValue >= step.time - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.time) {
+      if (currentTimeValue >= step.timeSec - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.timeSec) {
         const isFinish = index === prevSteps.length - 1;
         playAudio(isFinish);
         return { ...step, status: 'next' };
@@ -148,7 +148,7 @@ const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode
         {/* Render each step using absolute positioning */}
         {steps.map((step, index) => {
           // Calculate top position (with 0:00 fixed at 5px, others with +5px offset)
-          const topPos = getStepPosition(step.time);
+          const topPos = getStepPosition(step.timeSec);
           return (
             <Box
               key={index}
@@ -186,7 +186,7 @@ const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode
                   }[step.status]
                 }}
               >
-                {formatTime(step.time)}
+                {formatTime(step.timeSec)}
               </Typography>
               <Typography
                 variant="body2"
@@ -201,7 +201,7 @@ const Steps: React.FC<StepsProps> = ({ t, steps, setSteps, currentTime, darkMode
                   }[step.status]
                 }}
               >
-                {(t[step.descriptionKey as keyof DynamicTranslations])(Math.round(step.cumulative))}
+                {(t[step.descriptionKey as keyof DynamicTranslations])(Math.round(step.cumulativeWaterMl))}
               </Typography>
             </Box>
           );
