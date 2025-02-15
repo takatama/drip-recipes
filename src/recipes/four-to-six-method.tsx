@@ -1,6 +1,6 @@
 import { CoffeeRecipe, Step } from "../types";
 
-export const fourToSixMethodDSL: CoffeeRecipe = {
+export const fourToSixMethod: CoffeeRecipe = {
   id: "four-to-six-method",
   name: {
     en: "4:6 Method",

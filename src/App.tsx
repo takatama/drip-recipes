@@ -16,8 +16,8 @@ import {
   useParams
 } from 'react-router-dom';
 import RecipeDescription from './components/RecipeDescription';
-import { newHybridMethodDSL } from './recipes/new-hybird-method';
-import { fourToSixMethodDSL } from './recipes/four-to-six-method';
+import { newHybridMethod } from './recipes/new-hybird-method';
+import { fourToSixMethod } from './recipes/four-to-six-method';
 import DynamicSettings from './components/DynamicSettings';
 import { Step } from './types';
 
@@ -52,7 +52,7 @@ function AppWrapper() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/:lang/recipes/new-hybrid-method" element={<App />} />
+        <Route path="/:lang/recipes/:recipeId" element={<App />} />
         <Route path="*" element={<Navigate to={`/${lang}/recipes/new-hybrid-method`} replace />} />
       </Routes>
     </BrowserRouter>
@@ -66,13 +66,15 @@ function App() {
   const [language, setLanguage] = useState<"en" | "ja">("en");
   const t = translations[language]; // shorthand for current translations
   const navigate = useNavigate();
-  const { lang } = useParams();
+  const { lang, recipeId } = useParams();
   const [beansAmount, setBeansAmount] = useState(20);
   const [flavor, setFlavor] = useState('neutral');
   const [steps, setSteps] = useState<Step[]>([]);
   const [roastLevel, setRoastLevel] = useState('mediumRoast');
   const [strength, setStrength] = useState('medium');
-  const recipe = fourToSixMethodDSL;
+  const recipe = recipeId === 'four-to-six-method'
+    ? fourToSixMethod
+    : newHybridMethod;
 
   useEffect(() => {
     if (lang && (lang === 'en' || lang === 'ja')) {
@@ -84,7 +86,7 @@ function App() {
   const handleLanguageChange = (_e: React.MouseEvent<HTMLElement>, newLang: "en" | "ja") => {
     if (newLang) {
       setLanguage(newLang);
-      navigate(`/${newLang}/recipes/new-hybrid-method`);
+      navigate(`/${newLang}/recipes/${recipeId}`);
     }
   };
 

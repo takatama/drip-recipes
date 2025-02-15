@@ -1,7 +1,7 @@
 import { CoffeeRecipe } from "../types";
 import { Step } from "../types";
 
-export const newHybridMethodDSL: CoffeeRecipe = {
+export const newHybridMethod: CoffeeRecipe = {
   id: "new-hybrid-method",
   name: {
     en: "New Hybrid Method",
