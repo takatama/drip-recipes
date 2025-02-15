@@ -1,10 +1,9 @@
-// TimerPanel.tsx
 import React, { useState } from 'react';
 import Controls from './Controls';
 import Steps from './Steps';
 import { useTimer } from '../hooks/useTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
-import { Step, NotificationMode, TranslationType } from '../types';
+import { Step, TranslationType } from '../types';
 import { Snackbar } from '@mui/material';
 
 interface TimelineProps {
@@ -17,17 +16,11 @@ interface TimelineProps {
 
 const Timeline: React.FC<TimelineProps> = ({
   t,
-  darkMode,
-  language,
   steps,
   setSteps,
 }) => {
   const { currentTime, isRunning, start, pause, reset } = useTimer();
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
-
-  const [notificationMode, setNotificationMode] = useState<NotificationMode>('none');
-  const [voice, setVoice] = useState<'male' | 'female'>('female');
-
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleSnackbarClose = () => {
@@ -65,19 +58,11 @@ const Timeline: React.FC<TimelineProps> = ({
         onPlay={handlePlay}
         onPause={handlePause}
         onReset={handleReset}
-        notificationMode={notificationMode}
-        setNotificationMode={setNotificationMode}
-        voice={voice}
-        setVoice={setVoice}
       />
       <Steps
         steps={steps}
         setSteps={setSteps}
         currentTime={currentTime}
-        darkMode={darkMode}
-        notificationMode={notificationMode}
-        language={language}
-        voice={voice}
         onTimerComplete={handleTimerComplete}
       />
       <Snackbar

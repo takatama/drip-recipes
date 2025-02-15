@@ -1,5 +1,3 @@
-import { Theme } from "@mui/material";
-
 export interface TranslationType {
   beansAmount: string;
   waterAmount: string;
@@ -27,6 +25,10 @@ export interface TranslationType {
   preparation: string;
   keepScreenOn: string;
   aboutThisRecipe: string;
+  settings: string;
+  notification: string;
+  voice: string;
+  backToRecipe: string;
 }
 
 export type NotificationMode = 'none' | 'vibrate' | 'sound';
@@ -53,7 +55,7 @@ export interface CoffeeRecipe {
   name: { en:string; ja:string };
   description: { en:string; ja:string };
   youTubeEmbedUrl: string;
-  equipments: { en: (theme: Theme) => JSX.Element; ja: (theme: Theme) => JSX.Element; };
+  equipments: { en: JSX.Element; ja: JSX.Element; };
   params: CoffeeParam[];
   waterRatio: number;
   preparationSteps?: { en: string[]; ja: string[] };
@@ -70,3 +72,7 @@ export interface Step {
   action: { en: (amount?: number) => string; ja: (amount?: number) => string; };
   status: StepStatus;
 }
+
+export type LanguageType = 'en' | 'ja';
+
+export type VoiceType = 'male' | 'female';

@@ -12,18 +12,18 @@ export const fourToSixMethod: CoffeeRecipe = {
   },
   youTubeEmbedUrl: "https://www.youtube.com/embed/lJNPp-onikk",
   equipments: {
-    en: (theme) => (<>
+    en: <>
     Use a <a href="https://amzn.to/4aXhmH3" target="_blank" rel="noopener noreferrer"
-        style={{ color: theme.palette.primary.main }}
+        style={{ color: 'text.primary' }}
       >
         Hario V60
-      </a> dripper for this method.</>),
-    ja: (theme) => (<>
+      </a> dripper for this method.</>,
+    ja: <>
     ドリッパーは <a href="https://amzn.to/3X1jxUi" target="_blank" rel="noopener noreferrer"
-        style={{ color: theme.palette.primary.main }}
+        style={{ color: 'text.primary' }}
       >
         Hario V60
-      </a> を使います。</>),
+      </a> を使います。</>,
   },
   params: [
     { key: "roastLevel", type: "enum", input: true, options: ["lightRoast", "mediumRoast", "darkRoast"], default: "mediumRoast" },

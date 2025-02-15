@@ -28,6 +28,10 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     amazonAssociate: "As an Amazon Associate, Drip Recipes earns from qualifying purchases.",
     keepScreenOn: "Screen will stay on while playing",
     aboutThisRecipe: "☕About this recipe",
+    settings: "Settings",
+    notification: "Notification",
+    voice: "Voice",
+    backToRecipe: "Back to recipe",
   },
   ja: {
     beansAmount: "豆の量",
@@ -56,5 +60,9 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     amazonAssociate: "Amazonのアソシエイトとして、Drip Recipesは適格販売により収入を得ています。",
     keepScreenOn: "再生中は画面をつけたままにします",
     aboutThisRecipe: "☕このレシピについて",
+    settings: "設定",
+    notification: "通知",
+    voice: "音声",
+    backToRecipe: "レシピに戻る",
   }
 };

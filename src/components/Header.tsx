@@ -1,35 +1,31 @@
 import React from 'react';
-import { Box, IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { Box, IconButton } from '@mui/material';
+import { useNavigate, useLocation } from 'react-router-dom';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { LanguageType, TranslationType } from '../types';
 
 interface HeaderProps {
-  darkMode: boolean;
-  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
-  language: 'en' | 'ja';
-  handleLanguageChange: (_e: React.MouseEvent<HTMLElement>, newLang: 'en' | 'ja') => void;
-  t: any;
+  language: LanguageType;
+  t: TranslationType;
 }
 
-export default function Header({ darkMode, setDarkMode, language, handleLanguageChange, t }: HeaderProps) {
+const Header: React.FC<HeaderProps> = ({ language, t }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 2 }}>
       <IconButton
-        onClick={() => setDarkMode(!darkMode)}
+        onClick={() => navigate(`/${language}/settings`, { 
+          state: { from: location.pathname } 
+        })}
         color="inherit"
-        title={darkMode ? t.lightMode : t.darkMode}
+        title={t.settings}
       >
-        {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+        <SettingsIcon />
       </IconButton>
-      <ToggleButtonGroup
-        value={language}
-        exclusive
-        onChange={handleLanguageChange}
-        size="small"
-      >
-        <ToggleButton value="en">EN</ToggleButton>
-        <ToggleButton value="ja">JA</ToggleButton>
-      </ToggleButtonGroup>
     </Box>
   );
 }
+
+export default Header;
