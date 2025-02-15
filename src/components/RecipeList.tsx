@@ -18,11 +18,6 @@ const RecipeList: React.FC<RecipeListProps> = ({ recipes }) => {
   const t = translations[language];
   const navigate = useNavigate();
 
-  const getYouTubeThumbnail = (url: string) => {
-    const videoId = url.split('/').pop();
-    return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-  };
-
   return (
     <Container maxWidth="sm" sx={{
       bgcolor: 'background.default',
@@ -52,7 +47,7 @@ const RecipeList: React.FC<RecipeListProps> = ({ recipes }) => {
               <CardMedia
                 component="img"
                 height="180"
-                image={getYouTubeThumbnail(recipe.youTubeEmbedUrl)}
+                image={`https://img.youtube.com/vi/${recipe.youTubeVideoId}/maxresdefault.jpg`}
                 alt={recipe.name[language]}
               />
               <CardContent>
