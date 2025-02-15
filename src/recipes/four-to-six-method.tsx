@@ -7,22 +7,22 @@ export const fourToSixMethod: CoffeeRecipe = {
     ja: "4:6 メソッド",
   },
   description: {
-    en: "Tetsu Kasaya’s evolved hybrid recipe for the Hario Switch brilliantly combines the best of both worlds. Unlike standard methods that stick solely to either immersion or pour-over, this approach begins with a full-immersion bloom to draw out deep, natural sweetness, then shifts to a pour-over to highlight vibrant, aromatic notes, and finishes with a cool immersion that smooths the cup. The result is a coffee with a robust body, exquisite sweetness, and crystal-clear flavor that makes you want to try it right away.",
-    ja: "粕谷哲氏の新しいハイブリッドメソッドは、Hario Switchで抽出方法の良いとこ取りを実現。他の抽出法と異なり、最初に粉全体をしっかり浸すことで自然な甘みを引き出し、その後ドリップで華やかな風味を、最後に低温浸漬でまろやかさをプラス。結果、濃厚なボディと抜群の甘み、クリアな味わいが楽しめる一杯に。ぜひこのレシピを試してみてください。",
+    en: "Experience the precision of the 4:6 method, where the total water is meticulously divided into a 40% flavor extraction and a 60% strength extraction. The first pour gently blooms the coffee to release its natural sweetness, while the second pour extracts a robust body and balanced aroma. This method yields a cup with vibrant clarity, harmonious flavor, and a smooth finish that showcases every nuance of the beans.",
+    ja: "4:6メソッドは、全体の水量を40％の風味抽出と60％の濃度抽出に緻密に分割することで、その真価を発揮します。最初の注ぎでコーヒーをやさしく蒸らして自然な甘みを引き出し、次の注ぎでしっかりとしたボディとバランスの取れた香りを抽出します。この方法により、鮮やかな透明感と調和の取れた風味、そしてまろやかな飲みごこちを持つ一杯を実現し、豆の魅力を余すところなく引き出します。"
   },
-  youTubeEmbedUrl: "https://www.youtube.com/embed/4FeUp_zNiiY",
+  youTubeEmbedUrl: "https://www.youtube.com/embed/lJNPp-onikk",
   equipments: {
     en: (theme) => (<>
-    This recipe uses <a href="https://amzn.to/40TjUkH" target="_blank" rel="noopener noreferrer"
+    Use a <a href="https://amzn.to/4aXhmH3" target="_blank" rel="noopener noreferrer"
         style={{ color: theme.palette.primary.main }}
       >
-        Hario Switch
-      </a> .</>),
+        Hario V60
+      </a> dripper for this method.</>),
     ja: (theme) => (<>
-    このレシピは <a href="https://amzn.to/3QjLse1" target="_blank" rel="noopener noreferrer"
+    ドリッパーは <a href="https://amzn.to/3X1jxUi" target="_blank" rel="noopener noreferrer"
         style={{ color: theme.palette.primary.main }}
       >
-        Hario Switch
+        Hario V60
       </a> を使います。</>),
   },
   params: [

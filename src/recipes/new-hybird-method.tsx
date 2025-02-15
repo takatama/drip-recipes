@@ -14,13 +14,13 @@ export const newHybridMethod: CoffeeRecipe = {
   youTubeEmbedUrl: "https://www.youtube.com/embed/4FeUp_zNiiY",
   equipments: {
     en: (theme) => (<>
-    This recipe uses <a href="https://amzn.to/40TjUkH" target="_blank" rel="noopener noreferrer"
+    Use a <a href="https://amzn.to/40TjUkH" target="_blank" rel="noopener noreferrer"
         style={{ color: theme.palette.primary.main }}
       >
         Hario Switch
-      </a> .</>),
+      </a> dripper for this method.</>),
     ja: (theme) => (<>
-    このレシピは <a href="https://amzn.to/3QjLse1" target="_blank" rel="noopener noreferrer"
+    ドリッパーは <a href="https://amzn.to/3QjLse1" target="_blank" rel="noopener noreferrer"
         style={{ color: theme.palette.primary.main }}
       >
         Hario Switch
