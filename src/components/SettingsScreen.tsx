@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Brightness4, Brightness7, VolumeOff, Vibration, VolumeUp, Man, Woman } from '@mui/icons-material';
 import { useSettings } from '../context/SettingsContext';
 import { translations } from '../translations/index';
@@ -10,10 +10,24 @@ const SettingsScreen : React.FC = () => {
   const { language, setLanguage, darkMode, setDarkMode, notificationMode, setNotificationMode, voice, setVoice } = useSettings();
   const t = translations[language];
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromPath = location.state?.from || `/${language}/recipes/featured/new-hybrid-method`;
+
+  const handleBack = () => {
+    // Update language in previous path
+    const pathParts = fromPath.split('/');
+    pathParts[1] = language;
+    navigate(pathParts.join('/'));
+  };
 
   const handleLanguageChange = (_e: React.MouseEvent<HTMLElement>, newLang: LangageType) => {
-    if (newLang) setLanguage(newLang);
-    navigate(`/${newLang}/settings`);
+    if (newLang) {
+      setLanguage(newLang);
+      // Keep previous path if language is changed
+      navigate(`/${newLang}/settings`, { 
+        state: { from: fromPath } 
+      });
+    }
   };
 
   return (
@@ -101,7 +115,7 @@ const SettingsScreen : React.FC = () => {
       {/* Back button */}
       <Box sx={{ mt: 3 }}>
         <Typography
-          onClick={() => navigate(`/${language}/recipes/featured/new-hybrid-method`)}
+          onClick={handleBack}
           sx={{ cursor: 'pointer', color: 'primary.main', textDecoration: 'underline' }}
         >
           {t.backToRecipe}
