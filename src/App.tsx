@@ -11,14 +11,15 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  useSearchParams,
   useNavigate,
   Navigate,
   useParams
 } from 'react-router-dom';
 import RecipeDescription from './components/RecipeDescription';
-import { newHybridMethodDSL } from './recipes/new-hybird-method';
+import { newHybridMethod } from './recipes/new-hybird-method';
+import { fourToSixMethod } from './recipes/four-to-six-method';
 import DynamicSettings from './components/DynamicSettings';
+import { Step } from './types';
 
 // Create theme with both light and dark modes
 const getTheme = (mode: 'light' | 'dark') => createTheme({
@@ -51,8 +52,8 @@ function AppWrapper() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/:lang/recipes/new-hybrid-method" element={<App />} />
-        <Route path="*" element={<Navigate to={`/${lang}/recipes/new-hybrid-method`} replace />} />
+        <Route path="/:lang/recipes/featured/:recipeId" element={<App />} />
+        <Route path="*" element={<Navigate to={`/${lang}/recipes/featured/new-hybrid-method`} replace />} />
       </Routes>
     </BrowserRouter>
   );
@@ -64,11 +65,16 @@ function App() {
   const theme = getTheme(darkMode ? 'dark' : 'light');
   const [language, setLanguage] = useState<"en" | "ja">("en");
   const t = translations[language]; // shorthand for current translations
-  const [beansAmount, setBeansAmount] = useState(20);
-  const [flavor, setFlavor] = useState("neutral");
-  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { lang } = useParams();
+  const { lang, recipeId } = useParams();
+  const [beansAmount, setBeansAmount] = useState(20);
+  const [flavor, setFlavor] = useState('neutral');
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [roastLevel, setRoastLevel] = useState('mediumRoast');
+  const [strength, setStrength] = useState('medium');
+  const recipe = recipeId === 'four-to-six-method'
+    ? fourToSixMethod
+    : newHybridMethod;
 
   useEffect(() => {
     if (lang && (lang === 'en' || lang === 'ja')) {
@@ -80,38 +86,14 @@ function App() {
   const handleLanguageChange = (_e: React.MouseEvent<HTMLElement>, newLang: "en" | "ja") => {
     if (newLang) {
       setLanguage(newLang);
-      navigate(`/${newLang}/recipes/new-hybrid-method`);
+      navigate(`/${newLang}/recipes/featured/${recipeId}`);
     }
   };
 
   useEffect(() => {
-    const paramBeans = searchParams.get('beans');
-    const paramFlavor = searchParams.get('flavor');
-
-    if (paramBeans) {
-      const beans = parseInt(paramBeans, 10);
-      if (!isNaN(beans) && beans !== beansAmount) {
-        setBeansAmount(beans);
-      }
-    }
-
-    if (paramFlavor && paramFlavor !== flavor) {
-      setFlavor(paramFlavor);
-    }
-  }, [searchParams]);
-
-  // Recalculate steps whenever coffee parameters change
-  useEffect(() => {
-    // Update URL query parameters when state changes
-    const currentBeans = searchParams.get('beans');
-    const currentFlavor = searchParams.get('flavor');
-    if (currentBeans !== beansAmount.toString() || currentFlavor !== flavor) {
-      const params = new URLSearchParams();
-      params.set('beans', beansAmount.toString());
-      params.set('flavor', flavor);
-      setSearchParams(params, { replace: true });
-    }
-  }, [beansAmount, flavor]);
+    const steps = recipe.generateSteps(recipe, beansAmount, flavor, strength);
+    setSteps(steps);
+  }, [beansAmount, flavor, strength]);
 
   // Update dark mode when system preference changes
   useEffect(() => {
@@ -136,22 +118,24 @@ function App() {
         />
 
         <Typography variant="h5" align="center" gutterBottom>
-          {newHybridMethodDSL.name[language]}
+          {recipe.name[language]}
         </Typography>
 
-        <RecipeDescription recipe={newHybridMethodDSL} language={language} t={t} />
+        <RecipeDescription recipe={recipe} language={language} t={t} />
 
         <Typography variant="body1" align="center" gutterBottom>
-          {newHybridMethodDSL.equipments[language](theme)}
+          {recipe.equipments[language](theme)}
         </Typography>
 
         <DynamicSettings
           t={t}
-          params={newHybridMethodDSL.params}
+          params={recipe.params}
           values={{
             beansAmount,
-            waterRatio: newHybridMethodDSL.waterRatio,
+            waterRatio: recipe.waterRatio,
             flavor,
+            roastLevel,
+            strength,
           }}
           onChange={(key, value) => {
             if (key === 'beansAmount') {
@@ -159,6 +143,12 @@ function App() {
             }
             if (key === 'flavor') {
               setFlavor(value);
+            }
+            if (key === 'roastLevel') {
+              setRoastLevel(value);
+            }
+            if (key === 'strength') {
+              setStrength(value);
             }
           }}
         />
@@ -173,7 +163,7 @@ function App() {
           }}
         >
           <div style={{ marginBottom: '8px' }}>{t.preparation}</div>
-          {newHybridMethodDSL.preparationSteps[language].map((step, index) => (
+          {recipe.preparationSteps && recipe.preparationSteps[language].map((step, index) => (
             <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
               <span style={{ marginRight: '8px' }}>•</span>
               {step}
@@ -182,12 +172,11 @@ function App() {
         </Typography>
 
         <Timeline
-          recipe={newHybridMethodDSL}
           t={t}
           darkMode={darkMode}
           language={language}
-          beansAmount={beansAmount}
-          flavor={flavor}
+          steps={steps}
+          setSteps={setSteps}
         />
 
         <Footer t={t} />
