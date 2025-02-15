@@ -52,8 +52,8 @@ function AppWrapper() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/:lang/recipes/:recipeId" element={<App />} />
-        <Route path="*" element={<Navigate to={`/${lang}/recipes/new-hybrid-method`} replace />} />
+        <Route path="/:lang/recipes/featured/:recipeId" element={<App />} />
+        <Route path="*" element={<Navigate to={`/${lang}/recipes/featured/new-hybrid-method`} replace />} />
       </Routes>
     </BrowserRouter>
   );
@@ -86,7 +86,7 @@ function App() {
   const handleLanguageChange = (_e: React.MouseEvent<HTMLElement>, newLang: "en" | "ja") => {
     if (newLang) {
       setLanguage(newLang);
-      navigate(`/${newLang}/recipes/${recipeId}`);
+      navigate(`/${newLang}/recipes/featured/${recipeId}`);
     }
   };
 
