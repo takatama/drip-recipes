@@ -27,7 +27,7 @@ export const fourToSixMethod: CoffeeRecipe = {
   },
   params: [
     { key: "roastLevel", type: "enum", input: true, options: ["lightRoast", "mediumRoast", "darkRoast"], default: "mediumRoast" },
-    { key: "waterTemp", unit: "℃", type: "number", input: false, formula: (roastLevel: string) => roastLevel === "light" ? 93 : (roastLevel === "medium" ? 88 : 83) },
+    { key: "waterTemp", unit: "℃", type: "number", input: false, formula: (_beansAmount, _waterRatio, roastLevel: string) => roastLevel === "lightRoast" ? 93 : (roastLevel === "mediumRoast" ? 88 : 83) },
     { key: "beansAmount", unit: "g", type: "number", input: true, default: 20 },
     { key: "waterAmount", unit: "ml", type: "number", input: false, formula: (beansAmount, waterRatio) => beansAmount * waterRatio },
     { key: "flavor", type: "enum", input: true, options: ["sweet", "neutral", "sour"], default: "neutral" },
@@ -93,12 +93,10 @@ export const fourToSixMethod: CoffeeRecipe = {
   generateSteps: (recipe: CoffeeRecipe, beansAmount: number, flavor: string, strength: string): Step[] => {
     const outputSteps: Step[] = [];
     let cumulative = 0;
-    console.log(beansAmount, flavor, strength);
     const strengthSteps = strength === 'light' ? 1 : (strength === 'strong' ? 3 : 2);
 
     for (const step of recipe.steps) {
       const rawTime = step.timeFomula?.(strengthSteps);
-      console.log(strengthSteps, rawTime);
       if (rawTime === null) {
         continue;
       }
