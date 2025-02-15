@@ -1,15 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import { Box, Typography, useMediaQuery } from '@mui/material';
-import { Step, NotificationMode } from '../types';
+import { Step } from '../types';
+import { useSettings } from '../context/SettingsContext';
+import { useNotification } from '../hooks/useNotification';
 
 interface StepsProps {
   steps: Step[];
   currentTime: number;
-  darkMode: boolean;
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
-  notificationMode: NotificationMode;
-  language: 'en' | 'ja';
-  voice: 'male' | 'female';
   onTimerComplete: () => void;
 }
 
@@ -25,11 +23,13 @@ const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 3;
 
-const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, darkMode, notificationMode, language, voice, onTimerComplete }) => {
+const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComplete }) => {
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef(new Audio());
   const finishAudio = useRef(new Audio());
   const isSmallScreen = useMediaQuery('(max-width:465px)');
+  const { darkMode, notificationMode, language, voice } = useSettings();
+  const { playAudio, vibrate } = useNotification({ language, voice, notificationMode });
 
   // Reset isPlaying when audio ends
   useEffect(() => {
@@ -59,29 +59,6 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, darkMode, n
   const getStepPosition = (time: number) => {
     const topPos = (time / TOTAL_TIME) * CONTAINER_HEIGHT;
     return time === 0 ? FIRST_STEP_OFFSET : topPos + FIRST_STEP_OFFSET;
-  };
-
-  const playAudio = (isFinish: boolean) => {
-    if (notificationMode === 'none' || isPlayingRef.current) return;
-    if (notificationMode === 'sound') {
-      if (isFinish) {
-        finishAudio.current.pause();
-        finishAudio.current.currentTime = 0;
-        finishAudio.current.play();
-      } else {
-        nextStepAudio.current.pause();
-        nextStepAudio.current.currentTime = 0;
-        nextStepAudio.current.play();
-      }
-      isPlayingRef.current = true;
-    }
-  };
-
-  const vibrate = () => {
-    if (notificationMode === 'vibrate') {
-      console.log('Vibrating...');
-      navigator.vibrate([200, 100, 200]);
-    }
   };
 
   // Add function to update step statuses
