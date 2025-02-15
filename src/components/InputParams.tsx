@@ -12,7 +12,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { CoffeeParam, TranslationType } from '../types';
 
-interface DynamicSettingsValues {
+interface InputParamsValues {
   beansAmount: number;
   waterRatio: number;
   roastLevel: string;
@@ -20,9 +20,9 @@ interface DynamicSettingsValues {
   strength: string;
 }
 
-interface DynamicSettingsProps {
+interface InputParamsProps {
   params: CoffeeParam[];
-  values: DynamicSettingsValues;
+  values: InputParamsValues;
   onChange: (key: string, value: any) => void;
   t: TranslationType;
 }
@@ -82,7 +82,7 @@ const EnumInput: React.FC<{
   );
 };
 
-const DynamicSettings: React.FC<DynamicSettingsProps> = ({
+const DynamicSettings: React.FC<InputParamsProps> = ({
   params,
   values,
   onChange,
@@ -120,7 +120,7 @@ const DynamicSettings: React.FC<DynamicSettingsProps> = ({
                 </TableCell>
                 <TableCell align="left">
                   <NumberInput
-                    value={Number(values[param.key as keyof DynamicSettingsValues])}
+                    value={Number(values[param.key as keyof InputParamsValues])}
                     onChange={(value) => onChange(param.key, value)}
                     unit={param.unit}
                   />
@@ -136,7 +136,7 @@ const DynamicSettings: React.FC<DynamicSettingsProps> = ({
                 </TableCell>
                 <TableCell align="left">
                   <EnumInput
-                    value={String(values[param.key as keyof DynamicSettingsValues])}
+                    value={String(values[param.key as keyof InputParamsValues])}
                     options={param.options}
                     onChange={(value) => onChange(param.key, value)}
                     t={t}
