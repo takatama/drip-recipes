@@ -1,8 +1,8 @@
 import { useRef, useEffect } from 'react';
-import { LangageType, NotificationMode, VoiceType } from '../types';
+import { LanguageType, NotificationMode, VoiceType } from '../types';
 
 interface UseNotificationProps {
-  language: LangageType;
+  language: LanguageType;
   voice: VoiceType;
   notificationMode: NotificationMode;
 }

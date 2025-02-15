@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Brightness4, Brightness7, VolumeOff, Vibration, VolumeUp, Man, Woman } from '@mui/icons-material';
 import { useSettings } from '../context/SettingsContext';
 import { translations } from '../translations/index';
-import { LangageType } from '../types';
+import { LanguageType } from '../types';
 
 const SettingsScreen : React.FC = () => {
   const { language, setLanguage, darkMode, setDarkMode, notificationMode, setNotificationMode, voice, setVoice } = useSettings();
@@ -20,7 +20,7 @@ const SettingsScreen : React.FC = () => {
     navigate(pathParts.join('/'));
   };
 
-  const handleLanguageChange = (_e: React.MouseEvent<HTMLElement>, newLang: LangageType) => {
+  const handleLanguageChange = (_e: React.MouseEvent<HTMLElement>, newLang: LanguageType) => {
     if (newLang) {
       setLanguage(newLang);
       // Keep previous path if language is changed

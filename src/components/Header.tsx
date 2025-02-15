@@ -2,10 +2,10 @@ import React from 'react';
 import { Box, IconButton } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { LangageType, TranslationType } from '../types';
+import { LanguageType, TranslationType } from '../types';
 
 interface HeaderProps {
-  language: LangageType;
+  language: LanguageType;
   t: TranslationType;
 }
 

@@ -73,6 +73,6 @@ export interface Step {
   status: StepStatus;
 }
 
-export type LangageType = 'en' | 'ja';
+export type LanguageType = 'en' | 'ja';
 
 export type VoiceType = 'male' | 'female';
