@@ -5,6 +5,8 @@ import { Brightness4, Brightness7, VolumeOff, Vibration, VolumeUp, Man, Woman } 
 import { useSettings } from '../context/SettingsContext';
 import { translations } from '../translations/index';
 import { LanguageType } from '../types';
+import Header from './Header';
+import Footer from './Footer';
 
 const SettingsScreen : React.FC = () => {
   const { language, setLanguage, darkMode, setDarkMode, notificationMode, setNotificationMode, voice, setVoice } = useSettings();
@@ -37,6 +39,8 @@ const SettingsScreen : React.FC = () => {
       color: 'text.primary',
       minHeight: '100vh',
      }}>
+      <Header language={language} t={t} />
+
       <Typography variant="h6" sx={{ mb: 2 }}>{t.settings}</Typography>
 
       {/* Language */}
@@ -113,7 +117,7 @@ const SettingsScreen : React.FC = () => {
       </ToggleButtonGroup>
 
       {/* Back button */}
-      <Box sx={{ mt: 3 }}>
+      <Box sx={{ mt: 3, mb: 4 }}>
         <Typography
           onClick={handleBack}
           sx={{ cursor: 'pointer', color: 'primary.main', textDecoration: 'underline' }}
@@ -121,6 +125,8 @@ const SettingsScreen : React.FC = () => {
           {t.backToRecipe}
         </Typography>
       </Box>
+
+      <Footer t={t} />
     </Box>
   );
 }

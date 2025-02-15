@@ -37,7 +37,7 @@ const RecipeDescription: React.FC<Props> = ({ recipe, language, t }) => {
             }}
           >
             <iframe
-              src={recipe.youTubeEmbedUrl}
+              src={`https://www.youtube.com/embed/${recipe.youTubeVideoId}`}
               style={{
                 position: 'absolute',
                 top: 0,

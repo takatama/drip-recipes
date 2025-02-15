@@ -54,7 +54,7 @@ export interface CoffeeRecipe {
   id: string;
   name: { en:string; ja:string };
   description: { en:string; ja:string };
-  youTubeEmbedUrl: string;
+  youTubeVideoId: string;
   equipments: { en: JSX.Element; ja: JSX.Element; };
   params: CoffeeParam[];
   waterRatio: number;
