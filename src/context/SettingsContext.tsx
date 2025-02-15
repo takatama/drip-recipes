@@ -1,11 +1,9 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { useParams } from 'react-router-dom';
-import { LangageType, NotificationMode, VoiceType } from '../types';
-import { useMediaQuery } from '@mui/material';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { LanguageType, NotificationMode, VoiceType } from '../types';
 
 interface SettingsContextProps {
-  language: LangageType;
-  setLanguage: (lang: LangageType) => void;
+  language: LanguageType;
+  setLanguage: (lang: LanguageType) => void;
   darkMode: boolean;
   setDarkMode: (darkMode: boolean) => void;
   notificationMode: NotificationMode;
@@ -16,36 +14,68 @@ interface SettingsContextProps {
 
 const SettingsContext = createContext<SettingsContextProps | undefined>(undefined);
 
-export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<LangageType>('en');
-  const [darkMode, setDarkMode] = useState(false);
-  const [notificationMode, setNotificationMode] = useState<NotificationMode>('none');
-  const [voice, setVoice] = useState<VoiceType>('male');
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const { lang } = useParams();
-  
-  // Update dark mode when system preference changes
-  useEffect(() => {
-    setDarkMode(prefersDarkMode);
-  }, [prefersDarkMode]);
+interface Settings {
+  language: LanguageType;
+  darkMode: boolean;
+  notificationMode: NotificationMode;
+  voice: VoiceType;
+}
 
+// Get initial settings from localStorage or use defaults
+const getInitialSettings = (): Settings => {
+  const storedSettings = localStorage.getItem('settings');
+  if (storedSettings) {
+    return JSON.parse(storedSettings);
+  }
+
+  // Default settings
+  const userLang = navigator.language || navigator.languages[0];
+  const defaultLang: LanguageType = userLang.startsWith('ja') ? 'ja' : 'en';
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  return {
+    language: defaultLang,
+    darkMode: prefersDark,
+    notificationMode: 'none' as NotificationMode,
+    voice: 'male' as VoiceType,
+  };
+};
+
+export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [settings, setSettings] = useState(getInitialSettings());
+
+  // Save settings to localStorage whenever they change
   useEffect(() => {
-    if (lang && (lang === 'en' || lang === 'ja')) {
-      setLanguage(lang);
-    }
-  }, [lang]);
+    localStorage.setItem('settings', JSON.stringify(settings));
+  }, [settings]);
+
+  const setLanguage = (lang: LanguageType) => {
+    setSettings(prev => ({ ...prev, language: lang }));
+  };
+
+  const setDarkMode = (mode: boolean) => {
+    setSettings(prev => ({ ...prev, darkMode: mode }));
+  };
+
+  const setNotificationMode = (mode: NotificationMode) => {
+    setSettings(prev => ({ ...prev, notificationMode: mode }));
+  };
+
+  const setVoice = (voice: VoiceType) => {
+    setSettings(prev => ({ ...prev, voice: voice }));
+  };
 
   return (
     <SettingsContext.Provider
       value={{
-        language,
+        language: settings.language,
         setLanguage,
-        darkMode,
+        darkMode: settings.darkMode,
         setDarkMode,
-        notificationMode,
+        notificationMode: settings.notificationMode,
         setNotificationMode,
-        voice,
-        setVoice
+        voice: settings.voice,
+        setVoice,
       }}
     >
       {children}
