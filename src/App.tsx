@@ -11,7 +11,8 @@ import {
   Routes,
   Route,
   Navigate,
-  useParams
+  useParams,
+  useNavigate,
 } from 'react-router-dom';
 import RecipeDescription from './components/RecipeDescription';
 import { newHybridMethod } from './recipes/new-hybird-method';
@@ -58,6 +59,7 @@ const getUserLang = () => {
 }
 
 function AppWrapper() {
+  // TODO: Redirect to the user's preferred language
   const lang = getUserLang();
 
   return (
@@ -78,7 +80,7 @@ function AppWrapper() {
 function App() {
   const { darkMode, language } = useSettings();
   const t = translations[language]; // shorthand for current translations
-  const { recipeId } = useParams();
+  const { lang, recipeId } = useParams();
   const [beansAmount, setBeansAmount] = useState(20);
   const [flavor, setFlavor] = useState('neutral');
   const [steps, setSteps] = useState<Step[]>([]);
@@ -87,7 +89,17 @@ function App() {
   const recipe = recipeId === 'four-to-six-method'
     ? fourToSixMethod
     : newHybridMethod;
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if (lang && lang !== language) {
+      // Update language in the URL
+      const pathParts = window.location.pathname.split('/');
+      pathParts[1] = language;
+      navigate(pathParts.join('/'), { replace: true });
+    }
+  }, [lang, language, navigate]);
+  
   useEffect(() => {
     const steps = recipe.generateSteps(recipe, beansAmount, flavor, strength);
     setSteps(steps);
