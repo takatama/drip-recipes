@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Typography } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import Header from './components/Header';
 import Timeline from './components/Timeline';
 import Footer from './components/Footer';
@@ -11,15 +10,16 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  useNavigate,
   Navigate,
   useParams
 } from 'react-router-dom';
 import RecipeDescription from './components/RecipeDescription';
 import { newHybridMethod } from './recipes/new-hybird-method';
 import { fourToSixMethod } from './recipes/four-to-six-method';
-import DynamicSettings from './components/DynamicSettings';
+import InputParams from './components/InputParams';
 import { Step } from './types';
+import SettingsScreen from './components/SettingsScreen';
+import { SettingsProvider, useSettings } from './context/SettingsContext';
 
 // Create theme with both light and dark modes
 const getTheme = (mode: 'light' | 'dark') => createTheme({
@@ -41,6 +41,17 @@ const getTheme = (mode: 'light' | 'dark') => createTheme({
   }
 });
 
+function AppThemeWrapper({ children }: { children: React.ReactNode }) {
+  const { darkMode } = useSettings();
+  const theme = getTheme(darkMode ? 'dark' : 'light');
+
+  return (
+    <ThemeProvider theme={theme}>
+      {children}
+    </ThemeProvider>
+  );
+}
+
 const getUserLang = () => {
   const userLang = navigator.language || navigator.languages[0];
   return userLang.startsWith('ja') ? 'ja' : 'en';
@@ -51,22 +62,23 @@ function AppWrapper() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/:lang/recipes/featured/:recipeId" element={<App />} />
-        <Route path="*" element={<Navigate to={`/${lang}/recipes/featured/new-hybrid-method`} replace />} />
-      </Routes>
+      <SettingsProvider>
+        <AppThemeWrapper>
+          <Routes>
+            <Route path="/:lang/recipes/featured/:recipeId" element={<App />} />
+            <Route path="/:lang/settings" element={<SettingsScreen />} />
+            <Route path="*" element={<Navigate to={`/${lang}/recipes/featured/new-hybrid-method`} replace />} />
+          </Routes>
+        </AppThemeWrapper>
+      </SettingsProvider>
     </BrowserRouter>
   );
 }
 
 function App() {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [darkMode, setDarkMode] = useState(prefersDarkMode);
-  const theme = getTheme(darkMode ? 'dark' : 'light');
-  const [language, setLanguage] = useState<"en" | "ja">("en");
+  const { darkMode, language } = useSettings();
   const t = translations[language]; // shorthand for current translations
-  const navigate = useNavigate();
-  const { lang, recipeId } = useParams();
+  const { recipeId } = useParams();
   const [beansAmount, setBeansAmount] = useState(20);
   const [flavor, setFlavor] = useState('neutral');
   const [steps, setSteps] = useState<Step[]>([]);
@@ -77,111 +89,87 @@ function App() {
     : newHybridMethod;
 
   useEffect(() => {
-    if (lang && (lang === 'en' || lang === 'ja')) {
-      setLanguage(lang);
-    }
-  }, [lang]);
-
-  // Handler for language toggle
-  const handleLanguageChange = (_e: React.MouseEvent<HTMLElement>, newLang: "en" | "ja") => {
-    if (newLang) {
-      setLanguage(newLang);
-      navigate(`/${newLang}/recipes/featured/${recipeId}`);
-    }
-  };
-
-  useEffect(() => {
     const steps = recipe.generateSteps(recipe, beansAmount, flavor, strength);
     setSteps(steps);
   }, [beansAmount, flavor, strength]);
 
-  // Update dark mode when system preference changes
-  useEffect(() => {
-    setDarkMode(prefersDarkMode);
-  }, [prefersDarkMode]);
-
   return (
-    <ThemeProvider theme={theme}>
-      <Container maxWidth="sm" sx={{
-        bgcolor: 'background.default',
-        color: 'text.primary',
-        minHeight: '100vh',
-        py: 2,
-        width: '100%',
-      }}>
-        <Header
-          darkMode={darkMode}
-          setDarkMode={setDarkMode}
-          language={language}
-          handleLanguageChange={handleLanguageChange}
-          t={t}
-        />
+    <Container maxWidth="sm" sx={{
+      bgcolor: 'background.default',
+      color: 'text.primary',
+      minHeight: '100vh',
+      py: 2,
+      width: '100%',
+    }}>
+      <Header
+        language={language}
+        t={t}
+      />
 
-        <Typography variant="h5" align="center" gutterBottom>
-          {recipe.name[language]}
-        </Typography>
+      <Typography variant="h5" align="center" gutterBottom>
+        {recipe.name[language]}
+      </Typography>
 
-        <RecipeDescription recipe={recipe} language={language} t={t} />
+      <RecipeDescription recipe={recipe} language={language} t={t} />
 
-        <Typography variant="body1" align="center" gutterBottom>
-          {recipe.equipments[language](theme)}
-        </Typography>
+      <Typography variant="body1" align="center" gutterBottom>
+        {recipe.equipments[language]}
+      </Typography>
 
-        <DynamicSettings
-          t={t}
-          params={recipe.params}
-          values={{
-            beansAmount,
-            waterRatio: recipe.waterRatio,
-            flavor,
-            roastLevel,
-            strength,
-          }}
-          onChange={(key, value) => {
-            if (key === 'beansAmount') {
-              setBeansAmount(value);
-            }
-            if (key === 'flavor') {
-              setFlavor(value);
-            }
-            if (key === 'roastLevel') {
-              setRoastLevel(value);
-            }
-            if (key === 'strength') {
-              setStrength(value);
-            }
-          }}
-        />
+      <InputParams
+        t={t}
+        params={recipe.params}
+        values={{
+          beansAmount,
+          waterRatio: recipe.waterRatio,
+          flavor,
+          roastLevel,
+          strength,
+        }}
+        onChange={(key, value) => {
+          if (key === 'beansAmount') {
+            setBeansAmount(value);
+          }
+          if (key === 'flavor') {
+            setFlavor(value);
+          }
+          if (key === 'roastLevel') {
+            setRoastLevel(value);
+          }
+          if (key === 'strength') {
+            setStrength(value);
+          }
+        }}
+      />
 
-        <Typography
-          variant="body2"
-          component="div"
-          sx={{
-            fontSize: '1.1rem',
-            mb: 2,
-            ml: 4,
-          }}
-        >
-          <div style={{ marginBottom: '8px' }}>{t.preparation}</div>
-          {recipe.preparationSteps && recipe.preparationSteps[language].map((step, index) => (
-            <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
-              <span style={{ marginRight: '8px' }}>•</span>
-              {step}
-            </div>
-          ))}
-        </Typography>
+      <Typography
+        variant="body2"
+        component="div"
+        sx={{
+          fontSize: '1.1rem',
+          mb: 2,
+          ml: 4,
+        }}
+      >
+        <div style={{ marginBottom: '8px' }}>{t.preparation}</div>
+        {recipe.preparationSteps && recipe.preparationSteps[language].map((step, index) => (
+          <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
+            <span style={{ marginRight: '8px' }}>•</span>
+            {step}
+          </div>
+        ))}
+      </Typography>
 
-        <Timeline
-          t={t}
-          darkMode={darkMode}
-          language={language}
-          steps={steps}
-          setSteps={setSteps}
-        />
+      <Timeline
+        t={t}
+        darkMode={darkMode}
+        language={language}
+        steps={steps}
+        setSteps={setSteps}
+      />
 
-        <Footer t={t} />
-      </Container>
-    </ThemeProvider>
+      <Footer t={t} />
+    </Container>
   );
 }
 

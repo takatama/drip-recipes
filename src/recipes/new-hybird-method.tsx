@@ -13,18 +13,18 @@ export const newHybridMethod: CoffeeRecipe = {
   },
   youTubeEmbedUrl: "https://www.youtube.com/embed/4FeUp_zNiiY",
   equipments: {
-    en: (theme) => (<>
+    en: <>
     Use a <a href="https://amzn.to/40TjUkH" target="_blank" rel="noopener noreferrer"
-        style={{ color: theme.palette.primary.main }}
+        style={{ color: 'text.primary' }}
       >
         Hario Switch
-      </a> dripper for this method.</>),
-    ja: (theme) => (<>
+      </a> dripper for this method.</>,
+    ja: <>
     ドリッパーは <a href="https://amzn.to/3QjLse1" target="_blank" rel="noopener noreferrer"
-        style={{ color: theme.palette.primary.main }}
+        style={{ color: 'text.primary' }}
       >
         Hario Switch
-      </a> を使います。</>),
+      </a> を使います。</>,
   },
   params: [
     { key: "waterTemp", unit: "℃", type: "number", input: false, default: 90 },
