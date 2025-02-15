@@ -21,6 +21,7 @@ import InputParams from './components/InputParams';
 import { Step } from './types';
 import SettingsScreen from './components/SettingsScreen';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
+import RecipeList from './components/RecipeList';
 
 // Create theme with both light and dark modes
 const getTheme = (mode: 'light' | 'dark') => createTheme({
@@ -58,6 +59,8 @@ const getUserLang = () => {
   return userLang.startsWith('ja') ? 'ja' : 'en';
 }
 
+const recipes = [newHybridMethod, fourToSixMethod];
+
 function AppWrapper() {
   // TODO: Redirect to the user's preferred language
   const lang = getUserLang();
@@ -67,9 +70,10 @@ function AppWrapper() {
       <SettingsProvider>
         <AppThemeWrapper>
           <Routes>
+            <Route path="/:lang/recipes" element={<RecipeList recipes={recipes} />} />
             <Route path="/:lang/recipes/featured/:recipeId" element={<App />} />
             <Route path="/:lang/settings" element={<SettingsScreen />} />
-            <Route path="*" element={<Navigate to={`/${lang}/recipes/featured/new-hybrid-method`} replace />} />
+            <Route path="*" element={<Navigate to={`/${lang}/recipes`} replace />} />
           </Routes>
         </AppThemeWrapper>
       </SettingsProvider>
@@ -99,7 +103,7 @@ function App() {
       navigate(pathParts.join('/'), { replace: true });
     }
   }, [lang, language, navigate]);
-  
+
   useEffect(() => {
     const steps = recipe.generateSteps(recipe, beansAmount, flavor, strength);
     setSteps(steps);
