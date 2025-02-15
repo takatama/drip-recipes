@@ -37,13 +37,14 @@ export interface CoffeeParam {
   type: 'number' | 'enum';
   input: boolean;
   default?: any;
-  formula?: (beansAmount: number, waterRatio: number) => number;
+  formula?: (...args: any[]) => number;
   options?: string[];
 }
 
 interface CoffeeStep {
-  time: number;
-  waterFormula: (beansAmount: number, waterRatio: number, flavor?: string) => number;
+  time?: number;
+  timeFomula?: (...args: any[]) => number | null;
+  waterFormula: (...args: any[]) => number;
   action: { en: (cumulativeWaterMl?: number) => string; ja: (cumulativeWaterMl?: number) => string; };
 }
 
@@ -55,8 +56,9 @@ export interface CoffeeRecipe {
   equipments: { en: (theme: Theme) => JSX.Element; ja: (theme: Theme) => JSX.Element; };
   params: CoffeeParam[];
   waterRatio: number;
-  preparationSteps: { en: string[]; ja: string[] };
+  preparationSteps?: { en: string[]; ja: string[] };
   steps: CoffeeStep[];
+  generateSteps: (recipe: CoffeeRecipe, ...args: any[]) => Step[];
 }
 
 export type StepStatus = 'completed' | 'current' | 'upcoming' | 'next';

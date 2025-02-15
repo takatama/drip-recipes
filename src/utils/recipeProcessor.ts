@@ -1,6 +1,6 @@
 import { CoffeeRecipe, Step } from "../types";
 
-export function generateNewHybridSteps(recipe: CoffeeRecipe, beansAmount: number, flavor: string): Step[] {
+export function generateNewHybridSteps(recipe: CoffeeRecipe, beansAmount: number, flavor: string, roastLevel: string, strength: string): Step[] {
   const outputSteps: Step[] = [];
   let currentTime = 0;
   let cumulative = 0;

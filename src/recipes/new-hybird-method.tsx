@@ -1,4 +1,5 @@
 import { CoffeeRecipe } from "../types";
+import { Step } from "../types";
 
 export const newHybridMethodDSL: CoffeeRecipe = {
   id: "new-hybrid-method",
@@ -12,18 +13,18 @@ export const newHybridMethodDSL: CoffeeRecipe = {
   },
   youTubeEmbedUrl: "https://www.youtube.com/embed/4FeUp_zNiiY",
   equipments: {
-    en: (theme) => (<>This recipe uses 
-      <a href="https://amzn.to/40TjUkH" target="_blank" rel="noopener noreferrer"
+    en: (theme) => (<>
+    This recipe uses <a href="https://amzn.to/40TjUkH" target="_blank" rel="noopener noreferrer"
         style={{ color: theme.palette.primary.main }}
       >
         Hario Switch
-      </a>.</>),
-    ja: (theme) => (<>このレシピは
-      <a href="https://amzn.to/3QjLse1" target="_blank" rel="noopener noreferrer"
+      </a> .</>),
+    ja: (theme) => (<>
+    このレシピは <a href="https://amzn.to/3QjLse1" target="_blank" rel="noopener noreferrer"
         style={{ color: theme.palette.primary.main }}
       >
         Hario Switch
-      </a>を使います。</>),
+      </a> を使います。</>),
   },
   params: [
     { key: "waterTemp", unit: "℃", type: "number", input: false, default: 90 },
@@ -93,5 +94,25 @@ export const newHybridMethodDSL: CoffeeRecipe = {
         ja: () => "完成",
       },
     },
-  ]
+  ],
+  generateSteps: (recipe: CoffeeRecipe, beansAmount: number, flavor: string): Step[] => {
+    const outputSteps: Step[] = [];
+    let currentTime = 0;
+    let cumulative = 0;
+  
+    for (const step of recipe.steps) {
+      currentTime = step.time || 0;
+      let increment = step.waterFormula(beansAmount, recipe.waterRatio, flavor);
+      cumulative += increment;
+  
+      outputSteps.push({
+        timeSec: currentTime,
+        pourWaterMl: increment,
+        cumulativeWaterMl: cumulative,
+        action: step.action,
+        status: 'upcoming'
+      });
+    }
+    return outputSteps;
+  },
 };

@@ -17,8 +17,8 @@ import {
 } from 'react-router-dom';
 import RecipeDescription from './components/RecipeDescription';
 import { newHybridMethodDSL } from './recipes/new-hybird-method';
+import { fourToSixMethodDSL } from './recipes/four-to-six-method';
 import DynamicSettings from './components/DynamicSettings';
-import { generateNewHybridSteps } from './utils/recipeProcessor';
 import { Step } from './types';
 
 // Create theme with both light and dark modes
@@ -70,6 +70,9 @@ function App() {
   const [beansAmount, setBeansAmount] = useState(20);
   const [flavor, setFlavor] = useState('neutral');
   const [steps, setSteps] = useState<Step[]>([]);
+  const [roastLevel, setRoastLevel] = useState('mediumRoast');
+  const [strength, setStrength] = useState('medium');
+  const recipe = fourToSixMethodDSL;
 
   useEffect(() => {
     if (lang && (lang === 'en' || lang === 'ja')) {
@@ -86,9 +89,9 @@ function App() {
   };
 
   useEffect(() => {
-    const steps = generateNewHybridSteps(newHybridMethodDSL, beansAmount, flavor);
+    const steps = recipe.generateSteps(recipe, beansAmount, flavor, strength);
     setSteps(steps);
-  }, [beansAmount, flavor]);
+  }, [beansAmount, flavor, strength]);
 
   // Update dark mode when system preference changes
   useEffect(() => {
@@ -113,22 +116,24 @@ function App() {
         />
 
         <Typography variant="h5" align="center" gutterBottom>
-          {newHybridMethodDSL.name[language]}
+          {recipe.name[language]}
         </Typography>
 
-        <RecipeDescription recipe={newHybridMethodDSL} language={language} t={t} />
+        <RecipeDescription recipe={recipe} language={language} t={t} />
 
         <Typography variant="body1" align="center" gutterBottom>
-          {newHybridMethodDSL.equipments[language](theme)}
+          {recipe.equipments[language](theme)}
         </Typography>
 
         <DynamicSettings
           t={t}
-          params={newHybridMethodDSL.params}
+          params={recipe.params}
           values={{
             beansAmount,
-            waterRatio: newHybridMethodDSL.waterRatio,
+            waterRatio: recipe.waterRatio,
             flavor,
+            roastLevel,
+            strength,
           }}
           onChange={(key, value) => {
             if (key === 'beansAmount') {
@@ -136,6 +141,12 @@ function App() {
             }
             if (key === 'flavor') {
               setFlavor(value);
+            }
+            if (key === 'roastLevel') {
+              setRoastLevel(value);
+            }
+            if (key === 'strength') {
+              setStrength(value);
             }
           }}
         />
@@ -150,7 +161,7 @@ function App() {
           }}
         >
           <div style={{ marginBottom: '8px' }}>{t.preparation}</div>
-          {newHybridMethodDSL.preparationSteps[language].map((step, index) => (
+          {recipe.preparationSteps && recipe.preparationSteps[language].map((step, index) => (
             <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
               <span style={{ marginRight: '8px' }}>•</span>
               {step}
