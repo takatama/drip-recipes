@@ -14,13 +14,13 @@ export const fourToSixMethod: CoffeeRecipe = {
   equipments: {
     en: <>
     Use a <a href="https://amzn.to/4aXhmH3" target="_blank" rel="noopener noreferrer"
-        style={{ color: 'text.primary' }}
+        style={{ color: 'inherit' }}
       >
         Hario V60
       </a> dripper for this method.</>,
     ja: <>
     ドリッパーは <a href="https://amzn.to/3X1jxUi" target="_blank" rel="noopener noreferrer"
-        style={{ color: 'text.primary' }}
+        style={{ color: 'inherit' }}
       >
         Hario V60
       </a> を使います。</>,
