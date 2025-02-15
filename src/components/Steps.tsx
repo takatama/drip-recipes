@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useMediaQuery } from '@mui/material';
 import { Step, NotificationMode } from '../types';
 
 interface StepsProps {
@@ -18,7 +18,8 @@ const TOTAL_TIME = 210;
 const MARKER_SIZE = 8;
 const ARROW_OFFSET = 45;
 const ARROW_HEIGHT = 30;
-const TIMELINE_WIDTH = '65%';
+const TIMELINE_WIDTH = 340;
+const SMALL_TIMELINE_WIDTH = 260;
 const STEP_TEXT_MARGIN = 20;
 const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
@@ -28,6 +29,7 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, darkMode, n
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef(new Audio());
   const finishAudio = useRef(new Audio());
+  const isSmallScreen = useMediaQuery('(max-width:465px)');
 
   // Reset isPlaying when audio ends
   useEffect(() => {
@@ -130,8 +132,8 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, darkMode, n
         sx={{
           position: 'relative',
           height: '100%',
-          width: TIMELINE_WIDTH,
-          minWidth: TIMELINE_WIDTH,
+          width: isSmallScreen ? SMALL_TIMELINE_WIDTH : TIMELINE_WIDTH,
+          minWidth: isSmallScreen ? SMALL_TIMELINE_WIDTH : TIMELINE_WIDTH,
         }}
       >
         {/* Timeline vertical line */}
