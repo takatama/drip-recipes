@@ -1,48 +1,49 @@
-# 46timer - Perfect Pour Over Coffee, Every Time
+# Drip Recipes - Perfect Your Pour Over
 
-A precision timer for the award-winning 4:6 coffee brewing method. Get consistently delicious coffee with an elegant, easy-to-follow interface.
+A precision coffee brewing timer that helps you achieve the perfect cup, no matter which pour-over method you use. Select from multiple brewing recipes and get guided steps to ensure consistent and delicious coffee every time.
 
-## What's the 4:6 Method?
+## Supported Brewing Methods
 
-A game-changing pour-over technique by World Brewers Cup Champion Tetsu Kasuya that gives you total control over your coffee's strength and flavor profile by dividing water into strategic pours:
-- 40% of water for taste control (acidity vs. sweetness)
-- 60% of water for strength control (light vs. strong)
+Choose from a variety of brewing techniques, including:
+- **4:6 Method**: Developed by World Brewers Cup Champion Tetsu Kasuya, this method balances acidity and sweetness by dividing water into strategic pours.
+- **New Hybrid Method**: A new technique that uses Hario Switch to combine the best of both immersion and percolation brewing.
 
 ## Features
 
-✨ **Smart Guidance**
-- Visual progress tracker
+### 🎯 Smart Brewing Guidance
+- Visual progress tracker for each recipe
 - Animated pour guides with precise timing
-- Voice countdown with natural speech synthesis
-- Available in English and Japanese
+- Voice countdown to assist in pouring accuracy
+- Available in **English and Japanese**
 
-⚡ **Fully Customizable**
-- Adjust coffee amount and roast level
-- Fine-tune taste balance
-- Control brew strength
-- Get precise water measurements
+### ⚙️ Fully Customizable
+- Select from multiple brewing methods
+- Adjust **coffee amount**, **grind size**, and **water temperature**
+- Fine-tune **taste balance** and **brew strength**
+- Get precise **water measurements** for each step
 
-## Tips
-- Start with a coarse grind - the 4:6 method requires all water to drain within 3:30
-- Use the visual timeline to gauge if your grind size needs adjustment
-- If water isn't draining fast enough, adjust to a coarser grind
+## Tips for Better Brewing
+
+- **Adjust your grind size** based on extraction time; if water drains too slowly, go coarser.
+- **Experiment with pour timing** to balance acidity and sweetness.
 
 ## Quick Start
 
-1. Visit [46timer](https://46timer.pages.dev/)
-2. Set your preferences
-3. Follow the guided pours
-4. Enjoy your perfect cup!
+1. Visit [Drip Recipes](https://drip-recipes.pages.dev/)
+2. Select your preferred brewing method
+3. Adjust settings to match your beans and taste preferences
+4. Follow the guided steps
+5. Enjoy your perfect cup of coffee!
 
 ## For Developers
 
-Built with React + TypeScript, featuring:
-- Material-UI components
-- Voice synthesis (SSML)
-- Cloudflare Pages hosting
+Built with **React + TypeScript**, featuring:
+- **Tailwind CSS** for responsive UI
+- **Voice synthesis (SSML)** for guided brewing instructions
+- **Cloudflare Pages** for fast and reliable hosting
 
 ### Voice Guidance
-The app uses SSML (Speech Synthesis Markup Language) to create natural-sounding countdown voice cues before each step:
+The app uses **SSML (Speech Synthesis Markup Language)** to create natural-sounding countdown voice cues before each step:
 
 ```xml
 <speak>
@@ -66,30 +67,31 @@ The app uses SSML (Speech Synthesis Markup Language) to create natural-sounding 
 </speak>
 ```
 
-Uses Google Cloud Text-to-Speech Wavenet voices:
+Uses **Google Cloud Text-to-Speech Wavenet voices**:
 
-- English
-  - Male: en-US-Wavenet-J
-  - Female: en-US-Wavenet-H
-- Japanese
-  - Male: ja-JP-Wavenet-D
-  - Female: ja-JP-Wavenet-B
+- **English**
+  - Male: `en-US-Wavenet-J`
+  - Female: `en-US-Wavenet-H`
+- **Japanese**
+  - Male: `ja-JP-Wavenet-D`
+  - Female: `ja-JP-Wavenet-B`
 
-### Development
+### Development Setup
 
 ```bash
-git clone https://github.com/takatama/46timer.git
-cd 46timer
+git clone https://github.com/takatama/drip-recipes.git
+cd drip-recipes
 npm install
 npm run dev
 ```
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ## Contributing
-Contributions are welcome! Please open an issue or submit a pull request to suggest changes or improvements.
+Contributions are welcome! Please **open an issue** or **submit a pull request** to suggest changes or improvements.
 
 ## Acknowledgements
-- [Tetsu Kasuya](https://www.instagram.com/tetsukasuya/) for creating the 4:6 method
+- [Tetsu Kasuya](https://www.instagram.com/tetsukasuya/) for creating the 4:6 method and the new hybrid method.
 - [Cloudflare](https://pages.cloudflare.com/) for hosting
+
