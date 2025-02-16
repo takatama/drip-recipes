@@ -4,7 +4,7 @@ export const hoffmannBetter1CupV60: CoffeeRecipe = {
   id: "hoffmann-better-1cup-v60",
   name: {
     en: "A Better 1 Cup V60 Technique",
-    ja: "より良い1杯のためのV60テクニック"
+    ja: "1杯どりV60テクニック"
   },
   description: {
     en: "Unlock incredible flavor in your V60 with this simple, repeatable technique by James Hoffmann. Using just 15g of coffee and 250g of water with a finer grind, you'll consistently brew a sweeter, fuller-bodied cup. The secret? Five precise 50g pours with short pauses to maintain optimal temperature and minimize acidity. Stop wasting water and start enjoying a truly exceptional single-cup V60 experience.",
@@ -30,7 +30,7 @@ export const hoffmannBetter1CupV60: CoffeeRecipe = {
     { key: "roastLevel", type: "enum", input: true, options: ["lightRoast", "mediumRoast", "darkRoast"], default: "mediumRoast" },
     { key: "waterTemp", unit: "℃", type: "number", input: false, formula: (_b: number, _w: number, roastLevel: string) => roastLevel === "lightRoast" ? 100 : (roastLevel === "mediumRoast" ? 93 : 83) },
     { key: "beansAmount", unit: "g", type: "number", input: true, default: 15 },
-    { key: "waterAmount", unit: "ml", type: "number", input: false, formula: (beansAmount: number, waterRatio: number) => beansAmount * waterRatio },
+    { key: "waterAmount", unit: "ml", type: "number", input: false, formula: (beansAmount: number, waterRatio: number) => Math.floor(beansAmount * waterRatio) },
   ],
   steps: [
     {
