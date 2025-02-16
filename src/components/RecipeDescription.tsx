@@ -18,7 +18,7 @@ const RecipeDescription: React.FC<Props> = ({ recipe, language, t }) => {
       sx={{
         bgcolor: 'transparent',
         boxShadow: 'none',
-        margin: 2
+        margin: 1,
       }}
     >
       <AccordionSummary expandIcon={<ExpandMore />}>
