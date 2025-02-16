@@ -8,11 +8,20 @@ import {
   useParams,
 } from 'react-router-dom';
 import { newHybridMethod } from './recipes/new-hybird-method';
+import { hoffmannBetter1CupV60 } from './recipes/hoffmann-better-1cup-v60';
 import { fourToSixMethod } from './recipes/four-to-six-method';
 import SettingsScreen from './components/SettingsScreen';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
 import RecipeList from './components/RecipeList';
 import CoffeeRecipe from './components/CoffeeRecipe';
+
+const recipeMap: { [key: string]: any } = {
+  'new-hybrid-method': newHybridMethod,
+  'hoffmann-better-1cup-v60': hoffmannBetter1CupV60,
+  'four-to-six-method': fourToSixMethod,
+};
+
+const recipes = Object.values(recipeMap);
 
 // Create theme with both light and dark modes
 const getTheme = (mode: 'light' | 'dark') => createTheme({
@@ -50,8 +59,6 @@ const getUserLang = () => {
   return userLang.startsWith('ja') ? 'ja' : 'en';
 }
 
-const recipes = [newHybridMethod, fourToSixMethod];
-
 function AppWrapper() {
   // TODO: Redirect to the user's preferred language
   const lang = getUserLang();
@@ -73,10 +80,12 @@ function AppWrapper() {
 }
 
 function App() {
-  const { recipeId } = useParams();
-  const recipe = recipeId === 'four-to-six-method'
-    ? fourToSixMethod
-    : newHybridMethod;
+  const { lang, recipeId } = useParams();
+  const recipe = recipeId ? recipeMap[recipeId] : undefined;
+
+  if (!recipe) {
+    return <Navigate to={`/${lang}/recipes`} replace />;
+  }
 
   return <CoffeeRecipe recipe={recipe} />;
 }

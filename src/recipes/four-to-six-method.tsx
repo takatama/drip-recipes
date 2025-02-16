@@ -39,16 +39,16 @@ export const fourToSixMethod: CoffeeRecipe = {
       timeFomula: (_strengthSteps) => 0,
       waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.42 : (flavor === 'sour' ? 0.58 : 0.5)),
       action: {
-        en: (cumulativeWaterMl?: number) => `Pour up to ${cumulativeWaterMl}g`,
-        ja: (cumulativeWaterMl?: number) => `${cumulativeWaterMl}g まで注湯`,
+        en: (cumulative: number) => `Pour up to ${cumulative}g`,
+        ja: (cumulative: number) => `${cumulative}g まで注湯`,
       },
     },
     {
       timeFomula: (_strengthSteps) => 45,
       waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.58 : (flavor === 'sour' ? 0.42 : 0.5)),
       action: {
-        en: (cumulativeWaterMl?: number) => `Pour up to ${cumulativeWaterMl}g`,
-        ja: (cumulativeWaterMl?: number) => `${cumulativeWaterMl}g まで注湯`,
+        en: (cumulative: number) => `Pour up to ${cumulative}g`,
+        ja: (cumulative: number) => `${cumulative}g まで注湯`,
       },
     },
     {
@@ -57,8 +57,8 @@ export const fourToSixMethod: CoffeeRecipe = {
         return beansAmount * waterRatio * 0.6 / strengthSteps;
       },
       action: {
-        en: (cumulativeWaterMl?: number) => `Pour up to ${cumulativeWaterMl}g`,
-        ja: (cumulativeWaterMl?: number) => `1 ${cumulativeWaterMl}g まで注湯`,
+        en: (cumulative: number) => `Pour up to ${cumulative}g`,
+        ja: (cumulative: number) => `1 ${cumulative}g まで注湯`,
       },
     },
     {
@@ -67,8 +67,8 @@ export const fourToSixMethod: CoffeeRecipe = {
         return beansAmount * waterRatio * 0.6 / strengthSteps;
       },
       action: {
-        en: (cumulativeWaterMl?: number) => `Pour up to ${cumulativeWaterMl}g`,
-        ja: (cumulativeWaterMl?: number) => `2 ${cumulativeWaterMl}g まで注湯`,
+        en: (cumulative: number) => `Pour up to ${cumulative}g`,
+        ja: (cumulative: number) => `2 ${cumulative}g まで注湯`,
       },
     },
     {
@@ -77,8 +77,8 @@ export const fourToSixMethod: CoffeeRecipe = {
         return beansAmount * waterRatio * 0.6 / strengthSteps;
       },
       action: {
-        en: (cumulativeWaterMl?: number) => `Pour up to ${cumulativeWaterMl}g`,
-        ja: (cumulativeWaterMl?: number) => `3 ${cumulativeWaterMl}g まで注湯`,
+        en: (cumulative: number) => `Pour up to ${cumulative}g`,
+        ja: (cumulative: number) => `3 ${cumulative}g まで注湯`,
       },
     },
     {
@@ -106,7 +106,7 @@ export const fourToSixMethod: CoffeeRecipe = {
       outputSteps.push({
         timeSec: rawTime ?? 0,
         pourWaterMl: increment,
-        cumulativeWaterMl: cumulative,
+        cumulative: cumulative,
         action: step.action,
         status: 'upcoming'
       });

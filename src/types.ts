@@ -47,7 +47,7 @@ interface CoffeeStep {
   time?: number;
   timeFomula?: (...args: any[]) => number | null;
   waterFormula: (...args: any[]) => number;
-  action: { en: (cumulativeWaterMl?: number) => string; ja: (cumulativeWaterMl?: number) => string; };
+  action: { en: (...args: any[]) => string; ja: (...args: any[]) => string; };
 }
 
 export interface CoffeeRecipe {
@@ -61,6 +61,7 @@ export interface CoffeeRecipe {
   preparationSteps?: { en: string[]; ja: string[] };
   steps: CoffeeStep[];
   generateSteps: (recipe: CoffeeRecipe, ...args: any[]) => Step[];
+  isDence?: boolean;
 }
 
 export type StepStatus = 'completed' | 'current' | 'upcoming' | 'next';
@@ -68,7 +69,7 @@ export type StepStatus = 'completed' | 'current' | 'upcoming' | 'next';
 export interface Step {
   timeSec: number;
   pourWaterMl: number;
-  cumulativeWaterMl: number;
+  cumulative: number;
   action: { en: (amount?: number) => string; ja: (amount?: number) => string; };
   status: StepStatus;
 }

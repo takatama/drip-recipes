@@ -2,12 +2,6 @@
 
 A precision coffee brewing timer that helps you achieve the perfect cup, no matter which pour-over method you use. Select from multiple brewing recipes and get guided steps to ensure consistent and delicious coffee every time.
 
-## Supported Brewing Methods
-
-Choose from a variety of brewing techniques, including:
-- **4:6 Method**: Developed by World Brewers Cup Champion Tetsu Kasuya, this method balances acidity and sweetness by dividing water into strategic pours.
-- **New Hybrid Method**: A new technique that uses Hario Switch to combine the best of both immersion and percolation brewing.
-
 ## Features
 
 ### 🎯 Smart Brewing Guidance
@@ -93,5 +87,6 @@ Contributions are welcome! Please **open an issue** or **submit a pull request**
 
 ## Acknowledgements
 - [Tetsu Kasuya](https://www.instagram.com/tetsukasuya/) for creating the 4:6 method and the new hybrid method.
+- [James Hoffmann](https://www.jameshoffmann.co.uk/) for creating the V60 technique.
 - [Cloudflare](https://pages.cloudflare.com/) for hosting
 

@@ -12,12 +12,14 @@ interface TimelineProps {
   language: 'en' | 'ja';
   steps: Step[];
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
+  isDence?: boolean;
 }
 
 const Timeline: React.FC<TimelineProps> = ({
   t,
   steps,
   setSteps,
+  isDence,
 }) => {
   const { currentTime, isRunning, start, pause, reset } = useTimer();
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
@@ -64,6 +66,7 @@ const Timeline: React.FC<TimelineProps> = ({
         setSteps={setSteps}
         currentTime={currentTime}
         onTimerComplete={handleTimerComplete}
+        isDence={isDence}
       />
       <Snackbar
         open={snackbarOpen}

@@ -36,12 +36,10 @@ export const newHybridMethod: CoffeeRecipe = {
   preparationSteps: {
     en: [
       "Prepare room temperature water",
-      "Warm up and rinse dripper",
       "Keep the switch closed (Up)"
     ],
     ja: [
       "常温の水を準備",
-      "ドリッパーをお湯ですすぐ",
       "スイッチを閉める (Close / Up)"
     ]
   },
@@ -50,32 +48,32 @@ export const newHybridMethod: CoffeeRecipe = {
       time: 0,
       waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.42 : (flavor === 'sour' ? 0.58 : 0.5)),
       action: {
-        en: (cumulativeWaterMl?: number) => `(Close / Up) Pour up to ${cumulativeWaterMl}g`,
-        ja: (cumulativeWaterMl?: number) => `(Close / Up) ${cumulativeWaterMl}g まで注湯`,
+        en: (cumulative: number) => `(Close / Up) Pour up to ${cumulative}g`,
+        ja: (cumulative: number) => `(Close / Up) ${cumulative}g まで注湯`,
       },
     },
     {
       time: 40,
       waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.58 : (flavor === 'sour' ? 0.42 : 0.5)),
       action: {
-        en: (cumulativeWaterMl?: number) => `(Open / Down) Pour up to ${cumulativeWaterMl}g`,
-        ja: (cumulativeWaterMl?: number) => `(Open / Down) ${cumulativeWaterMl}g まで注湯`,
+        en: (cumulative: number) => `(Open / Down) Pour up to ${cumulative}g`,
+        ja: (cumulative: number) => `(Open / Down) ${cumulative}g まで注湯`,
       },
     },
     {
       time: 90,
       waterFormula: (beansAmount, waterRatio) => beansAmount * waterRatio * 0.6 / 2,
       action: {
-        en: (cumulativeWaterMl?: number) => `Pour up to ${cumulativeWaterMl}g then cool to 70℃`,
-        ja: (cumulativeWaterMl?: number) => `${cumulativeWaterMl}g まで注湯後、70℃まで下げる`,
+        en: (cumulative: number) => `Pour up to ${cumulative}g then cool to 70℃`,
+        ja: (cumulative: number) => `${cumulative}g まで注湯後、70℃まで下げる`,
       },
     },
     {
       time: 130,
       waterFormula: (beansAmount, waterRatio) => beansAmount * waterRatio * 0.6 / 2,
       action: {
-        en: (cumulativeWaterMl?: number) => `(Close / Up) Pour up to ${cumulativeWaterMl}g`,
-        ja: (cumulativeWaterMl?: number) => `(Close / Up) ${cumulativeWaterMl}g まで注湯`,
+        en: (cumulative: number) => `(Close / Up) Pour up to ${cumulative}g`,
+        ja: (cumulative: number) => `(Close / Up) ${cumulative}g まで注湯`,
       },
     },
     {
@@ -108,7 +106,7 @@ export const newHybridMethod: CoffeeRecipe = {
       outputSteps.push({
         timeSec: currentTime,
         pourWaterMl: increment,
-        cumulativeWaterMl: cumulative,
+        cumulative: cumulative,
         action: step.action,
         status: 'upcoming'
       });
