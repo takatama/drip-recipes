@@ -82,7 +82,7 @@ const EnumInput: React.FC<{
   );
 };
 
-const DynamicSettings: React.FC<InputParamsProps> = ({
+const InputParams: React.FC<InputParamsProps> = ({
   params,
   values,
   onChange,
@@ -152,4 +152,4 @@ const DynamicSettings: React.FC<InputParamsProps> = ({
   );
 };
 
-export default DynamicSettings;
+export default InputParams;

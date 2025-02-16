@@ -20,11 +20,17 @@ const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ recipe }) => {
   const t = translations[language];
   const { lang } = useParams();
   const navigate = useNavigate();
-  const [beansAmount, setBeansAmount] = useState(20);
-  const [flavor, setFlavor] = useState('neutral');
+
+  const getDefaultValue = (key: string) => {
+    const param = recipe.params.find(p => p.key === key);
+    return param?.default || null;
+  };
+
+  const [roastLevel, setRoastLevel] = useState(getDefaultValue('roastLevel') || 'mediumRoast');
+  const [beansAmount, setBeansAmount] = useState(getDefaultValue('beansAmount') || 20);
+  const [flavor, setFlavor] = useState(getDefaultValue('flavor') || 'neutral');
+  const [strength, setStrength] = useState(getDefaultValue('strength') || 'medium');
   const [steps, setSteps] = useState<Step[]>([]);
-  const [roastLevel, setRoastLevel] = useState('mediumRoast');
-  const [strength, setStrength] = useState('medium');
 
   useEffect(() => {
     if (lang && lang !== language) {
