@@ -179,7 +179,7 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
                   }[step.status]
                 }}
               >
-                {step.action[language](Math.round(step.cumulativeWaterMl))}
+                {step.action[language](Math.round(step.cumulative))}
               </Typography>
             </Box>
           );

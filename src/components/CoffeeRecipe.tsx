@@ -77,7 +77,7 @@ const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ recipe }) => {
         }}
       />
 
-      <Typography
+      {recipe.preparationSteps && recipe.preparationSteps[language]?.length > 0 && (<Typography
         variant="body2"
         component="div"
         sx={{
@@ -87,13 +87,13 @@ const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ recipe }) => {
         }}
       >
         <div style={{ marginBottom: '8px' }}>{t.preparation}</div>
-        {recipe.preparationSteps && recipe.preparationSteps[language].map((step, index) => (
+        {recipe.preparationSteps[language].map((step, index) => (
           <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
             <span style={{ marginRight: '8px' }}>•</span>
             {step}
           </div>
         ))}
-      </Typography>
+      </Typography>)}
 
       <Timeline
         t={t}
