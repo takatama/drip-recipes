@@ -26,7 +26,6 @@ const RecipeDescription: React.FC<Props> = ({ recipe, language, t }) => {
       </AccordionSummary>
       <AccordionSummary>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Typography variant='body2'>{recipe.description[language]}</Typography>
           <Box
             sx={{
               position: 'relative',
@@ -51,6 +50,7 @@ const RecipeDescription: React.FC<Props> = ({ recipe, language, t }) => {
               title="Recipe Video"
             />
           </Box>
+          <Typography variant='body2'>{recipe.description[language]}</Typography>
         </Box>
       </AccordionSummary>
     </Accordion>
