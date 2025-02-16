@@ -61,6 +61,7 @@ export interface CoffeeRecipe {
   preparationSteps?: { en: string[]; ja: string[] };
   steps: CoffeeStep[];
   generateSteps: (recipe: CoffeeRecipe, ...args: any[]) => Step[];
+  isDence?: boolean;
 }
 
 export type StepStatus = 'completed' | 'current' | 'upcoming' | 'next';

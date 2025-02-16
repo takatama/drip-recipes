@@ -101,6 +101,7 @@ const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ recipe }) => {
         language={language}
         steps={steps}
         setSteps={setSteps}
+        isDence={recipe.isDence}
       />
 
       <Footer t={t} />

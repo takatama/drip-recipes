@@ -9,13 +9,12 @@ interface StepsProps {
   currentTime: number;
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
   onTimerComplete: () => void;
+  isDence?: boolean;
 }
 
 const CONTAINER_HEIGHT = 400;
-const TOTAL_TIME = 210;
 const MARKER_SIZE = 8;
 const ARROW_OFFSET = 45;
-const ARROW_HEIGHT = 30;
 const TIMELINE_WIDTH = 340;
 const SMALL_TIMELINE_WIDTH = 260;
 const STEP_TEXT_MARGIN = 20;
@@ -23,13 +22,15 @@ const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 3;
 
-const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComplete }) => {
+const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComplete, isDence }) => {
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef(new Audio());
   const finishAudio = useRef(new Audio());
   const isSmallScreen = useMediaQuery('(max-width:465px)');
   const { darkMode, notificationMode, language, voice } = useSettings();
   const { playAudio, vibrate } = useNotification({ language, voice, notificationMode });
+  const totalTime = steps[steps.length - 1]?.timeSec;
+  const arrowHeight = isDence ? 12 : 25;
 
   // Reset isPlaying when audio ends
   useEffect(() => {
@@ -51,13 +52,13 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
 
   // Calculate arrow position (for timeline progress)
   const getArrowTop = () => {
-    const clampedTime = Math.min(currentTime, TOTAL_TIME);
-    return (clampedTime / TOTAL_TIME) * CONTAINER_HEIGHT - ARROW_HEIGHT + FIRST_STEP_OFFSET;
+    const clampedTime = Math.min(currentTime, totalTime);
+    return (clampedTime / totalTime) * CONTAINER_HEIGHT - arrowHeight + FIRST_STEP_OFFSET;
   };
 
   // Add function to update step statuses
   const getStepPosition = (time: number) => {
-    const topPos = (time / TOTAL_TIME) * CONTAINER_HEIGHT;
+    const topPos = (time / totalTime) * CONTAINER_HEIGHT;
     return time === 0 ? FIRST_STEP_OFFSET : topPos + FIRST_STEP_OFFSET;
   };
 
@@ -117,7 +118,7 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
         <Box
           sx={{
             position: 'absolute',
-            top: `${FIRST_STEP_OFFSET - 10}px`,
+            top: `${isDence ? FIRST_STEP_OFFSET : FIRST_STEP_OFFSET - 16}px`,
             left: -2,
             height: `${CONTAINER_HEIGHT}px`,
             borderLeft: '3px solid #ccc'
@@ -142,7 +143,7 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
                 sx={{
                   position: 'absolute',
                   left: -1,
-                  top: '25%',
+                  top: `${isDence ? '50%' : '20%'}`,
                   width: `${MARKER_SIZE}px`,
                   height: `${MARKER_SIZE}px`,
                   bgcolor: darkMode ? 'white' : 'black',
@@ -151,7 +152,22 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
                 }}
               />
               {/* Step text with horizontal line */}
-              <Typography
+              {isDence ? (<Typography
+                variant="body2"
+                sx={{
+                  ml: `${STEP_TEXT_MARGIN}px`,
+                  fontSize: FONT_SIZE,
+                  ...{
+                    current: { fontWeight: 'bold' },
+                    next: { fontWeight: 'bold', color: 'primary.main' },
+                    completed: { textDecoration: 'line-through', color: 'text.secondary' },
+                    upcoming: { color: 'text.primary' }
+                  }[step.status]
+                }}
+              >
+                {formatTime(step.timeSec)} {step.action[language](Math.round(step.cumulative))}
+              </Typography>
+              ) : (<><Typography
                 variant="body2"
                 sx={{
                   ml: `${STEP_TEXT_MARGIN}px`,
@@ -180,7 +196,7 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
                 }}
               >
                 {step.action[language](Math.round(step.cumulative))}
-              </Typography>
+              </Typography></>)}
             </Box>
           );
         })}
