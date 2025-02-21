@@ -58,7 +58,7 @@ export const fourToSixMethod: CoffeeRecipe = {
       },
       action: {
         en: (cumulative: number) => `Pour up to ${cumulative}g`,
-        ja: (cumulative: number) => `1 ${cumulative}g まで注湯`,
+        ja: (cumulative: number) => `${cumulative}g まで注湯`,
       },
     },
     {
@@ -68,7 +68,7 @@ export const fourToSixMethod: CoffeeRecipe = {
       },
       action: {
         en: (cumulative: number) => `Pour up to ${cumulative}g`,
-        ja: (cumulative: number) => `2 ${cumulative}g まで注湯`,
+        ja: (cumulative: number) => `${cumulative}g まで注湯`,
       },
     },
     {
@@ -78,7 +78,7 @@ export const fourToSixMethod: CoffeeRecipe = {
       },
       action: {
         en: (cumulative: number) => `Pour up to ${cumulative}g`,
-        ja: (cumulative: number) => `3 ${cumulative}g まで注湯`,
+        ja: (cumulative: number) => `${cumulative}g まで注湯`,
       },
     },
     {
