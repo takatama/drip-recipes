@@ -31,7 +31,7 @@ export const fourToSixMethod: CoffeeRecipe = {
     { key: "beansAmount", unit: "g", type: "number", input: true, default: 20 },
     { key: "waterAmount", unit: "ml", type: "number", input: false, formula: (beansAmount, waterRatio) => beansAmount * waterRatio },
     { key: "flavor", type: "enum", input: true, options: ["sweet", "neutral", "sour"], default: "neutral" },
-    { key: "strength", type: "enum", input: true, options: ["light", "medium", "strong"], default: "med" }
+    { key: "strength", type: "enum", input: true, options: ["light", "medium", "strong"], default: "medium" }
   ],
   waterRatio: 15,
   steps: [
