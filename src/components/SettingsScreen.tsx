@@ -36,7 +36,7 @@ const SettingsScreen : React.FC = () => {
       color: 'text.primary',
       minHeight: '100vh',
      }}>
-      <Header language={language} t={t} />
+      <Header language={language} t={t} pathname={`/${language}/settings`}/>
 
       <Typography variant="h6" sx={{ mb: 2 }}>{t.settings}</Typography>
 

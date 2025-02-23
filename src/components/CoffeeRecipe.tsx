@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import { Container, Typography } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
@@ -55,7 +53,7 @@ const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ recipe }) => {
       py: 2,
       width: '100%',
     }}>
-      <Header language={language} t={t} />
+      <Header language={language} t={t} pathname={`/${language}/recipes/featured/${recipe.id}`}/>
 
       <Typography variant="h5" align="center" gutterBottom>
         {recipe.name[language]}

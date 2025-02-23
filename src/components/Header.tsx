@@ -1,17 +1,16 @@
 import React from 'react';
+import Link from 'next/link';
 import { Box, IconButton, Typography } from '@mui/material';
-import { useRouter, usePathname } from 'next/navigation';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { LanguageType, TranslationType } from '../types';
 
 interface HeaderProps {
   language: LanguageType;
   t: TranslationType;
+  pathname: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ language, t }) => {
-  const router = useRouter();
-  const pathname = usePathname();
+const Header: React.FC<HeaderProps> = ({ language, t, pathname }) => {
 
   return (
     <Box
@@ -24,28 +23,30 @@ const Header: React.FC<HeaderProps> = ({ language, t }) => {
       }}
     >
       {/* Drip Recipes logo */}
-      <Typography
-        variant="h6"
-        onClick={() => router.push(`/${language}/recipes`)}
-        sx={{
-          cursor: 'pointer',
-          fontFamily: 'Raleway',
-          fontWeight: 'bold',
-        }}
-      >
-        Drip Recipes
-      </Typography>
+      <Link href={`/${language}/recipes`} style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Typography
+          variant="h6"
+          sx={{
+            cursor: 'pointer',
+            fontFamily: 'Raleway',
+            fontWeight: 'bold',
+          }}
+        >
+          Drip Recipes
+        </Typography>
+      </Link>
 
       {/* Settings Button */}
-      <IconButton
-        onClick={() =>
-          router.push(`/${language}/settings?from=${encodeURIComponent(pathname)}`)
-        }
-        color="inherit"
-        title={t.settings}
+      <Link
+        href={`/${language}/settings${
+          pathname ? `?from=${encodeURIComponent(pathname)}` : ''
+        }`}
+        style={{ textDecoration: 'none', color: 'inherit' }}
       >
-        <SettingsIcon />
-      </IconButton>
+        <IconButton color="inherit" title={t.settings}>
+          <SettingsIcon />
+        </IconButton>
+      </Link>
     </Box>
   );
 };

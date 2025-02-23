@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
@@ -29,7 +27,7 @@ const RecipeList: React.FC<RecipeListProps> = ({ recipes, lang }) => {
       py: 2,
       width: '100%',
     }}>
-      <Header language={language} t={t} />
+      <Header language={language} t={t} pathname={`/${language}/recipes`}/>
 
       <Grid container spacing={3} sx={{ p: 2, mb: 2 }}>
         {recipes.map((recipe) => (
