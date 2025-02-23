@@ -49,7 +49,8 @@ const Timeline: React.FC<TimelineProps> = ({
     reset();
   };
 
-  const handleTimerComplete = () => {
+  const handleTimerComplete = async () => {
+    await releaseWakeLock();
     pause();
   };
 
