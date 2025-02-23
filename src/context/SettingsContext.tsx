@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 import { LanguageType, NotificationMode, VoiceType } from '../types';
 
 interface SettingsContextProps {
@@ -25,9 +26,13 @@ interface Settings {
 
 // Get initial settings from localStorage or use defaults
 const getInitialSettings = (): Settings => {
-  const storedSettings = localStorage.getItem('settings');
+  const storedSettings = Cookies.get('settings');
   if (storedSettings) {
-    return JSON.parse(storedSettings);
+    try {
+      return JSON.parse(storedSettings);
+    } catch (error) {
+      console.error('Cookie parse error:', error);
+    }
   }
 
   // Default settings
@@ -44,11 +49,11 @@ const getInitialSettings = (): Settings => {
 };
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [settings, setSettings] = useState(getInitialSettings());
+  const [settings, setSettings] = useState<Settings>(getInitialSettings());
 
-  // Save settings to localStorage whenever they change
+  // Save settings to cookie whenever they change
   useEffect(() => {
-    localStorage.setItem('settings', JSON.stringify(settings));
+    Cookies.set('settings', JSON.stringify(settings), { expires: 365 });
   }, [settings]);
 
   const setLanguage = (lang: LanguageType) => {
@@ -64,7 +69,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const setVoice = (voice: VoiceType) => {
-    setSettings(prev => ({ ...prev, voice: voice }));
+    setSettings(prev => ({ ...prev, voice }));
   };
 
   return (
