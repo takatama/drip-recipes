@@ -1,13 +1,6 @@
-// useWakeLock.ts
 import { useState, useEffect, useCallback } from 'react';
 
 export const useWakeLock = () => {
-  // 型定義が必要な場合は、TypeScript で下記のように型を定義することもできます。
-  // interface WakeLockSentinel extends EventTarget {
-  //   release: () => Promise<void>;
-  //   // その他必要なプロパティ
-  // }
-
   const [wakeLock, setWakeLock] = useState<any>(null);
 
   const requestWakeLock = useCallback(async () => {

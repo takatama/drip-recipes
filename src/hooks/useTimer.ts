@@ -1,4 +1,3 @@
-// useTimer.ts
 import { useState, useRef, useCallback, useEffect } from 'react';
 
 export const useTimer = (updateInterval: number = 0.1) => {
