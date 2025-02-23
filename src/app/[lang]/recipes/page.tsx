@@ -1,10 +1,8 @@
-'use client';
-
-import { useParams } from 'next/navigation';
 import RecipeList from '../../../components/RecipeList';
 import { newHybridMethod } from '../../../recipes/new-hybird-method';
 import { hoffmannBetter1CupV60 } from '../../../recipes/hoffmann-better-1cup-v60';
 import { fourToSixMethod } from '../../../recipes/four-to-six-method';
+import { LanguageType } from '@/types';
 
 const recipeMap: { [key: string]: any } = {
   'new-hybrid-method': newHybridMethod,
@@ -14,9 +12,12 @@ const recipeMap: { [key: string]: any } = {
 
 const recipes = Object.values(recipeMap);
 
-export default function RecipeListPage() {
-  const params = useParams();
-  const { lang } = params;
-
-  return <RecipeList recipes={recipes} lang={String(lang)} />;
+export default async function RecipeListPage({
+  params,
+}: {
+  params: Promise<{ lang: string }>
+}) {
+  const lang = (await params).lang;
+  const validLang = ['en', 'ja'].includes(lang) ? lang : 'en';
+  return <RecipeList recipes={recipes} lang={validLang as LanguageType} />;
 }
