@@ -1,7 +1,7 @@
 import CoffeeRecipe from '../../../../../components/CoffeeRecipe';
 import { LanguageType } from '@/types';
 
-export const dynamic = 'force-static';
+// export const dynamicParams = false;
 
 export async function generateStaticParams() {
   return [
