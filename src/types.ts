@@ -39,7 +39,7 @@ export interface CoffeeParam {
   type: 'number' | 'enum';
   input: boolean;
   default?: any;
-  fomulaType?: 'waterAmount' | 'waterTemp';
+  formulaType?: 'waterAmount' | 'waterTemp';
   temps?: { [key: string]: number };
   options?: string[];
 }

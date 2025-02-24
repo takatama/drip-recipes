@@ -84,14 +84,14 @@ const EnumInput: React.FC<{
 
 const waterAmountFormula = (beansAmount: number, waterRatio: number) =>  Math.floor(beansAmount * waterRatio);
 
-const waterTempFomula = (temps: any, roastLevel: RoastLevelType) => temps[roastLevel];
+const waterTempFormula = (temps: any, roastLevel: RoastLevelType) => temps[roastLevel];
 
-const calcFomula = (fomulaType: string, temps: any, beansAmount: number, waterRatio: number, roastLevel: RoastLevelType) => {
-  if (fomulaType === 'waterAmount') {
+const calcFormula = (formulaType: string, temps: any, beansAmount: number, waterRatio: number, roastLevel: RoastLevelType) => {
+  if (formulaType === 'waterAmount') {
     return waterAmountFormula(beansAmount, waterRatio);
   }
-  if (fomulaType === 'waterTemp') {
-    return waterTempFomula(temps, roastLevel);
+  if (formulaType === 'waterTemp') {
+    return waterTempFormula(temps, roastLevel);
   }
   return null;
 }
@@ -120,7 +120,7 @@ const InputParams: React.FC<InputParamsProps> = ({
                   {String(t[param.key])}:
                 </TableCell>
                 <TableCell align="left">
-                  {param.fomulaType ? calcFomula(param.fomulaType, param.temps, values.beansAmount, values.waterRatio, values.roastLevel) : param.default}
+                  {param.formulaType ? calcFormula(param.formulaType, param.temps, values.beansAmount, values.waterRatio, values.roastLevel) : param.default}
                   {param.unit || ''}
                 </TableCell>
               </TableRow>

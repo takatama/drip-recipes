@@ -28,9 +28,9 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
   waterRatio: 16.67,
   params: [
     { key: "roastLevel", type: "enum", input: true, options: ["lightRoast", "mediumRoast", "darkRoast"], default: "mediumRoast" },
-    { key: "waterTemp", unit: "℃", type: "number", input: false, fomulaType: "waterTemp", temps: { "lightRoast": 100, "mediumRoast": 93, "darkRoast" : 83 } },
+    { key: "waterTemp", unit: "℃", type: "number", input: false, formulaType: "waterTemp", temps: { "lightRoast": 100, "mediumRoast": 93, "darkRoast" : 83 } },
     { key: "beansAmount", unit: "g", type: "number", input: true, default: 15 },
-    { key: "waterAmount", unit: "ml", type: "number", input: false, fomulaType: "waterAmount" },
+    { key: "waterAmount", unit: "ml", type: "number", input: false, formulaType: "waterAmount" },
   ],
   stepType: "normal",
   steps: [
