@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { Typography } from '@mui/material';
 import InputParams from './InputParams';
 import Timeline from './Timeline';
-import { CoffeeRecipeType, LanguageType, Step } from '../types';
+import { CoffeeRecipeType, LanguageType, Step, TranslationType, RoastLevelType } from '../types';
 import { generateSteps } from '@/utils/generateSteps';
 
 interface CoffeeTimerProps {
   recipe: CoffeeRecipeType;
-  t: any;
+  t: TranslationType;
   language: LanguageType;
 }
 
@@ -19,10 +19,10 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, t, language }) => {
     return param?.default || null;
   };
 
-  const [roastLevel, setRoastLevel] = useState(getDefaultValue('roastLevel') || 'mediumRoast');
-  const [beansAmount, setBeansAmount] = useState(getDefaultValue('beansAmount') || 20);
-  const [flavor, setFlavor] = useState(getDefaultValue('flavor') || 'neutral');
-  const [strength, setStrength] = useState(getDefaultValue('strength') || 'medium');
+  const [roastLevel, setRoastLevel] = useState<RoastLevelType>(getDefaultValue('roastLevel') as RoastLevelType || 'mediumRoast');
+  const [beansAmount, setBeansAmount] = useState<number>(Number(getDefaultValue('beansAmount')) || 20);
+  const [flavor, setFlavor] = useState<string>(String(getDefaultValue('flavor')) || 'neutral');
+  const [strength, setStrength] = useState<string>(String(getDefaultValue('strength')) || 'medium');
   const [steps, setSteps] = useState<Step[]>([]);
 
   useEffect(() => {
@@ -43,10 +43,10 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, t, language }) => {
           strength,
         }}
         onChange={(key, value) => {
-          if (key === 'beansAmount') setBeansAmount(value);
-          if (key === 'flavor') setFlavor(value);
-          if (key === 'roastLevel') setRoastLevel(value);
-          if (key === 'strength') setStrength(value);
+          if (key === 'beansAmount') setBeansAmount(Number(value));
+          if (key === 'flavor') setFlavor(String(value));
+          if (key === 'roastLevel') setRoastLevel(value as RoastLevelType);
+          if (key === 'strength') setStrength(String(value));
         }}
       />
 

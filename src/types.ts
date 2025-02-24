@@ -38,9 +38,9 @@ export interface CoffeeParam {
   unit?: string;
   type: 'number' | 'enum';
   input: boolean;
-  default?: any;
+  default?: number | string;
   formulaType?: 'waterAmount' | 'waterTemp';
-  temps?: { [key: string]: number };
+  temps?: Record<RoastLevelType, number>;
   options?: string[];
 }
 

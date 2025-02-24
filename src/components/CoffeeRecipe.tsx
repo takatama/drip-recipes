@@ -15,7 +15,7 @@ interface CoffeeRecipeProps {
   lang: LanguageType;
 }
 
-const recipeMap: { [key: string]: any } = {
+const recipeMap: { [key: string]: CoffeeRecipeType } = {
   'new-hybrid-method': newHybridMethod,
   'hoffmann-better-1cup-v60': hoffmannBetter1CupV60,
   'four-to-six-method': fourToSixMethod,

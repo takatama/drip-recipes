@@ -2,9 +2,9 @@ import RecipeList from '../../../components/RecipeList';
 import { newHybridMethod } from '../../../recipes/new-hybird-method';
 import { hoffmannBetter1CupV60 } from '../../../recipes/hoffmann-better-1cup-v60';
 import { fourToSixMethod } from '../../../recipes/four-to-six-method';
-import { LanguageType } from '@/types';
+import { CoffeeRecipeType, LanguageType } from '@/types';
 
-const recipeMap: { [key: string]: any } = {
+const recipeMap: { [key: string]: CoffeeRecipeType } = {
   'new-hybrid-method': newHybridMethod,
   'hoffmann-better-1cup-v60': hoffmannBetter1CupV60,
   'four-to-six-method': fourToSixMethod,

@@ -23,7 +23,7 @@ interface InputParamsValues {
 interface InputParamsProps {
   params: CoffeeParam[];
   values: InputParamsValues;
-  onChange: (key: string, value: any) => void;
+  onChange: (key: string, value: number | string) => void;
   t: TranslationType;
 }
 
@@ -84,13 +84,13 @@ const EnumInput: React.FC<{
 
 const waterAmountFormula = (beansAmount: number, waterRatio: number) =>  Math.floor(Math.round(beansAmount * waterRatio));
 
-const waterTempFormula = (temps: any, roastLevel: RoastLevelType) => temps[roastLevel];
+const waterTempFormula = (temps: Record<RoastLevelType, number>, roastLevel: RoastLevelType): number => temps[roastLevel];
 
-const calcFormula = (formulaType: string, temps: any, beansAmount: number, waterRatio: number, roastLevel: RoastLevelType) => {
+const calcFormula = (formulaType: string, beansAmount: number, waterRatio: number, roastLevel: RoastLevelType, temps?: Record<RoastLevelType, number>) => {
   if (formulaType === 'waterAmount') {
     return waterAmountFormula(beansAmount, waterRatio);
   }
-  if (formulaType === 'waterTemp') {
+  if (formulaType === 'waterTemp' && temps) {
     return waterTempFormula(temps, roastLevel);
   }
   return null;
@@ -120,7 +120,7 @@ const InputParams: React.FC<InputParamsProps> = ({
                   {String(t[param.key])}:
                 </TableCell>
                 <TableCell align="left">
-                  {param.formulaType ? calcFormula(param.formulaType, param.temps, values.beansAmount, values.waterRatio, values.roastLevel) : param.default}
+                  {param.formulaType ? calcFormula(param.formulaType, values.beansAmount, values.waterRatio, values.roastLevel, param.temps) : param.default}
                   {param.unit || ''}
                 </TableCell>
               </TableRow>
