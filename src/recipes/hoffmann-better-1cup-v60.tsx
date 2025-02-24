@@ -1,6 +1,6 @@
-import { CoffeeRecipe } from "../types";
+import { CoffeeRecipeType } from "../types";
 
-export const hoffmannBetter1CupV60: CoffeeRecipe = {
+export const hoffmannBetter1CupV60: CoffeeRecipeType = {
   id: "hoffmann-better-1cup-v60",
   name: {
     en: "A Better 1 Cup V60 Technique",

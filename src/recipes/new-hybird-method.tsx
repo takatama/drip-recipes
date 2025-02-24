@@ -1,7 +1,7 @@
-import { CoffeeRecipe } from "../types";
+import { CoffeeRecipeType } from "../types";
 import { Step } from "../types";
 
-export const newHybridMethod: CoffeeRecipe = {
+export const newHybridMethod: CoffeeRecipeType = {
   id: "new-hybrid-method",
   name: {
     en: "New Hybrid Method",

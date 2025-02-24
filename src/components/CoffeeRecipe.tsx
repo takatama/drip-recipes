@@ -4,7 +4,7 @@ import Header from './Header';
 import Footer from './Footer';
 import RecipeDescription from './RecipeDescription';
 import { translations } from '../translations';
-import { CoffeeRecipe as CoffeeRecipeType, LanguageType } from '../types';
+import { CoffeeRecipeType, LanguageType } from '../types';
 import CoffeeTimer from './CoffeeTimer';
 import { newHybridMethod } from '../recipes/new-hybird-method';
 import { hoffmannBetter1CupV60 } from '../recipes/hoffmann-better-1cup-v60';

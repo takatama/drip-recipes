@@ -1,10 +1,10 @@
 import React from 'react';
 import { Typography, Accordion, AccordionSummary, Box } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
-import { CoffeeRecipe, TranslationType } from '../types';
+import { CoffeeRecipeType, TranslationType } from '../types';
 
 type Props = {
-  recipe: CoffeeRecipe,
+  recipe: CoffeeRecipeType,
   language: 'en' | 'ja',
   t: TranslationType;
 };

@@ -1,6 +1,6 @@
-import { CoffeeRecipe, Step } from "../types";
+import { CoffeeRecipeType, Step } from "../types";
 
-export const fourToSixMethod: CoffeeRecipe = {
+export const fourToSixMethod: CoffeeRecipeType = {
   id: "four-to-six-method",
   name: {
     en: "4:6 Method",

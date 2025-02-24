@@ -1,6 +1,6 @@
-import { CoffeeRecipe, Step } from "../types";
+import { CoffeeRecipeType, Step } from "../types";
 
-const generateStrengthSteps = (recipe: CoffeeRecipe, beansAmount: number, flavor: string, strengthSteps: number) => {
+const generateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, flavor: string, strengthSteps: number) => {
   const outputSteps: Step[] = [];
   let cumulative = 0;
 
@@ -36,7 +36,7 @@ const generateStrengthSteps = (recipe: CoffeeRecipe, beansAmount: number, flavor
   return outputSteps;
 }
 
-const generateNormalSteps = (recipe: CoffeeRecipe, beansAmount: number, flavor: string) => {
+const generateNormalSteps = (recipe: CoffeeRecipeType, beansAmount: number, flavor: string) => {
   const outputSteps: Step[] = [];
   let cumulative = 0;
 
@@ -68,7 +68,7 @@ const generateNormalSteps = (recipe: CoffeeRecipe, beansAmount: number, flavor: 
 }
 
 export function generateSteps(
-  recipe: CoffeeRecipe,
+  recipe: CoffeeRecipeType,
   beansAmount: number,
   flavor: string,
   strength?: string

@@ -2,14 +2,14 @@ import React from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { CoffeeRecipe, LanguageType } from '../types';
+import { CoffeeRecipeType, LanguageType } from '../types';
 import { translations } from '../translations';
 import Header from './Header';
 import Footer from './Footer';
 import Container from '@mui/material/Container';
 
 interface RecipeListProps {
-  recipes: CoffeeRecipe[];
+  recipes: CoffeeRecipeType[];
   lang: LanguageType;
 }
 
