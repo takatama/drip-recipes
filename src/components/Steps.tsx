@@ -102,6 +102,7 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
   // Update useEffect for timer
   useEffect(() => {
     updateStepStatuses(currentTime);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTime]);
 
   return (
