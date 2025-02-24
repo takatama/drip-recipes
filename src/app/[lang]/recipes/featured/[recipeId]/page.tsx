@@ -1,6 +1,8 @@
 import CoffeeRecipe from '../../../../../components/CoffeeRecipe';
 import { LanguageType } from '@/types';
 
+export const dynamic = 'force-static';
+
 export async function generateStaticParams() {
   return [
     { lang: 'en', recipeId: 'new-hybrid-method' }, { lang: 'ja', recipeId: 'new-hybrid-method' },

@@ -4,6 +4,8 @@ import { hoffmannBetter1CupV60 } from '../../../recipes/hoffmann-better-1cup-v60
 import { fourToSixMethod } from '../../../recipes/four-to-six-method';
 import { CoffeeRecipeType, LanguageType } from '@/types';
 
+export const dynamic = 'force-static';
+
 export async function generateStaticParams() {
   return [{ lang: 'en' }, { lang: 'ja' }];
 }
