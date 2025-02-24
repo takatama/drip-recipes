@@ -46,7 +46,7 @@ export interface CoffeeParam {
 
 interface CoffeeStep {
   time?: number;
-  timeFomula?: (...args: any[]) => number | null;
+  calcTime?: boolean;
   waterFormula: (...args: any[]) => number;
   action: { en: (...args: any[]) => string; ja: (...args: any[]) => string; };
 }

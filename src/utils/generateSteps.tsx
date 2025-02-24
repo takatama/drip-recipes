@@ -1,13 +1,17 @@
 import { CoffeeRecipeType, Step } from "../types";
 
+const calcTimeForStrengthStep = (strengthSteps: number, stepCount: number) => strengthSteps > stepCount ? 90 + (210 - 90) / strengthSteps * stepCount: null;
+
 const generateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, flavor: string, strengthSteps: number) => {
   const outputSteps: Step[] = [];
   let cumulative = 0;
+  let stepCount = 0;
 
   for (const step of recipe.steps) {
     let stepTime: number | null = 0;
-    if (step.timeFomula && typeof step.timeFomula === 'function') {
-      stepTime = strengthSteps !== undefined ? step.timeFomula(strengthSteps) : step.timeFomula(0);
+    if (step.calcTime) {
+      stepCount++;
+      stepTime = calcTimeForStrengthStep(strengthSteps, stepCount);
     } else if (typeof step.time === 'number') {
       stepTime = step.time;
     }
@@ -41,18 +45,7 @@ const generateNormalSteps = (recipe: CoffeeRecipeType, beansAmount: number, flav
   let cumulative = 0;
 
   for (const step of recipe.steps) {
-    let stepTime: number | null = 0;
-    if (step.timeFomula && typeof step.timeFomula === 'function') {
-      stepTime = step.timeFomula();
-    } else if (typeof step.time === 'number') {
-      stepTime = step.time;
-    }
-
-    if (stepTime === null) {
-      continue;
-    }
-
-    // If the step has a timeFormula, calculate the time
+    let stepTime = Number(step.time);
     const increment = step.waterFormula(beansAmount, recipe.waterRatio, flavor);
     cumulative += increment;
 

@@ -37,7 +37,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
   stepType: "strength",
   steps: [
     {
-      timeFomula: (_strengthSteps) => 0,
+      time: 0,
       waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.42 : (flavor === 'sour' ? 0.58 : 0.5)),
       action: {
         en: (cumulative: number) => `Pour up to ${cumulative}g`,
@@ -45,7 +45,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
       },
     },
     {
-      timeFomula: (_strengthSteps) => 45,
+      time: 45,
       waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.58 : (flavor === 'sour' ? 0.42 : 0.5)),
       action: {
         en: (cumulative: number) => `Pour up to ${cumulative}g`,
@@ -53,7 +53,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
       },
     },
     {
-      timeFomula: (_strengthSteps) => 90,
+      time: 90,
       waterFormula: (beansAmount, waterRatio, _flavor, strengthSteps) => {
         return beansAmount * waterRatio * 0.6 / strengthSteps;
       },
@@ -63,7 +63,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
       },
     },
     {
-      timeFomula: (strengthSteps) => strengthSteps > 1 ? 90 + (210 - 90) / strengthSteps : null,
+      calcTime: true,
       waterFormula: (beansAmount, waterRatio, _flavor, strengthSteps) => {
         return beansAmount * waterRatio * 0.6 / strengthSteps;
       },
@@ -73,7 +73,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
       },
     },
     {
-      timeFomula: (strengthSteps) => strengthSteps > 2 ? 90 + (210 - 90) / strengthSteps * 2 : null,
+      calcTime: true,
       waterFormula: (beansAmount, waterRatio, _flavor, strengthSteps) => {
         return beansAmount * waterRatio * 0.6 / strengthSteps;
       },
@@ -83,7 +83,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
       },
     },
     {
-      timeFomula: () => 210,
+      time: 210,
       waterFormula: (_beansAmount, _waterRatio) => 0,
       action: {
         en: () => "Finish",
