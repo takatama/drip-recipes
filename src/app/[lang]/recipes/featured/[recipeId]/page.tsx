@@ -1,4 +1,3 @@
-'use client';
 import CoffeeRecipe from '../../../../../components/CoffeeRecipe';
 import { LanguageType } from '@/types';
 
