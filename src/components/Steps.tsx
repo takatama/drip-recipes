@@ -165,7 +165,7 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
                   }[step.status]
                 }}
               >
-                {formatTime(step.timeSec)} {step.action[language](Math.round(step.cumulative))}
+                {formatTime(step.timeSec)} {step.action[language]}
               </Typography>
               ) : (<><Typography
                 variant="body2"
@@ -195,7 +195,7 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
                   }[step.status]
                 }}
               >
-                {step.action[language](Math.round(step.cumulative))}
+                {step.action[language]}
               </Typography></>)}
             </Box>
           );

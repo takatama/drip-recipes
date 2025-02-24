@@ -40,47 +40,47 @@ export const fourToSixMethod: CoffeeRecipeType = {
       time: 0,
       waterAmountType: 'flavor1',
       action: {
-        en: (cumulative: number) => `Pour up to ${cumulative}g`,
-        ja: (cumulative: number) => `${cumulative}g まで注湯`,
+        en: "Pour up to ${cumulative}g to bloom",
+        ja: "${cumulative}g まで注湯し蒸らす",
       },
     },
     {
       time: 45,
       waterAmountType: 'flavor2',
       action: {
-        en: (cumulative: number) => `Pour up to ${cumulative}g`,
-        ja: (cumulative: number) => `${cumulative}g まで注湯`,
+        en: "Pour up to ${cumulative}g total",
+        ja: "${cumulative}g まで注湯",
       },
     },
     {
       time: 90,
       waterAmountType: 'strength',
       action: {
-        en: (cumulative: number) => `Pour up to ${cumulative}g`,
-        ja: (cumulative: number) => `${cumulative}g まで注湯`,
+        en: "Pour up to ${cumulative}g total",
+        ja: "${cumulative}g まで注湯",
       },
     },
     {
       calcTime: true,
       waterAmountType: 'strength',
       action: {
-        en: (cumulative: number) => `Pour up to ${cumulative}g`,
-        ja: (cumulative: number) => `${cumulative}g まで注湯`,
+        en: "Pour up to ${cumulative}g total",
+        ja: "${cumulative}g まで注湯",
       },
     },
     {
       calcTime: true,
       waterAmountType: 'strength',
       action: {
-        en: (cumulative: number) => `Pour up to ${cumulative}g`,
-        ja: (cumulative: number) => `${cumulative}g まで注湯`,
+        en: "Pour up to ${cumulative}g total",
+        ja: "${cumulative}g まで注湯",
       },
     },
     {
       time: 210,
       action: {
-        en: () => "Finish",
-        ja: () => "完成",
+        en: "Finish",
+        ja: "完成",
       },
     },
   ],

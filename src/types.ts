@@ -48,7 +48,7 @@ interface CoffeeStep {
   time?: number;
   calcTime?: boolean;
   waterAmountType?: 'fivePour' | 'flavor1' | 'flavor2' |'strength';
-  action: { en: (...args: any[]) => string; ja: (...args: any[]) => string; };
+  action: { en: string; ja: string; };
 }
 
 export interface CoffeeRecipeType {
@@ -71,7 +71,7 @@ export interface Step {
   timeSec: number;
   pourWaterMl: number;
   cumulative: number;
-  action: { en: (amount?: number) => string; ja: (amount?: number) => string; };
+  action: { en: string; ja: string; };
   status: StepStatus;
 }
 

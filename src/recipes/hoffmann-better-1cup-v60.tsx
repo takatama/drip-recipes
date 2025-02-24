@@ -38,61 +38,61 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
       time: 0,
       waterAmountType: 'fivePour',
       action: {
-        en: (cumulative: number) => `Pour ${cumulative}g to bloom`,
-        ja: (cumulative: number) => `${cumulative}gまで注湯し蒸らす`
+        en: "Pour up to ${cumulative}g to bloom",
+        ja: "${cumulative}g まで注湯し蒸らす",
       }
     },
     {
       time: 10,
       action: {
-        en: () => "Gently swirl",
-        ja: () => "ドリッパーを揺する"
+        en: "Gently swirl",
+        ja: "ドリッパーを揺する"
       }
     },
     {
       time: 45,
       waterAmountType: 'fivePour',
       action: {
-        en: (cumulative: number) => `Pour up to ${cumulative}g total`,
-        ja: (cumulative: number) => `${cumulative}gまで注湯`
+        en: "Pour up to ${cumulative}g total",
+        ja: "${cumulative}g まで注湯",
       }
     },
     {
       time: 70,
       waterAmountType: 'fivePour',
       action: {
-        en: (cumulative: number) => `Pour up to ${cumulative}g total`,
-        ja: (cumulative: number) => `${cumulative}gまで注湯`
+        en: "Pour up to ${cumulative}g total",
+        ja: "${cumulative}g まで注湯",
       }
     },
     {
       time: 90,
       waterAmountType: 'fivePour',
       action: {
-        en: (cumulative: number) => `Pour up to ${cumulative}g total`,
-        ja: (cumulative: number) => `${cumulative}gまで注湯`
+        en: "Pour up to ${cumulative}g total",
+        ja: "${cumulative}g まで注湯",
       }
     },
     {
       time: 110,
       waterAmountType: 'fivePour',
       action: {
-        en: (cumulative: number) => `Pour up to ${cumulative}g total`,
-        ja: (cumulative: number) => `${cumulative}gまで注湯`
+        en: "Pour up to ${cumulative}g total",
+        ja: "${cumulative}g まで注湯",
       }
     },
     {
       time: 120,
       action: {
-        en: () => "Gently swirl",
-        ja: () => "ドリッパーを揺する"
+        en: "Gently swirl",
+        ja: "ドリッパーを揺する"
       }
     },
     {
       time: 180,
       action: {
-        en: () => "Finish.",
-        ja: () => "完成。"
+        en: "Finish.",
+        ja: "完成。"
       }
     }
   ],

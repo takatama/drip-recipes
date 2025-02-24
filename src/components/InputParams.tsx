@@ -82,7 +82,7 @@ const EnumInput: React.FC<{
   );
 };
 
-const waterAmountFormula = (beansAmount: number, waterRatio: number) =>  Math.floor(beansAmount * waterRatio);
+const waterAmountFormula = (beansAmount: number, waterRatio: number) =>  Math.floor(Math.round(beansAmount * waterRatio));
 
 const waterTempFormula = (temps: any, roastLevel: RoastLevelType) => temps[roastLevel];
 

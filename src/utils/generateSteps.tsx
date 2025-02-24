@@ -46,13 +46,16 @@ const generateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, fl
     } else if (step.waterAmountType === 'fivePour') {
       increment = calcFivePourWaterAmount(beansAmount, recipe.waterRatio);
     }
-    cumulative += increment;
+    cumulative += Math.floor(Math.round(increment));
 
     outputSteps.push({
       timeSec: stepTime,
       pourWaterMl: increment,
       cumulative: cumulative,
-      action: step.action,
+      action: {
+        en: step.action.en.replace('${cumulative}', cumulative.toString()),
+        ja: step.action.ja.replace('${cumulative}', cumulative.toString()),
+      },
       status: 'upcoming',
     });
   }

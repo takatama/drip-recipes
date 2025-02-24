@@ -49,46 +49,46 @@ export const newHybridMethod: CoffeeRecipeType = {
       time: 0,
       waterAmountType: 'flavor1',
       action: {
-        en: (cumulative: number) => `(Close / Up) Pour up to ${cumulative}g`,
-        ja: (cumulative: number) => `(Close / Up) ${cumulative}g まで注湯`,
+        en: "(Close / Up) Pour up to ${cumulative}g",
+        ja: "(Close / Up) ${cumulative}g まで注湯",
       },
     },
     {
       time: 40,
       waterAmountType: 'flavor2',
       action: {
-        en: (cumulative: number) => `(Open / Down) Pour up to ${cumulative}g`,
-        ja: (cumulative: number) => `(Open / Down) ${cumulative}g まで注湯`,
+        en: "(Open / Down) Pour up to ${cumulative}g",
+        ja: "(Open / Down) ${cumulative}g まで注湯",
       },
     },
     {
       time: 90,
       waterAmountType: 'strength',
       action: {
-        en: (cumulative: number) => `Pour up to ${cumulative}g then cool to 70℃`,
-        ja: (cumulative: number) => `${cumulative}g まで注湯後、70℃まで下げる`,
+        en: "Pour up to ${cumulative}g then cool to 70℃",
+        ja: "${cumulative}g まで注湯後、70℃まで下げる",
       },
     },
     {
       time: 130,
       waterAmountType: 'strength',
       action: {
-        en: (cumulative: number) => `(Close / Up) Pour up to ${cumulative}g`,
-        ja: (cumulative: number) => `(Close / Up) ${cumulative}g まで注湯`,
+        en: "(Close / Up) Pour up to ${cumulative}g",
+        ja: "(Close / Up) ${cumulative}g まで注湯",
       },
     },
     {
       time: 165,
       action: {
-        en: () => "(Open / Down) Wait until the water drains",
-        ja: () => "(Open / Down) お湯が落ち切るまで待つ",
+        en: "(Open / Down) Wait until the water drains",
+        ja: "(Open / Down) お湯が落ち切るまで待つ",
       },
     },
     {
       time: 210,
       action: {
-        en: () => "Finish",
-        ja: () => "完成",
+        en: "Finish",
+        ja: "完成",
       },
     },
   ],
