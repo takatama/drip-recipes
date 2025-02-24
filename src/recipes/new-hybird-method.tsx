@@ -47,7 +47,7 @@ export const newHybridMethod: CoffeeRecipeType = {
   steps: [
     {
       time: 0,
-      waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.42 : (flavor === 'sour' ? 0.58 : 0.5)),
+      waterAmountType: 'flavor1',
       action: {
         en: (cumulative: number) => `(Close / Up) Pour up to ${cumulative}g`,
         ja: (cumulative: number) => `(Close / Up) ${cumulative}g まで注湯`,
@@ -55,7 +55,7 @@ export const newHybridMethod: CoffeeRecipeType = {
     },
     {
       time: 40,
-      waterFormula: (beansAmount, waterRatio, flavor) => beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.58 : (flavor === 'sour' ? 0.42 : 0.5)),
+      waterAmountType: 'flavor2',
       action: {
         en: (cumulative: number) => `(Open / Down) Pour up to ${cumulative}g`,
         ja: (cumulative: number) => `(Open / Down) ${cumulative}g まで注湯`,
@@ -63,7 +63,7 @@ export const newHybridMethod: CoffeeRecipeType = {
     },
     {
       time: 90,
-      waterFormula: (beansAmount, waterRatio) => beansAmount * waterRatio * 0.6 / 2,
+      waterAmountType: 'strength',
       action: {
         en: (cumulative: number) => `Pour up to ${cumulative}g then cool to 70℃`,
         ja: (cumulative: number) => `${cumulative}g まで注湯後、70℃まで下げる`,
@@ -71,7 +71,7 @@ export const newHybridMethod: CoffeeRecipeType = {
     },
     {
       time: 130,
-      waterFormula: (beansAmount, waterRatio) => beansAmount * waterRatio * 0.6 / 2,
+      waterAmountType: 'strength',
       action: {
         en: (cumulative: number) => `(Close / Up) Pour up to ${cumulative}g`,
         ja: (cumulative: number) => `(Close / Up) ${cumulative}g まで注湯`,
@@ -79,7 +79,6 @@ export const newHybridMethod: CoffeeRecipeType = {
     },
     {
       time: 165,
-      waterFormula: (_beansAmount, _waterRatio) => 0,
       action: {
         en: () => "(Open / Down) Wait until the water drains",
         ja: () => "(Open / Down) お湯が落ち切るまで待つ",
@@ -87,7 +86,6 @@ export const newHybridMethod: CoffeeRecipeType = {
     },
     {
       time: 210,
-      waterFormula: (_beansAmount, _waterRatio) => 0,
       action: {
         en: () => "Finish",
         ja: () => "完成",

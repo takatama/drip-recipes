@@ -2,6 +2,22 @@ import { CoffeeRecipeType, Step } from "../types";
 
 const calcTimeForStrengthStep = (strengthSteps: number, stepCount: number) => strengthSteps > stepCount ? 90 + (210 - 90) / strengthSteps * stepCount: null;
 
+const calcFlavor1WaterAmount = (beansAmount: number, waterRatio: number, flavor: string) => {
+  return beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.42 : (flavor === 'sour' ? 0.58 : 0.5));
+};
+
+const calcFlavor2WaterAmount = (beansAmount: number, waterRatio: number, flavor: string) => {
+  return beansAmount * waterRatio * 0.4 * (flavor === 'sweet' ? 0.58 : (flavor === 'sour' ? 0.42 : 0.5));
+};
+
+const calcStrengthWaterAmount = (beansAmount: number, waterRatio: number, strengthSteps: number) => {
+  return beansAmount * waterRatio * 0.6 / strengthSteps;
+};
+
+const calcFivePourWaterAmount = (beansAmount: number, waterRatio: number) => {
+  return beansAmount * waterRatio / 5;
+};
+
 const generateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, flavor: string, strengthSteps: number) => {
   const outputSteps: Step[] = [];
   let cumulative = 0;
@@ -20,33 +36,16 @@ const generateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, fl
       continue;
     }
 
-    // If the step has a timeFormula, calculate the time
-    let increment: number;
-    if (step.waterFormula.length >= 4 && strengthSteps !== undefined) {
-      increment = step.waterFormula(beansAmount, recipe.waterRatio, flavor, strengthSteps);
-    } else {
-      increment = step.waterFormula(beansAmount, recipe.waterRatio, flavor);
+    let increment: number = 0;
+    if (step.waterAmountType === 'flavor1') {
+      increment = calcFlavor1WaterAmount(beansAmount, recipe.waterRatio, flavor);
+    } else if (step.waterAmountType === 'flavor2') {
+      increment = calcFlavor2WaterAmount(beansAmount, recipe.waterRatio, flavor);
+    } else if (step.waterAmountType === 'strength') {
+      increment = calcStrengthWaterAmount(beansAmount, recipe.waterRatio, strengthSteps);
+    } else if (step.waterAmountType === 'fivePour') {
+      increment = calcFivePourWaterAmount(beansAmount, recipe.waterRatio);
     }
-    cumulative += increment;
-
-    outputSteps.push({
-      timeSec: stepTime,
-      pourWaterMl: increment,
-      cumulative: cumulative,
-      action: step.action,
-      status: 'upcoming',
-    });
-  }
-  return outputSteps;
-}
-
-const generateNormalSteps = (recipe: CoffeeRecipeType, beansAmount: number, flavor: string) => {
-  const outputSteps: Step[] = [];
-  let cumulative = 0;
-
-  for (const step of recipe.steps) {
-    let stepTime = Number(step.time);
-    const increment = step.waterFormula(beansAmount, recipe.waterRatio, flavor);
     cumulative += increment;
 
     outputSteps.push({
@@ -70,5 +69,5 @@ export function generateSteps(
     const strengthSteps = strength === 'light' ? 1 : strength === 'strong' ? 3 : 2;
     return generateStrengthSteps(recipe, beansAmount, flavor, strengthSteps);
   }
-  return generateNormalSteps(recipe, beansAmount, flavor);
+  return generateStrengthSteps(recipe, beansAmount, flavor, 2);
 }

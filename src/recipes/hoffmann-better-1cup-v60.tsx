@@ -36,7 +36,7 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
   steps: [
     {
       time: 0,
-      waterFormula: (beansAmount: number, waterRatio: number) => (beansAmount * waterRatio) / 5,
+      waterAmountType: 'fivePour',
       action: {
         en: (cumulative: number) => `Pour ${cumulative}g to bloom`,
         ja: (cumulative: number) => `${cumulative}gまで注湯し蒸らす`
@@ -44,7 +44,6 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     },
     {
       time: 10,
-      waterFormula: (_beansAmount: number, _waterRatio: number) => 0,
       action: {
         en: () => "Gently swirl",
         ja: () => "ドリッパーを揺する"
@@ -52,7 +51,7 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     },
     {
       time: 45,
-      waterFormula: (beansAmount: number, waterRatio: number) => (beansAmount * waterRatio) / 5,
+      waterAmountType: 'fivePour',
       action: {
         en: (cumulative: number) => `Pour up to ${cumulative}g total`,
         ja: (cumulative: number) => `${cumulative}gまで注湯`
@@ -60,7 +59,7 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     },
     {
       time: 70,
-      waterFormula: (beansAmount: number, waterRatio: number) => (beansAmount * waterRatio) / 5,
+      waterAmountType: 'fivePour',
       action: {
         en: (cumulative: number) => `Pour up to ${cumulative}g total`,
         ja: (cumulative: number) => `${cumulative}gまで注湯`
@@ -68,7 +67,7 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     },
     {
       time: 90,
-      waterFormula: (beansAmount: number, waterRatio: number) => (beansAmount * waterRatio) / 5,
+      waterAmountType: 'fivePour',
       action: {
         en: (cumulative: number) => `Pour up to ${cumulative}g total`,
         ja: (cumulative: number) => `${cumulative}gまで注湯`
@@ -76,7 +75,7 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     },
     {
       time: 110,
-      waterFormula: (beansAmount: number, waterRatio: number) => (beansAmount * waterRatio) / 5,
+      waterAmountType: 'fivePour',
       action: {
         en: (cumulative: number) => `Pour up to ${cumulative}g total`,
         ja: (cumulative: number) => `${cumulative}gまで注湯`
@@ -84,7 +83,6 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     },
     {
       time: 120,
-      waterFormula: (_beansAmount: number, _waterRatio: number) => 0,
       action: {
         en: () => "Gently swirl",
         ja: () => "ドリッパーを揺する"
@@ -92,7 +90,6 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     },
     {
       time: 180,
-      waterFormula: (_beansAmount: number, _waterRatio: number) => 0,
       action: {
         en: () => "Finish.",
         ja: () => "完成。"

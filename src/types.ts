@@ -47,7 +47,7 @@ export interface CoffeeParam {
 interface CoffeeStep {
   time?: number;
   calcTime?: boolean;
-  waterFormula: (...args: any[]) => number;
+  waterAmountType?: 'fivePour' | 'flavor1' | 'flavor2' |'strength';
   action: { en: (...args: any[]) => string; ja: (...args: any[]) => string; };
 }
 
