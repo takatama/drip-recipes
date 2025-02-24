@@ -2,7 +2,7 @@
 interface WakeLockSentinel extends EventTarget {
   readonly released: boolean;
   readonly type: 'screen';
-  onrelease: ((this: WakeLockSentinel, ev: Event) => any) | null;
+  onrelease: ((this: WakeLockSentinel, ev: Event) => void) | null;
   release: () => Promise<void>;
 }
 

@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 export interface TranslationType {
   beansAmount: string;
   waterAmount: string;
