@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Raleway } from "next/font/google";
 import "./globals.css";
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 
 const raleway = Raleway({
   variable: "--font-raleway",
@@ -26,11 +27,13 @@ export default function RootLayout({
     <html lang="en">
       <head />
       <body className={`${raleway.variable}`}>
-        <SettingsProvider>
-          <AppThemeWrapper>
-            {children}
-          </AppThemeWrapper>
-        </SettingsProvider>
+        <AppRouterCacheProvider>
+          <SettingsProvider>
+            <AppThemeWrapper>
+              {children}
+            </AppThemeWrapper>
+          </SettingsProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
