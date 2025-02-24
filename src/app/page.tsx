@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
 import { cookies, headers } from 'next/headers';
 
+export const runtime = 'edge';
+
 export default async function Home() {
   const settingsCookie = (await cookies()).get('settings');
   let lang = 'en'; // Default language is English

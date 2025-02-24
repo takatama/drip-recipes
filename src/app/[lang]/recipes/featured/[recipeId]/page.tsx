@@ -1,6 +1,8 @@
 import CoffeeRecipe from '../../../../../components/CoffeeRecipe';
 import { LanguageType } from '@/types';
 
+export const runtime = 'edge';
+
 export default async function CoffeeRecipePage({
   params,
 }: {
