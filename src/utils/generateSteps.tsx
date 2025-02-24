@@ -68,9 +68,6 @@ export function generateSteps(
   flavor: string,
   strength?: string
 ): Step[] {
-  if (recipe.stepType === 'strength') {
-    const strengthSteps = strength === 'light' ? 1 : strength === 'strong' ? 3 : 2;
-    return generateStrengthSteps(recipe, beansAmount, flavor, strengthSteps);
-  }
-  return generateStrengthSteps(recipe, beansAmount, flavor, 2);
+  const strengthSteps = strength === 'light' ? 1 : strength === 'strong' ? 3 : 2;
+  return generateStrengthSteps(recipe, beansAmount, flavor, strengthSteps);
 }
