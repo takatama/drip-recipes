@@ -1,5 +1,4 @@
 import { CoffeeRecipeType } from "../types";
-import { Step } from "../types";
 
 export const newHybridMethod: CoffeeRecipeType = {
   id: "new-hybrid-method",
@@ -43,7 +42,6 @@ export const newHybridMethod: CoffeeRecipeType = {
       "スイッチを閉める (Close / Up)"
     ]
   },
-  stepType: "normal",
   steps: [
     {
       time: 0,

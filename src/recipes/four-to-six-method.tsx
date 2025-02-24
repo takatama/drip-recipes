@@ -1,4 +1,4 @@
-import { CoffeeRecipeType, Step } from "../types";
+import { CoffeeRecipeType } from "../types";
 
 export const fourToSixMethod: CoffeeRecipeType = {
   id: "four-to-six-method",
@@ -34,7 +34,6 @@ export const fourToSixMethod: CoffeeRecipeType = {
     { key: "strength", type: "enum", input: true, options: ["light", "medium", "strong"], default: "medium" }
   ],
   waterRatio: 15,
-  stepType: "strength",
   steps: [
     {
       time: 0,

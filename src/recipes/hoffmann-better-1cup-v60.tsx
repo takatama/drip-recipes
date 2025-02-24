@@ -32,7 +32,6 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     { key: "beansAmount", unit: "g", type: "number", input: true, default: 15 },
     { key: "waterAmount", unit: "ml", type: "number", input: false, formulaType: "waterAmount" },
   ],
-  stepType: "normal",
   steps: [
     {
       time: 0,
