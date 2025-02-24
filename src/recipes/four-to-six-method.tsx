@@ -27,9 +27,9 @@ export const fourToSixMethod: CoffeeRecipeType = {
   },
   params: [
     { key: "roastLevel", type: "enum", input: true, options: ["lightRoast", "mediumRoast", "darkRoast"], default: "mediumRoast" },
-    { key: "waterTemp", unit: "℃", type: "number", input: false, formula: (_beansAmount, _waterRatio, roastLevel: string) => roastLevel === "lightRoast" ? 93 : (roastLevel === "mediumRoast" ? 88 : 83) },
+    { key: "waterTemp", unit: "℃", type: "number", input: false, fomulaType: "waterTemp", temps: { "lightRoast": 93, "mediumRoast": 88, "darkRoast" : 83 } },
     { key: "beansAmount", unit: "g", type: "number", input: true, default: 20 },
-    { key: "waterAmount", unit: "ml", type: "number", input: false, formula: (beansAmount, waterRatio) => beansAmount * waterRatio },
+    { key: "waterAmount", unit: "ml", type: "number", input: false, fomulaType: "waterAmount" },
     { key: "flavor", type: "enum", input: true, options: ["sweet", "neutral", "sour"], default: "neutral" },
     { key: "strength", type: "enum", input: true, options: ["light", "medium", "strong"], default: "medium" }
   ],

@@ -10,12 +10,12 @@ import {
 } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { CoffeeParam, TranslationType } from '../types';
+import { CoffeeParam, RoastLevelType, TranslationType } from '../types';
 
 interface InputParamsValues {
   beansAmount: number;
   waterRatio: number;
-  roastLevel: string;
+  roastLevel: RoastLevelType;
   flavor: string;
   strength: string;
 }
@@ -82,6 +82,20 @@ const EnumInput: React.FC<{
   );
 };
 
+const waterAmountFormula = (beansAmount: number, waterRatio: number) =>  Math.floor(beansAmount * waterRatio);
+
+const waterTempFomula = (temps: any, roastLevel: RoastLevelType) => temps[roastLevel];
+
+const calcFomula = (fomulaType: string, temps: any, beansAmount: number, waterRatio: number, roastLevel: RoastLevelType) => {
+  if (fomulaType === 'waterAmount') {
+    return waterAmountFormula(beansAmount, waterRatio);
+  }
+  if (fomulaType === 'waterTemp') {
+    return waterTempFomula(temps, roastLevel);
+  }
+  return null;
+}
+
 const InputParams: React.FC<InputParamsProps> = ({
   params,
   values,
@@ -106,7 +120,7 @@ const InputParams: React.FC<InputParamsProps> = ({
                   {String(t[param.key])}:
                 </TableCell>
                 <TableCell align="left">
-                  {param.formula ? param.formula(values.beansAmount, values.waterRatio, values.roastLevel): param.default}
+                  {param.fomulaType ? calcFomula(param.fomulaType, param.temps, values.beansAmount, values.waterRatio, values.roastLevel) : param.default}
                   {param.unit || ''}
                 </TableCell>
               </TableRow>

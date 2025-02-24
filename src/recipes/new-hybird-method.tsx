@@ -29,7 +29,7 @@ export const newHybridMethod: CoffeeRecipeType = {
   params: [
     { key: "waterTemp", unit: "℃", type: "number", input: false, default: 90 },
     { key: "beansAmount", unit: "g", type: "number", input: true, default: 20 },
-    { key: "waterAmount", unit: "ml", type: "number", input: false, formula: (beansAmount, waterRatio) => beansAmount * waterRatio },
+    { key: "waterAmount", unit: "ml", type: "number", input: false, fomulaType: "waterAmount" },
     { key: "flavor", type: "enum", input: true, options: ["sweet", "neutral", "sour"], default: "neutral" }
   ],
   waterRatio: 15,

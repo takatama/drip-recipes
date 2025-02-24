@@ -39,7 +39,8 @@ export interface CoffeeParam {
   type: 'number' | 'enum';
   input: boolean;
   default?: any;
-  formula?: (...args: any[]) => number;
+  fomulaType?: 'waterAmount' | 'waterTemp';
+  temps?: { [key: string]: number };
   options?: string[];
 }
 
@@ -77,3 +78,5 @@ export interface Step {
 export type LanguageType = 'en' | 'ja';
 
 export type VoiceType = 'male' | 'female';
+
+export type RoastLevelType = 'lightRoast' | 'mediumRoast' | 'darkRoast';
