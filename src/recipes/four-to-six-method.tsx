@@ -34,6 +34,7 @@ export const fourToSixMethod: CoffeeRecipe = {
     { key: "strength", type: "enum", input: true, options: ["light", "medium", "strong"], default: "medium" }
   ],
   waterRatio: 15,
+  stepType: "strength",
   steps: [
     {
       timeFomula: (_strengthSteps) => 0,
@@ -90,27 +91,4 @@ export const fourToSixMethod: CoffeeRecipe = {
       },
     },
   ],
-  generateSteps: (recipe: CoffeeRecipe, beansAmount: number, flavor: string, strength: string): Step[] => {
-    const outputSteps: Step[] = [];
-    let cumulative = 0;
-    const strengthSteps = strength === 'light' ? 1 : (strength === 'strong' ? 3 : 2);
-
-    for (const step of recipe.steps) {
-      const rawTime = step.timeFomula?.(strengthSteps);
-      if (rawTime === null) {
-        continue;
-      }
-      let increment = step.waterFormula(beansAmount, recipe.waterRatio, flavor, strengthSteps);
-      cumulative += increment;
-
-      outputSteps.push({
-        timeSec: rawTime ?? 0,
-        pourWaterMl: increment,
-        cumulative: cumulative,
-        action: step.action,
-        status: 'upcoming'
-      });
-    }
-    return outputSteps;
-  },
 };

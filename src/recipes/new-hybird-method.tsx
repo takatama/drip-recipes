@@ -43,6 +43,7 @@ export const newHybridMethod: CoffeeRecipe = {
       "スイッチを閉める (Close / Up)"
     ]
   },
+  stepType: "normal",
   steps: [
     {
       time: 0,
@@ -93,24 +94,4 @@ export const newHybridMethod: CoffeeRecipe = {
       },
     },
   ],
-  generateSteps: (recipe: CoffeeRecipe, beansAmount: number, flavor: string): Step[] => {
-    const outputSteps: Step[] = [];
-    let currentTime = 0;
-    let cumulative = 0;
-  
-    for (const step of recipe.steps) {
-      currentTime = step.time || 0;
-      let increment = step.waterFormula(beansAmount, recipe.waterRatio, flavor);
-      cumulative += increment;
-  
-      outputSteps.push({
-        timeSec: currentTime,
-        pourWaterMl: increment,
-        cumulative: cumulative,
-        action: step.action,
-        status: 'upcoming'
-      });
-    }
-    return outputSteps;
-  },
 };

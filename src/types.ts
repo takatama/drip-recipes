@@ -59,8 +59,8 @@ export interface CoffeeRecipe {
   params: CoffeeParam[];
   waterRatio: number;
   preparationSteps?: { en: string[]; ja: string[] };
+  stepType: 'normal' | 'strength';
   steps: CoffeeStep[];
-  generateSteps: (recipe: CoffeeRecipe, ...args: any[]) => Step[];
   isDence?: boolean;
 }
 

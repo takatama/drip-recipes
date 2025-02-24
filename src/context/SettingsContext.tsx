@@ -36,9 +36,12 @@ const getInitialSettings = (): Settings => {
   }
 
   // Default settings
-  const userLang = navigator.language || navigator.languages[0];
+  const userLang = typeof navigator !== 'undefined' ? (navigator.language || navigator.languages[0]) : "en";
   const defaultLang: LanguageType = userLang.startsWith('ja') ? 'ja' : 'en';
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let prefersDark = false;
+  if (typeof window !== 'undefined' && window.matchMedia) {
+    prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
 
   return {
     language: defaultLang,

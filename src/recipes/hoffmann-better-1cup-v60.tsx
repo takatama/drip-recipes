@@ -32,6 +32,7 @@ export const hoffmannBetter1CupV60: CoffeeRecipe = {
     { key: "beansAmount", unit: "g", type: "number", input: true, default: 15 },
     { key: "waterAmount", unit: "ml", type: "number", input: false, formula: (beansAmount: number, waterRatio: number) => Math.floor(beansAmount * waterRatio) },
   ],
+  stepType: "normal",
   steps: [
     {
       time: 0,
@@ -98,23 +99,5 @@ export const hoffmannBetter1CupV60: CoffeeRecipe = {
       }
     }
   ],
-  generateSteps: (recipe: CoffeeRecipe, beansAmount: number) => {
-    const outputSteps: any[] = [];
-    let cumulative = 0;
-    let currentTime = 0;
-    for (const step of recipe.steps) {
-      currentTime = step.time || 0;
-      const increment = step.waterFormula(beansAmount, recipe.waterRatio);
-      cumulative += increment;
-      outputSteps.push({
-        timeSec: currentTime,
-        pourWaterMl: increment,
-        cumulative,
-        action: step.action,
-        status: 'upcoming'
-      });
-    }
-    return outputSteps;
-  },
   isDence: true
 };
