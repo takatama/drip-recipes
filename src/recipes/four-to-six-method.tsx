@@ -39,6 +39,10 @@ export const fourToSixMethod: CoffeeRecipeType = {
     {
       time: 0,
       waterAmountType: 'flavor1',
+      name: {
+        en: "Initial Bloom",
+        ja: "蒸らし",
+      },
       action: {
         en: "Pour up to ${cumulative}g to bloom",
         ja: "${cumulative}g まで注湯し蒸らす",
@@ -47,6 +51,10 @@ export const fourToSixMethod: CoffeeRecipeType = {
     {
       time: 45,
       waterAmountType: 'flavor2',
+      name: {
+        en: "Flavor Extraction",
+        ja: "風味を抽出",
+      },
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
@@ -55,6 +63,10 @@ export const fourToSixMethod: CoffeeRecipeType = {
     {
       time: 90,
       waterAmountType: 'strength',
+      name: {
+        en: "First Strength Pour",
+        ja: "一回目の濃度調整",
+      },
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
@@ -63,6 +75,10 @@ export const fourToSixMethod: CoffeeRecipeType = {
     {
       calcTime: true,
       waterAmountType: 'strength',
+      name: {
+        en: "Second Strength Pour",
+        ja: "二回目の濃度調整",
+      },
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
@@ -71,6 +87,10 @@ export const fourToSixMethod: CoffeeRecipeType = {
     {
       calcTime: true,
       waterAmountType: 'strength',
+      name: {
+        en: "Third Strength Pour",
+        ja: "三回目の濃度調整",
+      },
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",

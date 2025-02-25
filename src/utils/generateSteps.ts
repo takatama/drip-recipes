@@ -52,6 +52,7 @@ const generateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, fl
       timeSec: stepTime,
       pourWaterMl: increment,
       cumulative: cumulative,
+      name: step.name,
       action: {
         en: step.action.en.replace('${cumulative}', cumulative.toString()),
         ja: step.action.ja.replace('${cumulative}', cumulative.toString()),

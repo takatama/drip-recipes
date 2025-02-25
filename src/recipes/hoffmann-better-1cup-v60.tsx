@@ -37,6 +37,10 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     {
       time: 0,
       waterAmountType: 'fivePour',
+      name: {
+        en: "Initial Bloom",
+        ja: "蒸らし",
+      },
       action: {
         en: "Pour up to ${cumulative}g to bloom",
         ja: "${cumulative}g まで注湯し蒸らす",
@@ -44,6 +48,10 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     },
     {
       time: 10,
+      name: {
+        en: "Swirl",
+        ja: "撹拌"
+      },
       action: {
         en: "Gently swirl",
         ja: "ドリッパーを揺する"
@@ -52,6 +60,10 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     {
       time: 45,
       waterAmountType: 'fivePour',
+      name: {
+        en: "Second Pour",
+        ja: "2回目の注湯",
+      },
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
@@ -60,6 +72,10 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     {
       time: 70,
       waterAmountType: 'fivePour',
+      name: {
+        en: "Third Pour",
+        ja: "3回目の注湯",
+      },
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
@@ -68,6 +84,10 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     {
       time: 90,
       waterAmountType: 'fivePour',
+      name: {
+        en: "Fourth Pour",
+        ja: "4回目の注湯",
+      },
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
@@ -76,6 +96,10 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     {
       time: 110,
       waterAmountType: 'fivePour',
+      name: {
+        en: "Final Pour",
+        ja: "最後の注湯",
+      },
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
@@ -83,6 +107,10 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     },
     {
       time: 120,
+      name: {
+        en: "Swirl",
+        ja: "撹拌"
+      },
       action: {
         en: "Gently swirl",
         ja: "ドリッパーを揺する"

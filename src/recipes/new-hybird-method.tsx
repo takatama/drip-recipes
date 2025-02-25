@@ -47,6 +47,10 @@ export const newHybridMethod: CoffeeRecipeType = {
     {
       time: 0,
       waterAmountType: 'flavor1',
+      name: {
+        en: "Initial Bloom",
+        ja: "蒸らし",
+      },
       action: {
         en: "(Close / Up) Pour up to ${cumulative}g",
         ja: "(Close / Up) ${cumulative}g まで注湯",
@@ -55,6 +59,10 @@ export const newHybridMethod: CoffeeRecipeType = {
     {
       time: 40,
       waterAmountType: 'flavor2',
+      name: {
+        en: "Flavor Extraction",
+        ja: "風味を抽出",
+      },
       action: {
         en: "(Open / Down) Pour up to ${cumulative}g",
         ja: "(Open / Down) ${cumulative}g まで注湯",
@@ -63,6 +71,10 @@ export const newHybridMethod: CoffeeRecipeType = {
     {
       time: 90,
       waterAmountType: 'strength',
+      name: {
+        en: "Percolation Extraction",
+        ja: "透過式で抽出",
+      },
       action: {
         en: "Pour up to ${cumulative}g then cool to 70℃",
         ja: "${cumulative}g まで注湯後、70℃まで下げる",
@@ -71,6 +83,10 @@ export const newHybridMethod: CoffeeRecipeType = {
     {
       time: 130,
       waterAmountType: 'strength',
+      name: {
+        en: "Cool Immersion",
+        ja: "低温の浸漬式で抽出",
+      },
       action: {
         en: "(Close / Up) Pour up to ${cumulative}g",
         ja: "(Close / Up) ${cumulative}g まで注湯",
@@ -78,6 +94,10 @@ export const newHybridMethod: CoffeeRecipeType = {
     },
     {
       time: 165,
+      name: {
+        en: "Open the valve",
+        ja: "バルブを開ける",
+      },
       action: {
         en: "(Open / Down) Wait until the water drains",
         ja: "(Open / Down) お湯が落ち切るまで待つ",
