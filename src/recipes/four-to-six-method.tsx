@@ -7,8 +7,8 @@ export const fourToSixMethod: CoffeeRecipeType = {
     ja: "4:6 メソッド",
   },
   description: {
-    en: "Experience the precision of the 4:6 method, where the total water is meticulously divided into a 40% flavor extraction and a 60% strength extraction. The first pour gently blooms the coffee to release its natural sweetness, while the second pour extracts a robust body and balanced aroma. This method yields a cup with vibrant clarity, harmonious flavor, and a smooth finish that showcases every nuance of the beans.",
-    ja: "4:6メソッドは、全体の水量を40％の風味抽出と60％の濃度抽出に緻密に分割することで、その真価を発揮します。最初の注ぎでコーヒーをやさしく蒸らして自然な甘みを引き出し、次の注ぎでしっかりとしたボディとバランスの取れた香りを抽出します。この方法により、鮮やかな透明感と調和の取れた風味、そしてまろやかな飲みごこちを持つ一杯を実現し、豆の魅力を余すところなく引き出します。"
+    en: "Experience the precision of the 4:6 method by Tetsu Kasuya, where the total water is meticulously divided into a 40% flavor extraction and a 60% strength extraction. The first pour gently blooms the coffee to release its natural sweetness, while the second pour extracts a robust body and balanced aroma. This method yields a cup with vibrant clarity, harmonious flavor, and a smooth finish that showcases every nuance of the beans.",
+    ja: "粕谷哲氏の4:6メソッドは、全体の水量を40％の風味抽出と60％の濃度抽出に緻密に分割することで、その真価を発揮します。最初の注ぎでコーヒーをやさしく蒸らして自然な甘みを引き出し、次の注ぎでしっかりとしたボディとバランスの取れた香りを抽出します。この方法により、鮮やかな透明感と調和の取れた風味、そしてまろやかな飲みごこちを持つ一杯を実現し、豆の魅力を余すところなく引き出します。"
   },
   imageUrl: "/images/julien-labelle-G163WX71GFE-unsplash.jpg",
   youTubeVideoId: "lJNPp-onikk",
