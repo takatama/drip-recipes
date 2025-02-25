@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Container, Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Brightness4, Brightness7, VolumeOff, Vibration, VolumeUp, Man, Woman } from '@mui/icons-material';
 import { useSettings } from '../context/SettingsContext';
@@ -30,12 +30,13 @@ const SettingsScreen : React.FC = () => {
   };
 
   return (
-    <Box sx={{ 
-      p: 2,
+    <Container maxWidth="sm" sx={{
       bgcolor: 'background.default',
       color: 'text.primary',
       minHeight: '100vh',
-     }}>
+      py: 2,
+      width: '100%',
+    }}>
       <Header language={language} t={t} pathname={`/${language}/settings`}/>
 
       <Typography variant="h6" sx={{ mb: 2 }}>{t.settings}</Typography>
@@ -124,7 +125,7 @@ const SettingsScreen : React.FC = () => {
       </Box>
 
       <Footer t={t} />
-    </Box>
+    </Container>
   );
 }
 
