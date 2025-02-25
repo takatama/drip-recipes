@@ -7,6 +7,7 @@ import { generateItemListJsonLd } from '@/utils/generateRecipeJsonLd';
 import { Metadata } from 'next';
 import { translations } from '@/translations';
 import { isValidLanguage } from '@/utils/isValidLanguage';
+import JsonLd from '@/components/JsonLd';
 
 // export const runtime = 'edge';
 
@@ -23,7 +24,6 @@ const recipeMap: { [key: string]: CoffeeRecipeType } = {
 
 const recipes = Object.values(recipeMap);
 
-// メタデータとJSON-LD生成関数
 export async function generateMetadata({ 
   params 
 }: { 
@@ -31,15 +31,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const lang = (await params).lang;
   const typedLang: LanguageType = isValidLanguage(lang) ? lang : 'en';
-  const itemListJsonLd = generateItemListJsonLd(recipes, typedLang);
   const { recipeListTitle, recipeListDescription } = translations[typedLang];
   
   return {
     title: recipeListTitle,
     description: recipeListDescription,
-    other: {
-      'application/ld+json': JSON.stringify(itemListJsonLd)
-    },
     openGraph: {
       title: recipeListTitle,
       description: recipeListDescription,
@@ -56,5 +52,11 @@ export default async function RecipeListPage({
 }) {
   const lang = (await params).lang;
   const typedLang: LanguageType = isValidLanguage(lang) ? lang : 'en';
-  return <RecipeList lang={typedLang} recipes={recipes}/>;
+  const itemListJsonLd = generateItemListJsonLd(recipes, typedLang);
+  return (
+    <>
+      <JsonLd data={itemListJsonLd} />
+      <RecipeList lang={typedLang} recipes={recipes}/>
+    </>
+  );
 }
