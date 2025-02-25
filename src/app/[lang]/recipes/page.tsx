@@ -6,13 +6,14 @@ import { fourToSixMethod } from '@/recipes/four-to-six-method';
 import { generateItemListJsonLd } from '@/utils/generateRecipeJsonLd';
 import { Metadata } from 'next';
 import { translations } from '@/translations';
+import { isValidLanguage } from '@/utils/isValidLanguage';
 
-export const runtime = 'edge';
+// export const runtime = 'edge';
 
-// export const dynamicParams = false;
-// export async function generateStaticParams() {
-//   return [{ lang: 'en' }, { lang: 'ja' }];
-// }
+export const dynamicParams = false;
+export async function generateStaticParams() {
+  return [{ lang: 'en' }, { lang: 'ja' }];
+}
 
 const recipeMap: { [key: string]: CoffeeRecipeType } = {
   'new-hybrid-method': newHybridMethod,
@@ -26,11 +27,10 @@ const recipes = Object.values(recipeMap);
 export async function generateMetadata({ 
   params 
 }: { 
-  params: { lang: string } 
+  params: Promise<{ lang: string }> 
 }): Promise<Metadata> {
   const lang = (await params).lang;
-  const validLang = ['en', 'ja'].includes(lang) ? lang : 'en';
-  const typedLang = validLang as LanguageType;
+  const typedLang: LanguageType = isValidLanguage(lang) ? lang : 'en';
   const itemListJsonLd = generateItemListJsonLd(recipes, typedLang);
   const { recipeListTitle, recipeListDescription } = translations[typedLang];
   
@@ -55,6 +55,6 @@ export default async function RecipeListPage({
   params: Promise<{ lang: string }>
 }) {
   const lang = (await params).lang;
-  const validLang = ['en', 'ja'].includes(lang) ? lang : 'en';
-  return <RecipeList lang={validLang as LanguageType} recipes={recipes}/>;
+  const typedLang: LanguageType = isValidLanguage(lang) ? lang : 'en';
+  return <RecipeList lang={typedLang} recipes={recipes}/>;
 }

@@ -6,12 +6,14 @@ import { fourToSixMethod } from '@/recipes/four-to-six-method';
 import { CoffeeRecipeType } from '@/types';
 import { generateRecipeJsonLd } from '@/utils/generateRecipeJsonLd';
 import { Metadata } from 'next';
+import { isValidLanguage } from '@/utils/isValidLanguage';
 
 // Generate metadata including JSON-LD
 export async function generateMetadata({ params }: { 
-  params: { lang: LanguageType; recipeId: string; } 
+  params: Promise<{ lang: string; recipeId: string; }> 
 }): Promise<Metadata> {
   const lang = (await params).lang;
+  const typedLang: LanguageType = isValidLanguage(lang) ? lang : 'en';
   const recipeId = (await params).recipeId;
   const recipe = recipeMap[recipeId];
   
@@ -21,20 +23,19 @@ export async function generateMetadata({ params }: {
     };
   }
 
-  const jsonLd = generateRecipeJsonLd(recipe, lang);
+  const jsonLd = generateRecipeJsonLd(recipe, typedLang);
   
   return {
-    title: recipe.name[lang],
-    description: recipe.description[lang],
+    title: recipe.name[typedLang],
+    description: recipe.description[typedLang],
     openGraph: {
-      title: recipe.name[lang],
-      description: recipe.description[lang],
+      title: recipe.name[typedLang],
+      description: recipe.description[typedLang],
       images: recipe.imageUrl ? [recipe.imageUrl] : [],
       type: 'article',
     },
-    // Add JSON-LD as a script tag
     other: {
-      'script:ld+json': JSON.stringify(jsonLd),
+      'application/ld+json': JSON.stringify(jsonLd),
     },
   };
 }
@@ -45,8 +46,7 @@ const recipeMap: { [key: string]: CoffeeRecipeType } = {
   'four-to-six-method': fourToSixMethod,
 };
 
-// export const dynamicParams = false;
-
+export const dynamicParams = false;
 export async function generateStaticParams() {
   return [
     { lang: 'en', recipeId: 'new-hybrid-method' }, { lang: 'ja', recipeId: 'new-hybrid-method' },
@@ -58,10 +58,11 @@ export async function generateStaticParams() {
 export default async function CoffeeRecipePage({
   params,
 }: {
-  params: Promise<{ lang: LanguageType; recipeId: string; }>
+  params: Promise<{ lang: string; recipeId: string; }>
 }) {
   const lang = (await params).lang;
+  const typedLang: LanguageType = isValidLanguage(lang) ? lang : 'en';
   const recipeId = (await params).recipeId;
   const recipe = recipeMap[recipeId];
-  return <CoffeeRecipe lang={lang} recipe={recipe} />;
+  return <CoffeeRecipe lang={typedLang} recipe={recipe} />;
 }
