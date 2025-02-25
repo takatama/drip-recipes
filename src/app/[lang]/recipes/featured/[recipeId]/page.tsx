@@ -7,6 +7,7 @@ import { CoffeeRecipeType } from '@/types';
 import { generateRecipeJsonLd } from '@/utils/generateRecipeJsonLd';
 import { Metadata } from 'next';
 import { isValidLanguage } from '@/utils/isValidLanguage';
+import JsonLd from '@/components/JsonLd';
 
 // Generate metadata including JSON-LD
 export async function generateMetadata({ params }: { 
@@ -22,8 +23,6 @@ export async function generateMetadata({ params }: {
       title: 'Recipe Not Found'
     };
   }
-
-  const jsonLd = generateRecipeJsonLd(recipe, typedLang);
   
   return {
     title: recipe.name[typedLang],
@@ -33,9 +32,6 @@ export async function generateMetadata({ params }: {
       description: recipe.description[typedLang],
       images: recipe.imageUrl ? [recipe.imageUrl] : [],
       type: 'article',
-    },
-    other: {
-      'application/ld+json': JSON.stringify(jsonLd),
     },
   };
 }
@@ -64,5 +60,10 @@ export default async function CoffeeRecipePage({
   const typedLang: LanguageType = isValidLanguage(lang) ? lang : 'en';
   const recipeId = (await params).recipeId;
   const recipe = recipeMap[recipeId];
-  return <CoffeeRecipe lang={typedLang} recipe={recipe} />;
+  return (
+    <>
+      <JsonLd data={generateRecipeJsonLd(recipe, typedLang)} />
+      <CoffeeRecipe lang={typedLang} recipe={recipe} />
+    </>
+  );
 }
