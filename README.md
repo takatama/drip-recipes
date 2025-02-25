@@ -88,8 +88,8 @@ Contributions are welcome! Please **open an issue** or **submit a pull request**
 ## Acknowledgements
 - [Tetsu Kasuya](https://www.instagram.com/tetsukasuya/) for creating the 4:6 method and the new hybrid method.
 - [James Hoffmann](https://www.jameshoffmann.co.uk/) for creating the V60 technique.
-- [Cloudflare](https://pages.cloudflare.com/) for hosting
-
+- [Cloudflare](https://pages.cloudflare.com/) for hosting.
+- [Unsplash](https://unsplash.com/) for images.
 
 # Next.js
 
