@@ -57,7 +57,7 @@ const RecipeList: React.FC<RecipeListProps> = ({ lang }) => {
                 <CardMedia
                   component="img"
                   height="180"
-                  image={`https://img.youtube.com/vi/${recipe.youTubeVideoId}/maxresdefault.jpg`}
+                  image={recipe.imageUrl}
                   alt={recipe.name[lang]}
                 />
                 <CardContent>
