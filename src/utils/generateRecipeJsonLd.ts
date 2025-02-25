@@ -1,5 +1,6 @@
 import { CoffeeRecipeType, LanguageType } from "../types";
 import { generateSteps } from "./generateSteps";
+import { translations } from "../translations";
 
 const HOSTNAME = "https://drip-recipes.pages.dev";
 
@@ -16,8 +17,8 @@ export function generateRecipeJsonLd(recipe: CoffeeRecipeType, lang: LanguageTyp
     .filter(step => !step.action[lang].includes("Finish") && !step.action[lang].includes("完成"))
     .map((step, index) => {
       return {
-        "@type": "HowToStep",
-        "name": recipe.steps[index]?.name?.[lang] || step.name || `Step ${index + 1}`,
+        "@type": "HowToStep" as const,
+        "name": recipe.steps[index]?.name?.[lang] || step.name?.[lang] || `Step ${index + 1}`,
         "text": step.action[lang],
         "position": index + 1,
       };
@@ -34,13 +35,13 @@ export function generateRecipeJsonLd(recipe: CoffeeRecipeType, lang: LanguageTyp
     : Number(beansAmount) * recipe.waterRatio;
 
   const jsonLd = {
-    "@context": "https://schema.org/",
-    "@type": "Recipe",
+    "@context": "https://schema.org/" as const,
+    "@type": "Recipe" as const,
     "name": recipe.name[lang],
     "description": recipe.description[lang],
     "image": recipe.imageUrl ? `${HOSTNAME}${recipe.imageUrl}` : undefined,
     "author": {
-      "@type": "Person",
+      "@type": "Person" as const,
       "name": "Drip Recipes"
     },
     "recipeYield": "1 cup",
@@ -61,7 +62,7 @@ export function generateRecipeJsonLd(recipe: CoffeeRecipeType, lang: LanguageTyp
     "recipeInstructions": recipeInstructions,
     "totalTime": totalTime,
     "nutrition": {
-      "@type": "NutritionInformation",
+      "@type": "NutritionInformation" as const,
       "servingSize": "1 cup",
       "calories": "5 calories"
     }
@@ -73,22 +74,22 @@ export function generateRecipeJsonLd(recipe: CoffeeRecipeType, lang: LanguageTyp
 export function generateItemListJsonLd(
   recipes: CoffeeRecipeType[],
   lang: LanguageType,
-  baseUrl: string = "https://drip-recipes.pages.dev"
+  baseUrl: string = HOSTNAME
 ) {
   const itemListElements = recipes.map((recipe, index) => {
     return {
-      "@type": "ListItem",
+      "@type": "ListItem" as const,
       "position": index + 1,
       "name": recipe.name[lang],
-      "url": `${baseUrl}/${lang}/recipes/${recipe.id}`
+      "url": `${baseUrl}/${lang}/recipes/featured/${recipe.id}`
     };
   });
 
   return {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
+    "@context": "https://schema.org/" as const,
+    "@type": "ItemList" as const,
     "itemListElement": itemListElements,
     "numberOfItems": recipes.length,
-    "name": lang === "en" ? "Coffee Brewing Recipes" : "コーヒー抽出レシピ集"
+    "name": translations[lang].recipeListTitle,
   };
 }
