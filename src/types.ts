@@ -31,6 +31,8 @@ export interface TranslationType {
   notification: string;
   voice: string;
   backToRecipe: string;
+  recipeListTitle: string;
+  recipeListDescription: string;
 }
 
 export type NotificationMode = 'none' | 'vibrate' | 'sound';

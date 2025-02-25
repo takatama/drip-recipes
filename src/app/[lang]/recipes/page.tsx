@@ -1,5 +1,11 @@
-import RecipeList from '../../../components/RecipeList';
-import { LanguageType } from '../../../types';
+import RecipeList from '@/components/RecipeList';
+import { LanguageType, CoffeeRecipeType } from '@/types';
+import { newHybridMethod } from '@/recipes/new-hybird-method';
+import { hoffmannBetter1CupV60 } from '@/recipes/hoffmann-better-1cup-v60';
+import { fourToSixMethod } from '@/recipes/four-to-six-method';
+import { generateItemListJsonLd } from '@/utils/generateRecipeJsonLd';
+import { Metadata } from 'next';
+import { translations } from '@/translations';
 
 export const runtime = 'edge';
 
@@ -8,6 +14,41 @@ export const runtime = 'edge';
 //   return [{ lang: 'en' }, { lang: 'ja' }];
 // }
 
+const recipeMap: { [key: string]: CoffeeRecipeType } = {
+  'new-hybrid-method': newHybridMethod,
+  'hoffmann-better-1cup-v60': hoffmannBetter1CupV60,
+  'four-to-six-method': fourToSixMethod,
+};
+
+const recipes = Object.values(recipeMap);
+
+// メタデータとJSON-LD生成関数
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: { lang: string } 
+}): Promise<Metadata> {
+  const lang = (await params).lang;
+  const validLang = ['en', 'ja'].includes(lang) ? lang : 'en';
+  const typedLang = validLang as LanguageType;
+  const itemListJsonLd = generateItemListJsonLd(recipes, typedLang);
+  const { recipeListTitle, recipeListDescription } = translations[typedLang];
+  
+  return {
+    title: recipeListTitle,
+    description: recipeListDescription,
+    other: {
+      'application/ld+json': JSON.stringify(itemListJsonLd)
+    },
+    openGraph: {
+      title: recipeListTitle,
+      description: recipeListDescription,
+      type: 'website',
+      locale: typedLang === 'en' ? 'en_US' : 'ja_JP',
+    }
+  };
+}
+
 export default async function RecipeListPage({
   params,
 }: {
@@ -15,5 +56,5 @@ export default async function RecipeListPage({
 }) {
   const lang = (await params).lang;
   const validLang = ['en', 'ja'].includes(lang) ? lang : 'en';
-  return <RecipeList lang={validLang as LanguageType} />;
+  return <RecipeList lang={validLang as LanguageType} recipes={recipes}/>;
 }

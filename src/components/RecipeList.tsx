@@ -7,23 +7,13 @@ import { translations } from '../translations';
 import Header from './Header';
 import Footer from './Footer';
 import Container from '@mui/material/Container';
-import { newHybridMethod } from '../recipes/new-hybird-method';
-import { hoffmannBetter1CupV60 } from '../recipes/hoffmann-better-1cup-v60';
-import { fourToSixMethod } from '../recipes/four-to-six-method';
 
 interface RecipeListProps {
   lang: LanguageType;
+  recipes: CoffeeRecipeType[];
 }
 
-const recipeMap: { [key: string]: CoffeeRecipeType } = {
-  'new-hybrid-method': newHybridMethod,
-  'hoffmann-better-1cup-v60': hoffmannBetter1CupV60,
-  'four-to-six-method': fourToSixMethod,
-};
-
-const recipes = Object.values(recipeMap);
-
-const RecipeList: React.FC<RecipeListProps> = ({ lang }) => {
+const RecipeList: React.FC<RecipeListProps> = ({ lang, recipes }) => {
   const t = translations[lang];
 
   return (

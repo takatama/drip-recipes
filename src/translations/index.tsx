@@ -32,6 +32,8 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     notification: "Notification",
     voice: "Voice",
     backToRecipe: "Back to recipe",
+    recipeListTitle: "Coffee Brewing Recipes",
+    recipeListDescription: "Collection of coffee brewing recipes for pour-over and drip methods",
   },
   ja: {
     beansAmount: "豆の量",
@@ -64,5 +66,7 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     notification: "通知",
     voice: "音声",
     backToRecipe: "レシピに戻る",
+    recipeListTitle: "ハンドドリップレシピ集",
+    recipeListDescription: "ハンドドリップのレシピ集 - 至高の淹れ方をご紹介",
   }
 };

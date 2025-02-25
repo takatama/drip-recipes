@@ -69,3 +69,26 @@ export function generateRecipeJsonLd(recipe: CoffeeRecipeType, lang: LanguageTyp
 
   return jsonLd;
 }
+
+export function generateItemListJsonLd(
+  recipes: CoffeeRecipeType[],
+  lang: LanguageType,
+  baseUrl: string = "https://drip-recipes.pages.dev"
+) {
+  const itemListElements = recipes.map((recipe, index) => {
+    return {
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": recipe.name[lang],
+      "url": `${baseUrl}/${lang}/recipes/${recipe.id}`
+    };
+  });
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": itemListElements,
+    "numberOfItems": recipes.length,
+    "name": lang === "en" ? "Coffee Brewing Recipes" : "コーヒー抽出レシピ集"
+  };
+}
