@@ -1,5 +1,15 @@
-import CoffeeRecipe from '../../../../../components/CoffeeRecipe';
+import CoffeeRecipe from '@/components/CoffeeRecipe';
 import { LanguageType } from '@/types';
+import { newHybridMethod } from '@/recipes/new-hybird-method';
+import { hoffmannBetter1CupV60 } from '@/recipes/hoffmann-better-1cup-v60';
+import { fourToSixMethod } from '@/recipes/four-to-six-method';
+import { CoffeeRecipeType } from '@/types';
+
+const recipeMap: { [key: string]: CoffeeRecipeType } = {
+  'new-hybrid-method': newHybridMethod,
+  'hoffmann-better-1cup-v60': hoffmannBetter1CupV60,
+  'four-to-six-method': fourToSixMethod,
+};
 
 // export const dynamicParams = false;
 
@@ -18,5 +28,6 @@ export default async function CoffeeRecipePage({
 }) {
   const lang = (await params).lang;
   const recipeId = (await params).recipeId;
-  return <CoffeeRecipe lang={lang} recipeId={recipeId} />;
+  const recipe = recipeMap[recipeId];
+  return <CoffeeRecipe lang={lang} recipe={recipe} />;
 }

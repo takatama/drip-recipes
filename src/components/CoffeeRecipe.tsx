@@ -6,24 +6,13 @@ import RecipeDescription from './RecipeDescription';
 import { translations } from '../translations';
 import { CoffeeRecipeType, LanguageType } from '../types';
 import CoffeeTimer from './CoffeeTimer';
-import { newHybridMethod } from '../recipes/new-hybird-method';
-import { hoffmannBetter1CupV60 } from '../recipes/hoffmann-better-1cup-v60';
-import { fourToSixMethod } from '../recipes/four-to-six-method';
 
 interface CoffeeRecipeProps {
-  recipeId: string;
   lang: LanguageType;
+  recipe: CoffeeRecipeType;
 }
 
-const recipeMap: { [key: string]: CoffeeRecipeType } = {
-  'new-hybrid-method': newHybridMethod,
-  'hoffmann-better-1cup-v60': hoffmannBetter1CupV60,
-  'four-to-six-method': fourToSixMethod,
-};
-
-const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ recipeId, lang }) => {
-  const recipe = recipeMap[recipeId] as CoffeeRecipeType;
-
+const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ lang, recipe }) => {
   if (!recipe) {
     return <div>Recipe not found</div>;
   }
