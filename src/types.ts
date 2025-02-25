@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 export interface TranslationType {
   beansAmount: string;
   waterAmount: string;
@@ -29,6 +31,8 @@ export interface TranslationType {
   notification: string;
   voice: string;
   backToRecipe: string;
+  recipeListTitle: string;
+  recipeListDescription: string;
 }
 
 export type NotificationMode = 'none' | 'vibrate' | 'sound';
@@ -38,29 +42,31 @@ export interface CoffeeParam {
   unit?: string;
   type: 'number' | 'enum';
   input: boolean;
-  default?: any;
-  formula?: (...args: any[]) => number;
+  default?: number | string;
+  formulaType?: 'waterAmount' | 'waterTemp';
+  temps?: Record<RoastLevelType, number>;
   options?: string[];
 }
 
 interface CoffeeStep {
   time?: number;
-  timeFomula?: (...args: any[]) => number | null;
-  waterFormula: (...args: any[]) => number;
-  action: { en: (...args: any[]) => string; ja: (...args: any[]) => string; };
+  calcTime?: boolean;
+  waterAmountType?: 'fivePour' | 'flavor1' | 'flavor2' |'strength';
+  name?: { en: string; ja: string; };
+  action: { en: string; ja: string; };
 }
 
-export interface CoffeeRecipe {
+export interface CoffeeRecipeType {
   id: string;
-  name: { en:string; ja:string };
-  description: { en:string; ja:string };
+  name: { en: string; ja: string };
+  description: { en: string; ja: string };
+  imageUrl: string;
   youTubeVideoId: string;
   equipments: { en: JSX.Element; ja: JSX.Element; };
   params: CoffeeParam[];
   waterRatio: number;
   preparationSteps?: { en: string[]; ja: string[] };
   steps: CoffeeStep[];
-  generateSteps: (recipe: CoffeeRecipe, ...args: any[]) => Step[];
   isDence?: boolean;
 }
 
@@ -70,10 +76,13 @@ export interface Step {
   timeSec: number;
   pourWaterMl: number;
   cumulative: number;
-  action: { en: (amount?: number) => string; ja: (amount?: number) => string; };
+  name?: { en: string; ja: string; };
+  action: { en: string; ja: string; };
   status: StepStatus;
 }
 
 export type LanguageType = 'en' | 'ja';
 
 export type VoiceType = 'male' | 'female';
+
+export type RoastLevelType = 'lightRoast' | 'mediumRoast' | 'darkRoast';

@@ -9,24 +9,31 @@ interface UseNotificationProps {
 
 export const useNotification = ({ language, voice, notificationMode }: UseNotificationProps) => {
   const isPlayingRef = useRef(false);
-  const nextStepAudio = useRef(new Audio());
-  const finishAudio = useRef(new Audio());
+  const nextStepAudio = useRef<HTMLAudioElement | null>(null);
+  const finishAudio = useRef<HTMLAudioElement | null>(null);
 
-  // Reset isPlaying when audio ends
+  // Instantiate Audio objects only on the client side
   useEffect(() => {
-    nextStepAudio.current.addEventListener('ended', () => isPlayingRef.current = false);
-    finishAudio.current.addEventListener('ended', () => isPlayingRef.current = false);
+    if (typeof window !== 'undefined' && typeof Audio !== 'undefined') {
+      nextStepAudio.current = new Audio();
+      finishAudio.current = new Audio();
+
+      nextStepAudio.current.addEventListener('ended', () => (isPlayingRef.current = false));
+      finishAudio.current.addEventListener('ended', () => (isPlayingRef.current = false));
+    }
   }, []);
 
   // Update audio sources when language changes
   useEffect(() => {
-    nextStepAudio.current.src = `/audio/${language}-${voice}-next-step.wav`;
-    finishAudio.current.src = `/audio/${language}-${voice}-finish.wav`;
+    if (nextStepAudio.current && finishAudio.current) {
+      nextStepAudio.current.src = `/audio/${language}-${voice}-next-step.wav`;
+      finishAudio.current.src = `/audio/${language}-${voice}-finish.wav`;
+    }
   }, [language, voice]);
 
   const playAudio = (isFinish: boolean) => {
     if (notificationMode === 'none' || isPlayingRef.current) return;
-    if (notificationMode === 'sound') {
+    if (notificationMode === 'sound' && nextStepAudio.current && finishAudio.current) {
       if (isFinish) {
         finishAudio.current.pause();
         finishAudio.current.currentTime = 0;
@@ -41,7 +48,7 @@ export const useNotification = ({ language, voice, notificationMode }: UseNotifi
   };
 
   const vibrate = () => {
-    if (notificationMode === 'vibrate') {
+    if (notificationMode === 'vibrate' && typeof navigator !== 'undefined' && navigator.vibrate) {
       console.log('Vibrating...');
       navigator.vibrate([200, 100, 200]);
     }
@@ -49,6 +56,6 @@ export const useNotification = ({ language, voice, notificationMode }: UseNotifi
 
   return {
     playAudio,
-    vibrate
+    vibrate,
   };
 };

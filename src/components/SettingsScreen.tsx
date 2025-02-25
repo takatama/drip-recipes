@@ -1,6 +1,8 @@
+'use client';
+
 import React from 'react';
-import { Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Container, Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Brightness4, Brightness7, VolumeOff, Vibration, VolumeUp, Man, Woman } from '@mui/icons-material';
 import { useSettings } from '../context/SettingsContext';
 import { translations } from '../translations/index';
@@ -11,35 +13,31 @@ import Footer from './Footer';
 const SettingsScreen : React.FC = () => {
   const { language, setLanguage, darkMode, setDarkMode, notificationMode, setNotificationMode, voice, setVoice } = useSettings();
   const t = translations[language];
-  const navigate = useNavigate();
-  const location = useLocation();
-  const fromPath = location.state?.from || `/${language}/recipes/featured/new-hybrid-method`;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const fromPath = searchParams.get('from') || `/${language}/recipes/featured/new-hybrid-method`;
 
   const handleBack = () => {
-    // Update language in previous path
-    const pathParts = fromPath.split('/');
-    pathParts[1] = language;
-    navigate(pathParts.join('/'));
+    router.push(fromPath);
   };
 
   const handleLanguageChange = (_e: React.MouseEvent<HTMLElement>, newLang: LanguageType) => {
     if (newLang) {
+      const newFromPath = fromPath.replace(`/${language}/`, `/${newLang}/`);
+      router.push(`/${newLang}/settings?from=${encodeURIComponent(newFromPath)}`);
       setLanguage(newLang);
-      // Keep previous path if language is changed
-      navigate(`/${newLang}/settings`, { 
-        state: { from: fromPath } 
-      });
     }
   };
 
   return (
-    <Box sx={{ 
-      p: 2,
+    <Container maxWidth="sm" sx={{
       bgcolor: 'background.default',
       color: 'text.primary',
       minHeight: '100vh',
-     }}>
-      <Header language={language} t={t} />
+      py: 2,
+      width: '100%',
+    }}>
+      <Header language={language} t={t} pathname={`/${language}/settings`}/>
 
       <Typography variant="h6" sx={{ mb: 2 }}>{t.settings}</Typography>
 
@@ -127,7 +125,7 @@ const SettingsScreen : React.FC = () => {
       </Box>
 
       <Footer t={t} />
-    </Box>
+    </Container>
   );
 }
 

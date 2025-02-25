@@ -10,12 +10,12 @@ import {
 } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { CoffeeParam, TranslationType } from '../types';
+import { CoffeeParam, RoastLevelType, TranslationType } from '../types';
 
 interface InputParamsValues {
   beansAmount: number;
   waterRatio: number;
-  roastLevel: string;
+  roastLevel: RoastLevelType;
   flavor: string;
   strength: string;
 }
@@ -23,7 +23,7 @@ interface InputParamsValues {
 interface InputParamsProps {
   params: CoffeeParam[];
   values: InputParamsValues;
-  onChange: (key: string, value: any) => void;
+  onChange: (key: string, value: number | string) => void;
   t: TranslationType;
 }
 
@@ -82,6 +82,20 @@ const EnumInput: React.FC<{
   );
 };
 
+const waterAmountFormula = (beansAmount: number, waterRatio: number) =>  Math.floor(Math.round(beansAmount * waterRatio));
+
+const waterTempFormula = (temps: Record<RoastLevelType, number>, roastLevel: RoastLevelType): number => temps[roastLevel];
+
+const calcFormula = (formulaType: string, beansAmount: number, waterRatio: number, roastLevel: RoastLevelType, temps?: Record<RoastLevelType, number>) => {
+  if (formulaType === 'waterAmount') {
+    return waterAmountFormula(beansAmount, waterRatio);
+  }
+  if (formulaType === 'waterTemp' && temps) {
+    return waterTempFormula(temps, roastLevel);
+  }
+  return null;
+}
+
 const InputParams: React.FC<InputParamsProps> = ({
   params,
   values,
@@ -106,7 +120,7 @@ const InputParams: React.FC<InputParamsProps> = ({
                   {String(t[param.key])}:
                 </TableCell>
                 <TableCell align="left">
-                  {param.formula ? param.formula(values.beansAmount, values.waterRatio, values.roastLevel): param.default}
+                  {param.formulaType ? calcFormula(param.formulaType, values.beansAmount, values.waterRatio, values.roastLevel, param.temps) : param.default}
                   {param.unit || ''}
                 </TableCell>
               </TableRow>

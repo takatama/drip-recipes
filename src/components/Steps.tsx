@@ -24,24 +24,31 @@ const INDICATE_NEXT_STEP_SEC = 3;
 
 const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComplete, isDence }) => {
   const isPlayingRef = useRef(false);
-  const nextStepAudio = useRef(new Audio());
-  const finishAudio = useRef(new Audio());
+  const nextStepAudio = useRef<HTMLAudioElement | null>(null);
+  const finishAudio = useRef<HTMLAudioElement | null>(null);
   const isSmallScreen = useMediaQuery('(max-width:465px)');
   const { darkMode, notificationMode, language, voice } = useSettings();
   const { playAudio, vibrate } = useNotification({ language, voice, notificationMode });
   const totalTime = steps[steps.length - 1]?.timeSec;
   const arrowHeight = isDence ? 12 : 25;
 
-  // Reset isPlaying when audio ends
+  // Initialize Audio objects on client side
   useEffect(() => {
-    nextStepAudio.current.addEventListener('ended', () => isPlayingRef.current = false);
-    finishAudio.current.addEventListener('ended', () => isPlayingRef.current = false);
+    if (typeof Audio !== 'undefined') {
+      nextStepAudio.current = new Audio();
+      finishAudio.current = new Audio();
+
+      nextStepAudio.current.addEventListener('ended', () => (isPlayingRef.current = false));
+      finishAudio.current.addEventListener('ended', () => (isPlayingRef.current = false));
+    }
   }, []);
 
   // Update audio sources when language changes
   useEffect(() => {
-    nextStepAudio.current.src = `/audio/${language}-${voice}-next-step.wav`;
-    finishAudio.current.src = `/audio/${language}-${voice}-finish.wav`;
+    if (nextStepAudio.current && finishAudio.current) {
+      nextStepAudio.current.src = `/audio/${language}-${voice}-next-step.wav`;
+      finishAudio.current.src = `/audio/${language}-${voice}-finish.wav`;
+    }
   }, [language, voice]);
 
   const formatTime = (seconds: number) => {
@@ -71,28 +78,31 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
       onTimerComplete();
     }
 
-    setSteps(prevSteps => prevSteps.map((step, index) => {
-      if (currentTimeValue >= step.timeSec && (index === prevSteps.length - 1 || currentTimeValue < prevSteps[index + 1].timeSec)) {
-        return { ...step, status: 'current' };
-      }
-      if (currentTimeValue >= step.timeSec) {
-        if (step.status === 'current') {
-          vibrate();
+    setSteps(prevSteps =>
+      prevSteps.map((step, index) => {
+        if (currentTimeValue >= step.timeSec && (index === prevSteps.length - 1 || currentTimeValue < prevSteps[index + 1].timeSec)) {
+          return { ...step, status: 'current' };
         }
-        return { ...step, status: 'completed' };
-      }
-      if (currentTimeValue >= step.timeSec - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.timeSec) {
-        const isFinish = index === prevSteps.length - 1;
-        playAudio(isFinish);
-        return { ...step, status: 'next' };
-      }
-      return { ...step, status: 'upcoming' };
-    }));
+        if (currentTimeValue >= step.timeSec) {
+          if (step.status === 'current') {
+            vibrate();
+          }
+          return { ...step, status: 'completed' };
+        }
+        if (currentTimeValue >= step.timeSec - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.timeSec) {
+          const isFinish = index === prevSteps.length - 1;
+          playAudio(isFinish);
+          return { ...step, status: 'next' };
+        }
+        return { ...step, status: 'upcoming' };
+      })
+    );
   };
 
   // Update useEffect for timer
   useEffect(() => {
     updateStepStatuses(currentTime);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTime]);
 
   return (
@@ -126,7 +136,6 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
         />
         {/* Render each step using absolute positioning */}
         {steps.map((step, index) => {
-          // Calculate top position (with 0:00 fixed at 5px, others with +5px offset)
           const topPos = getStepPosition(step.timeSec);
           return (
             <Box
@@ -138,7 +147,6 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
                 transform: 'translateY(-50%)'
               }}
             >
-              {/* Marker (black dot) */}
               <Box
                 sx={{
                   position: 'absolute',
@@ -151,52 +159,56 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
                   transform: 'translate(-50%, -50%)'
                 }}
               />
-              {/* Step text with horizontal line */}
-              {isDence ? (<Typography
-                variant="body2"
-                sx={{
-                  ml: `${STEP_TEXT_MARGIN}px`,
-                  fontSize: FONT_SIZE,
-                  ...{
-                    current: { fontWeight: 'bold' },
-                    next: { fontWeight: 'bold', color: 'primary.main' },
-                    completed: { textDecoration: 'line-through', color: 'text.secondary' },
-                    upcoming: { color: 'text.primary' }
-                  }[step.status]
-                }}
-              >
-                {formatTime(step.timeSec)} {step.action[language](Math.round(step.cumulative))}
-              </Typography>
-              ) : (<><Typography
-                variant="body2"
-                sx={{
-                  ml: `${STEP_TEXT_MARGIN}px`,
-                  fontSize: FONT_SIZE,
-                  ...{
-                    current: { fontWeight: 'bold' },
-                    next: { fontWeight: 'bold', color: 'primary.main' },
-                    completed: { textDecoration: 'line-through', color: 'text.secondary' },
-                    upcoming: { color: 'text.primary' }
-                  }[step.status]
-                }}
-              >
-                {formatTime(step.timeSec)}
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  ml: `${STEP_TEXT_MARGIN}px`,
-                  fontSize: FONT_SIZE,
-                  ...{
-                    current: { fontWeight: 'bold' },
-                    next: { fontWeight: 'bold', color: 'primary.main' },
-                    completed: { textDecoration: 'line-through', color: 'text.secondary' },
-                    upcoming: { color: 'text.primary' }
-                  }[step.status]
-                }}
-              >
-                {step.action[language](Math.round(step.cumulative))}
-              </Typography></>)}
+              {isDence ? (
+                <Typography
+                  variant="body2"
+                  sx={{
+                    ml: `${STEP_TEXT_MARGIN}px`,
+                    fontSize: FONT_SIZE,
+                    ...{
+                      current: { fontWeight: 'bold' },
+                      next: { fontWeight: 'bold', color: 'primary.main' },
+                      completed: { textDecoration: 'line-through', color: 'text.secondary' },
+                      upcoming: { color: 'text.primary' }
+                    }[step.status]
+                  }}
+                >
+                  {formatTime(step.timeSec)} {step.action[language]}
+                </Typography>
+              ) : (
+                <>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      ml: `${STEP_TEXT_MARGIN}px`,
+                      fontSize: FONT_SIZE,
+                      ...{
+                        current: { fontWeight: 'bold' },
+                        next: { fontWeight: 'bold', color: 'primary.main' },
+                        completed: { textDecoration: 'line-through', color: 'text.secondary' },
+                        upcoming: { color: 'text.primary' }
+                      }[step.status]
+                    }}
+                  >
+                    {formatTime(step.timeSec)}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      ml: `${STEP_TEXT_MARGIN}px`,
+                      fontSize: FONT_SIZE,
+                      ...{
+                        current: { fontWeight: 'bold' },
+                        next: { fontWeight: 'bold', color: 'primary.main' },
+                        completed: { textDecoration: 'line-through', color: 'text.secondary' },
+                        upcoming: { color: 'text.primary' }
+                      }[step.status]
+                    }}
+                  >
+                    {step.action[language]}
+                  </Typography>
+                </>
+              )}
             </Box>
           );
         })}
@@ -214,11 +226,9 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
           <Typography variant="body1" sx={{ fontSize: FONT_SIZE }}>
             {formatTime(currentTime)}
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{ fontSize: FONT_SIZE }}
-            className="blinking"
-          >▼</Typography>
+          <Typography variant="body1" sx={{ fontSize: FONT_SIZE }} className="blinking">
+            ▼
+          </Typography>
         </Box>
       </Box>
     </Box>

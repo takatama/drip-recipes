@@ -8,7 +8,6 @@ import { Snackbar } from '@mui/material';
 
 interface TimelineProps {
   t: TranslationType;
-  darkMode: boolean;
   language: 'en' | 'ja';
   steps: Step[];
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
