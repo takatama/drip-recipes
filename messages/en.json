@@ -1,0 +1,40 @@
+{
+  "RecipeList": {
+    "title": "Coffee Brewing Recipes",
+    "description": "Collection of coffee brewing recipes for pour-over and drip methods"
+  },
+  "Recipe": {
+    "aboutThisRecipe": "☕About this recipe",
+    "roastLevel": "Roast",
+    "lightRoast": "Light",
+    "mediumRoast": "Medium",
+    "darkRoast": "Dark",
+    "waterTemp": "Temp",
+    "beansAmount": "Beans",
+    "waterAmount": "Water",
+    "flavor": "Flavor",
+    "sweet": "Sweet",
+    "neutral": "Neutral",
+    "sour": "Sour",
+    "strength": "Strength",
+    "light": "Light",
+    "medium": "Med",
+    "strong": "Strong",
+    "play": "Play",
+    "pause": "Pause",
+    "reset": "Reset",
+    "preparation": "Preparation:",
+    "footerCreatedBy": "Drip Recipes was created by Hirokazu Takatama",
+    "amazonAssociate": "As an Amazon Associate, Drip Recipes earns from qualifying purchases.",
+    "keepScreenOn": "Screen will stay on while playing"
+  },
+  "Settings": {
+    "settings": "Settings",
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "notification": "Notification",
+    "voice": "Voice",
+    "backToRecipe": "Back to recipe"
+  }
+}

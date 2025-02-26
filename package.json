@@ -21,6 +21,7 @@
 		"@mui/material-nextjs": "^6.4.3",
 		"js-cookie": "^3.0.5",
 		"next": "^15.1.7",
+		"next-intl": "^3.26.5",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"
 	},

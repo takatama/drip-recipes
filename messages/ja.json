@@ -1,0 +1,40 @@
+{
+  "RecipeList": {
+    "title": "ハンドドリップレシピ集",
+    "description": "ハンドドリップのレシピ集 - 至高の淹れ方をご紹介"
+  },
+  "Recipe": {
+    "aboutThisRecipe": "☕このレシピについて",
+    "roastLevel": "焙煎度",
+    "lightRoast": "浅煎り",
+    "mediumRoast": "中煎り",
+    "darkRoast": "深煎り",
+    "waterTemp": "湯温",
+    "beansAmount": "豆",
+    "waterAmount": "湯量",
+    "flavor": "味わい",
+    "sweet": "甘い",
+    "neutral": "バランス",
+    "sour": "酸味",
+    "strength": "濃さ",
+    "light": "薄い",
+    "medium": "バランス",
+    "strong": "濃い",
+    "play": "再生",
+    "pause": "一時停止",
+    "reset": "リセット",
+    "preparation": "準備:",
+    "footerCreatedBy": "Drip Recipes は Hirokazu Takatama によって作成されました",
+    "amazonAssociate": "Amazonのアソシエイトとして、Drip Recipesは適格販売により収入を得ています。",
+    "keepScreenOn": "再生中は画面をつけたままにします"
+  },
+  "Settings": {
+    "settings": "設定",
+    "language": "言語",
+    "darkMode": "ダークモード",
+    "lightMode": "ライトモード",
+    "notification": "通知",
+    "voice": "音声",
+    "backToRecipe": "レシピに戻る"
+  }
+}
