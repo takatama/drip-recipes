@@ -2,15 +2,17 @@ import React from 'react';
 import { Box, Button } from '@mui/material';
 import { PlayArrow, Pause, Replay } from '@mui/icons-material';
 import { TranslationType } from '../types';
+import { useTranslations } from 'next-intl';
 
 interface ControlsProps {
-  t: TranslationType;
   onPlay: () => void;
   onPause: () => void;
   onReset: () => void;
 }
 
-const Controls: React.FC<ControlsProps> = ({ t, onPlay, onPause, onReset }) => {
+const Controls: React.FC<ControlsProps> = ({ onPlay, onPause, onReset }) => {
+  const t = useTranslations('Controls');
+
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 5 }}>
       <Button
@@ -20,7 +22,7 @@ const Controls: React.FC<ControlsProps> = ({ t, onPlay, onPause, onReset }) => {
         sx={{ mr: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
         <PlayArrow />
-        {t.play}
+        {t('play')}
       </Button>
       <Button
         variant="contained"
@@ -29,7 +31,7 @@ const Controls: React.FC<ControlsProps> = ({ t, onPlay, onPause, onReset }) => {
         sx={{ mr: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
         <Pause />
-        {t.pause}
+        {t('pause')}
       </Button>
       <Button
         variant="contained"
@@ -38,7 +40,7 @@ const Controls: React.FC<ControlsProps> = ({ t, onPlay, onPause, onReset }) => {
         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
         <Replay />
-        {t.reset}
+        {t('reset')}
       </Button>
     </Box>
   );

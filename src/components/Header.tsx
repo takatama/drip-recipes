@@ -3,14 +3,15 @@ import Link from 'next/link';
 import { Box, IconButton, Typography } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { LanguageType, TranslationType } from '../types';
+import { useTranslations } from 'next-intl';
 
 interface HeaderProps {
   language: LanguageType;
-  t: TranslationType;
   pathname: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ language, t, pathname }) => {
+const Header: React.FC<HeaderProps> = ({ language, pathname }) => {
+  const t = useTranslations('Settings');
 
   return (
     <Box
@@ -43,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ language, t, pathname }) => {
         }`}
         style={{ textDecoration: 'none', color: 'inherit' }}
       >
-        <IconButton color="inherit" title={t.settings}>
+        <IconButton color="inherit" title={t('settings')}>
           <SettingsIcon />
         </IconButton>
       </Link>

@@ -20,13 +20,17 @@
     "light": "薄い",
     "medium": "バランス",
     "strong": "濃い",
+    "preparation": "準備:",
+    "keepScreenOn": "再生中は画面をつけたままにします"
+  },
+  "Controls": {
     "play": "再生",
     "pause": "一時停止",
-    "reset": "リセット",
-    "preparation": "準備:",
-    "footerCreatedBy": "Drip Recipes は Hirokazu Takatama によって作成されました",
-    "amazonAssociate": "Amazonのアソシエイトとして、Drip Recipesは適格販売により収入を得ています。",
-    "keepScreenOn": "再生中は画面をつけたままにします"
+    "reset": "リセット"
+  },
+  "Footer": {
+    "createdBy": "Drip Recipes は Hirokazu Takatama によって作成されました",
+    "amazonAssociate": "Amazonのアソシエイトとして、Drip Recipesは適格販売により収入を得ています。"
   },
   "Settings": {
     "settings": "設定",

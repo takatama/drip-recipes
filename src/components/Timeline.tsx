@@ -5,9 +5,9 @@ import { useTimer } from '../hooks/useTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { Step, TranslationType } from '../types';
 import { Snackbar } from '@mui/material';
+import { useTranslations } from 'next-intl';
 
 interface TimelineProps {
-  t: TranslationType;
   language: 'en' | 'ja';
   steps: Step[];
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
@@ -15,7 +15,6 @@ interface TimelineProps {
 }
 
 const Timeline: React.FC<TimelineProps> = ({
-  t,
   steps,
   setSteps,
   isDence,
@@ -53,10 +52,11 @@ const Timeline: React.FC<TimelineProps> = ({
     pause();
   };
 
+  const t = useTranslations('Recipe');
+
   return (
     <>
       <Controls
-        t={t}
         onPlay={handlePlay}
         onPause={handlePause}
         onReset={handleReset}
@@ -72,7 +72,7 @@ const Timeline: React.FC<TimelineProps> = ({
         open={snackbarOpen}
         autoHideDuration={5000}
         onClose={handleSnackbarClose}
-        message={t.keepScreenOn}
+        message={t('keepScreenOn')}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
     </>

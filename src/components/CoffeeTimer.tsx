@@ -6,14 +6,14 @@ import InputParams from './InputParams';
 import Timeline from './Timeline';
 import { CoffeeRecipeType, LanguageType, Step, TranslationType, RoastLevelType } from '../types';
 import { generateSteps } from '@/utils/generateSteps';
+import { useTranslations } from 'next-intl';
 
 interface CoffeeTimerProps {
   recipe: CoffeeRecipeType;
-  t: TranslationType;
   language: LanguageType;
 }
 
-const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, t, language }) => {
+const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, language }) => {
   const getDefaultValue = (key: string) => {
     const param = recipe.params.find(p => p.key === key);
     return param?.default || null;
@@ -30,10 +30,11 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, t, language }) => {
     setSteps(newSteps);
   }, [beansAmount, flavor, strength, recipe]);
 
+  const t = useTranslations('Recipe');
+
   return (
     <>
       <InputParams
-        t={t}
         params={recipe.params}
         values={{
           beansAmount,
@@ -60,7 +61,7 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, t, language }) => {
             ml: 4,
           }}
         >
-          <div style={{ marginBottom: '8px' }}>{t.preparation}</div>
+          <div style={{ marginBottom: '8px' }}>{t('preparation')}</div>
           {recipe.preparationSteps[language].map((step, index) => (
             <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
               <span style={{ marginRight: '8px' }}>•</span>
@@ -71,7 +72,6 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, t, language }) => {
       )}
 
       <Timeline
-        t={t}
         language={language}
         steps={steps}
         setSteps={setSteps}

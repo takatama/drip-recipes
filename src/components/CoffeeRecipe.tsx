@@ -3,7 +3,6 @@ import { Container, Typography } from '@mui/material';
 import Header from './Header';
 import Footer from './Footer';
 import RecipeDescription from './RecipeDescription';
-import { translations } from '../translations';
 import { CoffeeRecipeType, LanguageType } from '../types';
 import CoffeeTimer from './CoffeeTimer';
 
@@ -16,9 +15,7 @@ const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ lang, recipe }) => {
   if (!recipe) {
     return <div>Recipe not found</div>;
   }
-
-  const t = translations[lang];
-
+  
   return (
     <Container
       maxWidth="sm"
@@ -30,21 +27,21 @@ const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ lang, recipe }) => {
         width: '100%',
       }}
     >
-      <Header language={lang} t={t} pathname={`/${lang}/recipes/featured/${recipe.id}`} />
+      <Header language={lang} pathname={`/${lang}/recipes/featured/${recipe.id}`} />
 
       <Typography variant="h5" align="center" gutterBottom>
         {recipe.name[lang]}
       </Typography>
 
-      <RecipeDescription recipe={recipe} language={lang} t={t} />
+      <RecipeDescription recipe={recipe} language={lang} />
 
       <Typography variant="body1" align="center" gutterBottom>
         {recipe.equipments[lang]}
       </Typography>
 
-      <CoffeeTimer recipe={recipe} t={t} language={lang} />
+      <CoffeeTimer recipe={recipe} language={lang} />
 
-      <Footer t={t} />
+      <Footer />
     </Container>
   );
 };

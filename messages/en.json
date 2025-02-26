@@ -20,13 +20,17 @@
     "light": "Light",
     "medium": "Med",
     "strong": "Strong",
+    "preparation": "Preparation:",
+    "keepScreenOn": "Screen will stay on while playing"
+  },
+  "Controls" : {
     "play": "Play",
     "pause": "Pause",
-    "reset": "Reset",
-    "preparation": "Preparation:",
-    "footerCreatedBy": "Drip Recipes was created by Hirokazu Takatama",
-    "amazonAssociate": "As an Amazon Associate, Drip Recipes earns from qualifying purchases.",
-    "keepScreenOn": "Screen will stay on while playing"
+    "reset": "Reset"
+  },
+  "Footer": {
+    "createdBy": "Drip Recipes was created by Hirokazu Takatama",
+    "amazonAssociate": "As an Amazon Associate, Drip Recipes earns from qualifying purchases."
   },
   "Settings": {
     "settings": "Settings",

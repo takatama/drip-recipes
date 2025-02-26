@@ -1,6 +1,5 @@
 import { CoffeeRecipeType, LanguageType } from "../types";
 import { generateSteps } from "./generateSteps";
-import { translations } from "../translations";
 
 const HOSTNAME = "https://drip-recipes.pages.dev";
 
@@ -74,6 +73,7 @@ export function generateRecipeJsonLd(recipe: CoffeeRecipeType, lang: LanguageTyp
 export function generateItemListJsonLd(
   recipes: CoffeeRecipeType[],
   lang: LanguageType,
+  titie: string,
   baseUrl: string = HOSTNAME
 ) {
   const itemListElements = recipes.map((recipe, index) => {
@@ -90,6 +90,6 @@ export function generateItemListJsonLd(
     "@type": "ItemList" as const,
     "itemListElement": itemListElements,
     "numberOfItems": recipes.length,
-    "name": translations[lang].recipeListTitle,
+    "name": titie,
   };
 }

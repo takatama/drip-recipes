@@ -2,14 +2,16 @@ import React from 'react';
 import { Typography, Accordion, AccordionSummary, Box } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
 import { CoffeeRecipeType, TranslationType } from '../types';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   recipe: CoffeeRecipeType,
   language: 'en' | 'ja',
-  t: TranslationType;
 };
 
-const RecipeDescription: React.FC<Props> = ({ recipe, language, t }) => {
+const RecipeDescription: React.FC<Props> = ({ recipe, language }) => {
+  const t = useTranslations('Recipe');
+
   return (
     <Accordion
       square
@@ -22,7 +24,7 @@ const RecipeDescription: React.FC<Props> = ({ recipe, language, t }) => {
       }}
     >
       <AccordionSummary expandIcon={<ExpandMore />}>
-        <Typography variant='body2'>{t.aboutThisRecipe}</Typography>
+        <Typography variant='body2'>{t('aboutThisRecipe')}</Typography>
       </AccordionSummary>
       <AccordionSummary>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

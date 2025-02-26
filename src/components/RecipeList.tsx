@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { CoffeeRecipeType, LanguageType } from '../types';
-import { translations } from '../translations';
 import Header from './Header';
 import Footer from './Footer';
 import Container from '@mui/material/Container';
@@ -14,8 +13,6 @@ interface RecipeListProps {
 }
 
 const RecipeList: React.FC<RecipeListProps> = ({ lang, recipes }) => {
-  const t = translations[lang];
-
   return (
     <Container maxWidth="sm" sx={{
       bgcolor: 'background.default',
@@ -24,7 +21,7 @@ const RecipeList: React.FC<RecipeListProps> = ({ lang, recipes }) => {
       py: 2,
       width: '100%',
     }}>
-      <Header language={lang} t={t} pathname={`/${lang}/recipes`}/>
+      <Header language={lang} pathname={`/${lang}/recipes`}/>
 
       <Grid container spacing={3} sx={{ p: 2, mb: 2 }}>
         {recipes.map((recipe) => (
@@ -63,7 +60,7 @@ const RecipeList: React.FC<RecipeListProps> = ({ lang, recipes }) => {
           </Grid>
         ))}
       </Grid>
-      <Footer t={t} />
+      <Footer />
     </Container>
   );
 };

@@ -2,13 +2,11 @@ import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import { TranslationType } from '../types';
+import { useTranslations } from 'next-intl';
 
-interface FooterProps {
-  t: TranslationType;
-}
+const Footer: React.FC = () => {
+  const t = useTranslations('Footer');
 
-const Footer: React.FC<FooterProps> = ({ t }) => {
   return (
     <Box sx={{
       mt: 'auto',
@@ -18,7 +16,7 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
       textAlign: 'center',
     }}>
       <Typography variant="body2" color="text.secondary" gutterBottom sx={{ mt: 2 }}>
-        {t.footerCreatedBy}
+        {t('createdBy')}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 1 }}>
         <Link
@@ -43,7 +41,7 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
         </Link>
       </Box>
       <Typography variant="caption" display="block" align="center" sx={{ mt: 2 }}>
-        {t.amazonAssociate}
+        {t('amazonAssociate')}
       </Typography>
     </Box>
   );

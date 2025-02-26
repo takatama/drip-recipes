@@ -5,15 +5,15 @@ import { Container, Box, Typography, ToggleButton, ToggleButtonGroup } from '@mu
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Brightness4, Brightness7, VolumeOff, Vibration, VolumeUp, Man, Woman } from '@mui/icons-material';
 import { useSettings } from '../context/SettingsContext';
-import { translations } from '../translations/index';
 import { LanguageType } from '../types';
 import Header from './Header';
 import Footer from './Footer';
+import { useTranslations } from 'next-intl';
 
 const SettingsScreen : React.FC = () => {
   const { language, setLanguage, darkMode, setDarkMode, notificationMode, setNotificationMode, voice, setVoice } = useSettings();
-  const t = translations[language];
   const router = useRouter();
+  const t = useTranslations('Settings');
   const searchParams = useSearchParams();
   const fromPath = searchParams.get('from') || `/${language}/recipes/featured/new-hybrid-method`;
 
@@ -37,12 +37,12 @@ const SettingsScreen : React.FC = () => {
       py: 2,
       width: '100%',
     }}>
-      <Header language={language} t={t} pathname={`/${language}/settings`}/>
+      <Header language={language} pathname={`/${language}/settings`}/>
 
-      <Typography variant="h6" sx={{ mb: 2 }}>{t.settings}</Typography>
+      <Typography variant="h6" sx={{ mb: 2 }}>{t('settings')}</Typography>
 
       {/* Language */}
-      <Typography>{t.language}</Typography>
+      <Typography>{t('language')}</Typography>
       <ToggleButtonGroup
         value={language}
         exclusive
@@ -55,7 +55,7 @@ const SettingsScreen : React.FC = () => {
       </ToggleButtonGroup>
 
       {/* Dark Mode */}
-      <Typography>{t.darkMode}</Typography>
+      <Typography>{t('darkMode')}</Typography>
       <ToggleButtonGroup
         value={darkMode}
         exclusive
@@ -74,7 +74,7 @@ const SettingsScreen : React.FC = () => {
       </ToggleButtonGroup>
 
       {/* Notification Mode */}
-      <Typography>{t.notification}</Typography>
+      <Typography>{t('notification')}</Typography>
       <ToggleButtonGroup
         value={notificationMode}
         exclusive
@@ -96,7 +96,7 @@ const SettingsScreen : React.FC = () => {
       </ToggleButtonGroup>
 
       {/* Voice Mode */}
-      <Typography>{t.voice}</Typography>
+      <Typography>{t('voice')}</Typography>
       <ToggleButtonGroup
         value={voice}
         exclusive
@@ -120,11 +120,11 @@ const SettingsScreen : React.FC = () => {
           onClick={handleBack}
           sx={{ cursor: 'pointer', color: 'primary.main', textDecoration: 'underline' }}
         >
-          {t.backToRecipe}
+          {t('backToRecipe')}
         </Typography>
       </Box>
 
-      <Footer t={t} />
+      <Footer />
     </Container>
   );
 }

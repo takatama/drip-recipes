@@ -11,6 +11,7 @@ import {
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { CoffeeParam, RoastLevelType, TranslationType } from '../types';
+import { useTranslations } from 'next-intl';
 
 interface InputParamsValues {
   beansAmount: number;
@@ -24,7 +25,6 @@ interface InputParamsProps {
   params: CoffeeParam[];
   values: InputParamsValues;
   onChange: (key: string, value: number | string) => void;
-  t: TranslationType;
 }
 
 const NumberInput: React.FC<{
@@ -63,8 +63,9 @@ const EnumInput: React.FC<{
   value: string;
   options: string[];
   onChange: (value: string) => void;
-  t: TranslationType;
-}> = ({ value, options, onChange, t }) => {
+}> = ({ value, options, onChange }) => {
+  const t = useTranslations('Recipe');
+
   return (
     <ToggleButtonGroup
       value={value}
@@ -75,7 +76,7 @@ const EnumInput: React.FC<{
     >
       {options.map((option) => (
         <ToggleButton key={option} value={option}>
-          {String(t[option as keyof TranslationType])}
+          {String(t(option))}
         </ToggleButton>
       ))}
     </ToggleButtonGroup>
@@ -100,8 +101,9 @@ const InputParams: React.FC<InputParamsProps> = ({
   params,
   values,
   onChange,
-  t,
 }) => {
+  const t = useTranslations('Recipe');
+
   return (
     <Table sx={{
       '& td, & th': { fontSize: '1.1rem' },
@@ -117,7 +119,7 @@ const InputParams: React.FC<InputParamsProps> = ({
             return (
               <TableRow key={param.key}>
                 <TableCell align="right">
-                  {String(t[param.key])}:
+                  {t(param.key)}:
                 </TableCell>
                 <TableCell align="left">
                   {param.formulaType ? calcFormula(param.formulaType, values.beansAmount, values.waterRatio, values.roastLevel, param.temps) : param.default}
@@ -130,7 +132,7 @@ const InputParams: React.FC<InputParamsProps> = ({
             return (
               <TableRow key={param.key}>
                 <TableCell align="right">
-                  {String(t[param.key])}:
+                  {t(param.key)}:
                 </TableCell>
                 <TableCell align="left">
                   <NumberInput
@@ -146,14 +148,13 @@ const InputParams: React.FC<InputParamsProps> = ({
             return (
               <TableRow key={param.key}>
                 <TableCell align="right">
-                  {String(t[param.key])}:
+                  {t(param.key)}:
                 </TableCell>
                 <TableCell align="left">
                   <EnumInput
                     value={String(values[param.key as keyof InputParamsValues])}
                     options={param.options}
                     onChange={(value) => onChange(param.key, value)}
-                    t={t}
                   />
                 </TableCell>
               </TableRow>
