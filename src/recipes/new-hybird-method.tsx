@@ -55,6 +55,7 @@ export const newHybridMethod: CoffeeRecipeType = {
         en: "(Close / Up) Pour up to ${cumulative}g",
         ja: "(Close / Up) ${cumulative}g まで注湯",
       },
+      actionType: 'switch_close_pour',
     },
     {
       time: 40,
@@ -67,6 +68,7 @@ export const newHybridMethod: CoffeeRecipeType = {
         en: "(Open / Down) Pour up to ${cumulative}g",
         ja: "(Open / Down) ${cumulative}g まで注湯",
       },
+      actionType: 'switch_open_pour',
     },
     {
       time: 90,
@@ -79,6 +81,7 @@ export const newHybridMethod: CoffeeRecipeType = {
         en: "Pour up to ${cumulative}g then cool to 70℃",
         ja: "${cumulative}g まで注湯後、70℃まで下げる",
       },
+      actionType: 'pour',
     },
     {
       time: 130,
@@ -91,6 +94,7 @@ export const newHybridMethod: CoffeeRecipeType = {
         en: "(Close / Up) Pour up to ${cumulative}g",
         ja: "(Close / Up) ${cumulative}g まで注湯",
       },
+      actionType: 'switch_close_pour',
     },
     {
       time: 165,
@@ -102,6 +106,7 @@ export const newHybridMethod: CoffeeRecipeType = {
         en: "(Open / Down) Wait until the water drains",
         ja: "(Open / Down) お湯が落ち切るまで待つ",
       },
+      actionType: 'switch_open',
     },
     {
       time: 210,
@@ -109,6 +114,7 @@ export const newHybridMethod: CoffeeRecipeType = {
         en: "Finish",
         ja: "完成",
       },
+      actionType: 'none',
     },
   ],
 };

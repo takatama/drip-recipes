@@ -44,7 +44,8 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
       action: {
         en: "Pour up to ${cumulative}g to bloom",
         ja: "${cumulative}g まで注湯し蒸らす",
-      }
+      },
+      actionType: 'pour',
     },
     {
       time: 10,
@@ -55,7 +56,8 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
       action: {
         en: "Gently swirl",
         ja: "ドリッパーを揺する"
-      }
+      },
+      actionType: 'none',
     },
     {
       time: 45,
@@ -67,7 +69,8 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
-      }
+      },
+      actionType: 'pour',
     },
     {
       time: 70,
@@ -79,7 +82,8 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
-      }
+      },
+      actionType: 'pour',
     },
     {
       time: 90,
@@ -91,7 +95,8 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
-      }
+      },
+      actionType: 'pour',
     },
     {
       time: 110,
@@ -103,7 +108,8 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
       action: {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
-      }
+      },
+      actionType: 'pour',
     },
     {
       time: 120,
@@ -114,14 +120,16 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
       action: {
         en: "Gently swirl",
         ja: "ドリッパーを揺する"
-      }
+      },
+      actionType: 'none',
     },
     {
       time: 180,
       action: {
         en: "Finish.",
         ja: "完成。"
-      }
+      },
+      actionType: 'none',
     }
   ],
   isDence: true

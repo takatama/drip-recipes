@@ -47,6 +47,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
         en: "Pour up to ${cumulative}g to bloom",
         ja: "${cumulative}g まで注湯し蒸らす",
       },
+      actionType: 'pour',
     },
     {
       time: 45,
@@ -59,6 +60,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
       },
+      actionType: 'pour',
     },
     {
       time: 90,
@@ -71,6 +73,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
       },
+      actionType: 'pour',
     },
     {
       calcTime: true,
@@ -83,6 +86,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
       },
+      actionType: 'pour',
     },
     {
       calcTime: true,
@@ -95,6 +99,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
         en: "Pour up to ${cumulative}g total",
         ja: "${cumulative}g まで注湯",
       },
+      actionType: 'pour',
     },
     {
       time: 210,
@@ -102,6 +107,7 @@ export const fourToSixMethod: CoffeeRecipeType = {
         en: "Finish",
         ja: "完成",
       },
+      actionType: 'none',
     },
   ],
 };
