@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Box, Typography, useMediaQuery } from '@mui/material';
-import { Step } from '../types';
+import { Step, StepStatus } from '../types';
 import { useSettings } from '../context/SettingsContext';
 import { useNotification } from '../hooks/useNotification';
 
@@ -10,6 +10,7 @@ interface StepsProps {
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
   onTimerComplete: () => void;
   isDence?: boolean;
+  onStepTransition?: (currentAmount: number, targetAmount: number) => void;
 }
 
 const CONTAINER_HEIGHT = 400;
@@ -22,7 +23,14 @@ const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 3;
 
-const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComplete, isDence }) => {
+const Steps: React.FC<StepsProps> = ({
+  steps,
+  setSteps,
+  currentTime,
+  onTimerComplete,
+  isDence,
+  onStepTransition
+}) => {
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef<HTMLAudioElement | null>(null);
   const finishAudio = useRef<HTMLAudioElement | null>(null);
@@ -31,6 +39,26 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
   const { playAudio, vibrate } = useNotification({ language, voice, notificationMode });
   const totalTime = steps[steps.length - 1]?.timeSec;
   const arrowHeight = isDence ? 12 : 25;
+  // ステップの状態を内部で管理し、親コンポーネントへの更新を制御する
+  const [internalSteps, setInternalSteps] = useState<Step[]>(steps);
+
+  // 親のstepsが変更されたときだけ内部状態を更新
+  useEffect(() => {
+    setInternalSteps(steps);
+  }, [steps]);
+
+  // 内部的なステップ状態の更新が完了したら親に通知する
+  // throttleを使って更新頻度を制限
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // 内部ステップと外部ステップが異なる場合のみ更新
+      if (JSON.stringify(internalSteps) !== JSON.stringify(steps)) {
+        setSteps(internalSteps);
+      }
+    }, 100); // 100ms間隔で制限
+
+    return () => clearTimeout(timer);
+  }, [internalSteps, setSteps, steps]);
 
   // Initialize Audio objects on client side
   useEffect(() => {
@@ -69,41 +97,65 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
     return time === 0 ? FIRST_STEP_OFFSET : topPos + FIRST_STEP_OFFSET;
   };
 
-  // Add function to update step statuses
-  const updateStepStatuses = (currentTimeValue: number) => {
-    if (steps.length === 0) return;
+  // ステップのステータス追跡用の参照を追加
+  const previousStepsStatusRef = useRef<Record<number, StepStatus>>({});
+  const previousTimeRef = useRef<number>(currentTime);
 
-    const lastStep = steps[steps.length - 1];
+  // ステップ状態を更新する関数（内部状態のみを更新）
+  const updateStepStatuses = useCallback((currentTimeValue: number) => {
+    // 前回と同じ時間の場合は更新しない
+    if (previousTimeRef.current === currentTimeValue || internalSteps.length === 0) return;
+    previousTimeRef.current = currentTimeValue;
+
+    const lastStep = internalSteps[internalSteps.length - 1];
     if (currentTimeValue >= lastStep.timeSec) {
       onTimerComplete();
     }
 
-    setSteps(prevSteps =>
-      prevSteps.map((step, index) => {
+    setInternalSteps(prevSteps => {
+      return prevSteps.map((step, index) => {
+        let newStatus: StepStatus = 'upcoming';
+
         if (currentTimeValue >= step.timeSec && (index === prevSteps.length - 1 || currentTimeValue < prevSteps[index + 1].timeSec)) {
-          return { ...step, status: 'current' };
+          newStatus = 'current';
+        } else if (currentTimeValue >= step.timeSec) {
+          newStatus = 'completed';
+        } else if (currentTimeValue >= step.timeSec - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.timeSec) {
+          newStatus = 'next';
         }
-        if (currentTimeValue >= step.timeSec) {
-          if (step.status === 'current') {
+
+        // ステータス変更を検出
+        const previousStatus = previousStepsStatusRef.current[index];
+        if (previousStatus !== newStatus) {
+          // 状態が「next」に変わった時だけアニメーションとサウンドを鳴らす
+          if (newStatus === 'next') {
+            const isFinish = index === prevSteps.length - 1;
+
+            if (onStepTransition) {
+              const currentAmount = index > 0 ? (prevSteps[index - 1].cumulative || 0) : 0;
+              const targetAmount = step.cumulative || 0;
+              onStepTransition(currentAmount, targetAmount);
+            }
+
+            playAudio(isFinish);
+          } else if (newStatus === 'current' && previousStatus === 'next') {
+            // nextからcurrentになった場合はバイブレーションを実行
             vibrate();
           }
-          return { ...step, status: 'completed' };
+
+          // ステータスを保存
+          previousStepsStatusRef.current[index] = newStatus;
         }
-        if (currentTimeValue >= step.timeSec - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.timeSec) {
-          const isFinish = index === prevSteps.length - 1;
-          playAudio(isFinish);
-          return { ...step, status: 'next' };
-        }
-        return { ...step, status: 'upcoming' };
-      })
-    );
-  };
+
+        return { ...step, status: newStatus };
+      });
+    });
+  }, [internalSteps, onStepTransition, onTimerComplete, playAudio, vibrate]);
 
   // Update useEffect for timer
   useEffect(() => {
     updateStepStatuses(currentTime);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTime]);
+  }, [currentTime, updateStepStatuses]);
 
   return (
     <Box
@@ -135,7 +187,7 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
           }}
         />
         {/* Render each step using absolute positioning */}
-        {steps.map((step, index) => {
+        {internalSteps.map((step, index) => {
           const topPos = getStepPosition(step.timeSec);
           return (
             <Box
