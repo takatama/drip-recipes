@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Box, Typography, useMediaQuery } from '@mui/material';
-import { Step } from '../types';
+import { Step, StepStatus } from '../types';
 import { useSettings } from '../context/SettingsContext';
 import { useNotification } from '../hooks/useNotification';
+import PourAnimation from './PourAnimation';
 
 interface StepsProps {
   steps: Step[];
@@ -69,6 +70,52 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
     return time === 0 ? FIRST_STEP_OFFSET : topPos + FIRST_STEP_OFFSET;
   };
 
+  // レンダリング中のアニメーション状態
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [currentWaterAmount, setCurrentWaterAmount] = useState(0);
+  const [targetWaterAmount, setTargetWaterAmount] = useState(0);
+
+  // トリガーフラグとして使用する状態変数を追加
+  const [triggerAnimation, setTriggerAnimation] = useState(0);
+// 次のステップに移るときのデータを保存するref
+const nextStepDataRef = useRef<{
+  currentAmount: number;
+  targetAmount: number;
+}>({
+  currentAmount: 0,
+  targetAmount: 0
+});
+
+// トリガー処理を副作用に移動
+useEffect(() => {
+  if (triggerAnimation > 0) {
+    // アニメーション表示
+    setCurrentWaterAmount(nextStepDataRef.current.currentAmount);
+    setTargetWaterAmount(nextStepDataRef.current.targetAmount);
+    setShowAnimation(true);
+    
+    // 3秒後に自動的にアニメーションを非表示にする
+    const timer = setTimeout(() => {
+      setShowAnimation(false);
+    }, 3000);
+    
+    // クリーンアップ関数でタイマーをクリア
+    return () => clearTimeout(timer);
+  }
+}, [triggerAnimation]);
+
+// アニメーションを設定するだけで、状態は更新しない関数
+const triggerWaterAnimation = (currentStep: Step, nextStep: Step | undefined) => {
+  // refにデータを保存
+  nextStepDataRef.current = {
+    currentAmount: currentStep.cumulative || 0,
+    targetAmount: nextStep?.cumulative || currentStep.cumulative || 0
+  };
+  
+  // トリガーのカウンターを増加させて副作用を実行
+  setTriggerAnimation(prev => prev + 1);
+};
+
   // Add function to update step statuses
   const updateStepStatuses = (currentTimeValue: number) => {
     if (steps.length === 0) return;
@@ -78,25 +125,41 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
       onTimerComplete();
     }
 
-    setSteps(prevSteps =>
-      prevSteps.map((step, index) => {
-        if (currentTimeValue >= step.timeSec && (index === prevSteps.length - 1 || currentTimeValue < prevSteps[index + 1].timeSec)) {
-          return { ...step, status: 'current' };
+    const updatedSteps = steps.map((step, index) => {
+      const nextStep = index < steps.length - 1 ? steps[index + 1] : undefined;
+
+      if (currentTimeValue >= step.timeSec && (index === steps.length - 1 || currentTimeValue < steps[index + 1].timeSec)) {
+        return { ...step, status: 'current' as StepStatus };
+      }
+
+      if (currentTimeValue >= step.timeSec) {
+        if (step.status === 'current') {
+          vibrate();
         }
-        if (currentTimeValue >= step.timeSec) {
-          if (step.status === 'current') {
-            vibrate();
-          }
-          return { ...step, status: 'completed' };
-        }
-        if (currentTimeValue >= step.timeSec - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.timeSec) {
-          const isFinish = index === prevSteps.length - 1;
+        return { ...step, status: 'completed' as StepStatus };
+      }
+
+      if (currentTimeValue >= step.timeSec - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.timeSec) {
+        const isFinish = index === steps.length - 1;
+
+        // 次のステップになる前の3秒間のとき
+        if (step.status !== 'next') {
+          // ステータスが変更される最初の時だけアニメーション設定
+          triggerWaterAnimation(
+            index > 0 ? steps[index - 1] : { ...step, cumulative: 0 },
+            step
+          );
           playAudio(isFinish);
-          return { ...step, status: 'next' };
         }
-        return { ...step, status: 'upcoming' };
-      })
-    );
+
+        return { ...step, status: 'next' as StepStatus };
+      }
+
+      return { ...step, status: 'upcoming' as StepStatus };
+    });
+
+    // バッチでステップを更新
+    setSteps(updatedSteps);
   };
 
   // Update useEffect for timer
@@ -116,6 +179,13 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
         mb: 10
       }}
     >
+      {/* アニメーションコンポーネント */}
+      <PourAnimation
+        isVisible={showAnimation}
+        currentWaterAmount={currentWaterAmount}
+        targetWaterAmount={targetWaterAmount}
+      />
+
       <Box
         sx={{
           position: 'relative',
