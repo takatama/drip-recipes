@@ -3,18 +3,19 @@ import Controls from './Controls';
 import Steps from './Steps';
 import { useTimer } from '../hooks/useTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
-import { Step, TranslationType } from '../types';
+import { LanguageType, Step, TranslationType } from '../types';
 import { Snackbar } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 interface TimelineProps {
-  language: 'en' | 'ja';
+  locale: LanguageType;
   steps: Step[];
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
   isDence?: boolean;
 }
 
 const Timeline: React.FC<TimelineProps> = ({
+  locale,
   steps,
   setSteps,
   isDence,
@@ -62,6 +63,7 @@ const Timeline: React.FC<TimelineProps> = ({
         onReset={handleReset}
       />
       <Steps
+        locale={locale}
         steps={steps}
         setSteps={setSteps}
         currentTime={currentTime}

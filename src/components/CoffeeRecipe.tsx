@@ -7,11 +7,11 @@ import { CoffeeRecipeType, LanguageType } from '../types';
 import CoffeeTimer from './CoffeeTimer';
 
 interface CoffeeRecipeProps {
-  lang: LanguageType;
+  locale: LanguageType;
   recipe: CoffeeRecipeType;
 }
 
-const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ lang, recipe }) => {
+const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ locale, recipe }) => {
   if (!recipe) {
     return <div>Recipe not found</div>;
   }
@@ -27,19 +27,19 @@ const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ lang, recipe }) => {
         width: '100%',
       }}
     >
-      <Header language={lang} pathname={`/${lang}/recipes/featured/${recipe.id}`} />
+      <Header locale={locale} pathname={`/${locale}/recipes/featured/${recipe.id}`} />
 
       <Typography variant="h5" align="center" gutterBottom>
-        {recipe.name[lang]}
+        {recipe.name[locale]}
       </Typography>
 
-      <RecipeDescription recipe={recipe} language={lang} />
+      <RecipeDescription locale={locale} recipe={recipe} />
 
       <Typography variant="body1" align="center" gutterBottom>
-        {recipe.equipments[lang]}
+        {recipe.equipments[locale]}
       </Typography>
 
-      <CoffeeTimer recipe={recipe} language={lang} />
+      <CoffeeTimer recipe={recipe} locale={locale} />
 
       <Footer />
     </Container>

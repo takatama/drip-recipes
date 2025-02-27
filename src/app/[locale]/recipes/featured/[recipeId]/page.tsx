@@ -6,15 +6,13 @@ import { fourToSixMethod } from '@/recipes/four-to-six-method';
 import { CoffeeRecipeType } from '@/types';
 import { generateRecipeJsonLd } from '@/utils/generateRecipeJsonLd';
 import { Metadata } from 'next';
-import { isValidLanguage } from '@/utils/isValidLanguage';
 import JsonLd from '@/components/JsonLd';
 
 // Generate metadata including JSON-LD
 export async function generateMetadata({ params }: { 
-  params: Promise<{ lang: string; recipeId: string; }> 
+  params: Promise<{ locale: string; recipeId: string; }> 
 }): Promise<Metadata> {
-  const lang = (await params).lang;
-  const typedLang: LanguageType = isValidLanguage(lang) ? lang : 'en';
+  const locale = (await params).locale as LanguageType;
   const recipeId = (await params).recipeId;
   const recipe = recipeMap[recipeId];
   
@@ -25,11 +23,11 @@ export async function generateMetadata({ params }: {
   }
   
   return {
-    title: recipe.name[typedLang],
-    description: recipe.description[typedLang],
+    title: recipe.name[locale],
+    description: recipe.description[locale],
     openGraph: {
-      title: recipe.name[typedLang],
-      description: recipe.description[typedLang],
+      title: recipe.name[locale],
+      description: recipe.description[locale],
       images: recipe.imageUrl ? [recipe.imageUrl] : [],
       type: 'article',
     },
@@ -54,16 +52,15 @@ export async function generateStaticParams() {
 export default async function CoffeeRecipePage({
   params,
 }: {
-  params: Promise<{ lang: string; recipeId: string; }>
+  params: Promise<{ locale: string; recipeId: string; }>
 }) {
-  const lang = (await params).lang;
-  const typedLang: LanguageType = isValidLanguage(lang) ? lang : 'en';
+  const locale = (await params).locale as LanguageType;
   const recipeId = (await params).recipeId;
   const recipe = recipeMap[recipeId];
   return (
     <>
-      <JsonLd data={generateRecipeJsonLd(recipe, typedLang)} />
-      <CoffeeRecipe lang={typedLang} recipe={recipe} />
+      <JsonLd data={generateRecipeJsonLd(recipe, locale)} />
+      <CoffeeRecipe locale={locale} recipe={recipe} />
     </>
   );
 }

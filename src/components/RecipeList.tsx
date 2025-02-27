@@ -8,11 +8,11 @@ import Footer from './Footer';
 import Container from '@mui/material/Container';
 
 interface RecipeListProps {
-  lang: LanguageType;
+  locale: LanguageType;
   recipes: CoffeeRecipeType[];
 }
 
-const RecipeList: React.FC<RecipeListProps> = ({ lang, recipes }) => {
+const RecipeList: React.FC<RecipeListProps> = ({ locale, recipes }) => {
   return (
     <Container maxWidth="sm" sx={{
       bgcolor: 'background.default',
@@ -21,12 +21,12 @@ const RecipeList: React.FC<RecipeListProps> = ({ lang, recipes }) => {
       py: 2,
       width: '100%',
     }}>
-      <Header language={lang} pathname={`/${lang}/recipes`}/>
+      <Header locale={locale} pathname={`/${locale}/recipes`}/>
 
       <Grid container spacing={3} sx={{ p: 2, mb: 2 }}>
         {recipes.map((recipe) => (
           <Grid size={{ xs: 12, sm: 6 }} key={recipe.id}>
-            <Link href={`/${lang}/recipes/featured/${recipe.id}`}
+            <Link href={`/${locale}/recipes/featured/${recipe.id}`}
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
               <Card
@@ -45,14 +45,14 @@ const RecipeList: React.FC<RecipeListProps> = ({ lang, recipes }) => {
                   component="img"
                   height="180"
                   image={recipe.imageUrl}
-                  alt={recipe.name[lang]}
+                  alt={recipe.name[locale]}
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
-                    {recipe.name[lang]}
+                    {recipe.name[locale]}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {recipe.description[lang]}
+                    {recipe.description[locale]}
                   </Typography>
                 </CardContent>
               </Card>

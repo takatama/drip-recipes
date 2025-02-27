@@ -6,11 +6,11 @@ import { LanguageType, TranslationType } from '../types';
 import { useTranslations } from 'next-intl';
 
 interface HeaderProps {
-  language: LanguageType;
+  locale: LanguageType;
   pathname: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ language, pathname }) => {
+const Header: React.FC<HeaderProps> = ({ locale, pathname }) => {
   const t = useTranslations('Settings');
 
   return (
@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ language, pathname }) => {
       }}
     >
       {/* Drip Recipes logo */}
-      <Link href={`/${language}/recipes`} style={{ textDecoration: 'none', color: 'inherit' }}>
+      <Link href={`/${locale}/recipes`} style={{ textDecoration: 'none', color: 'inherit' }}>
         <Typography
           variant="h6"
           sx={{
@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ language, pathname }) => {
 
       {/* Settings Button */}
       <Link
-        href={`/${language}/settings${
+        href={`/${locale}/settings${
           pathname ? `?from=${encodeURIComponent(pathname)}` : ''
         }`}
         style={{ textDecoration: 'none', color: 'inherit' }}

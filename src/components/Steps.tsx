@@ -3,8 +3,10 @@ import { Box, Typography, useMediaQuery } from '@mui/material';
 import { Step } from '../types';
 import { useSettings } from '../context/SettingsContext';
 import { useNotification } from '../hooks/useNotification';
+import { LanguageType } from '../types';
 
 interface StepsProps {
+  locale: LanguageType;
   steps: Step[];
   currentTime: number;
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
@@ -22,13 +24,13 @@ const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 3;
 
-const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComplete, isDence }) => {
+const Steps: React.FC<StepsProps> = ({ locale, steps, setSteps, currentTime, onTimerComplete, isDence }) => {
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef<HTMLAudioElement | null>(null);
   const finishAudio = useRef<HTMLAudioElement | null>(null);
   const isSmallScreen = useMediaQuery('(max-width:465px)');
-  const { darkMode, notificationMode, language, voice } = useSettings();
-  const { playAudio, vibrate } = useNotification({ language, voice, notificationMode });
+  const { darkMode, notificationMode, voice } = useSettings();
+  const { playAudio, vibrate } = useNotification({ locale, voice, notificationMode });
   const totalTime = steps[steps.length - 1]?.timeSec;
   const arrowHeight = isDence ? 12 : 25;
 
@@ -46,10 +48,10 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
   // Update audio sources when language changes
   useEffect(() => {
     if (nextStepAudio.current && finishAudio.current) {
-      nextStepAudio.current.src = `/audio/${language}-${voice}-next-step.wav`;
-      finishAudio.current.src = `/audio/${language}-${voice}-finish.wav`;
+      nextStepAudio.current.src = `/audio/${locale}-${voice}-next-step.wav`;
+      finishAudio.current.src = `/audio/${locale}-${voice}-finish.wav`;
     }
-  }, [language, voice]);
+  }, [locale, voice]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -173,7 +175,7 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
                     }[step.status]
                   }}
                 >
-                  {formatTime(step.timeSec)} {step.action[language]}
+                  {formatTime(step.timeSec)} {step.action[locale]}
                 </Typography>
               ) : (
                 <>
@@ -205,7 +207,7 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
                       }[step.status]
                     }}
                   >
-                    {step.action[language]}
+                    {step.action[locale]}
                   </Typography>
                 </>
               )}

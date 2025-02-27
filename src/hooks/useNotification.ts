@@ -2,12 +2,12 @@ import { useRef, useEffect } from 'react';
 import { LanguageType, NotificationMode, VoiceType } from '../types';
 
 interface UseNotificationProps {
-  language: LanguageType;
+  locale: LanguageType;
   voice: VoiceType;
   notificationMode: NotificationMode;
 }
 
-export const useNotification = ({ language, voice, notificationMode }: UseNotificationProps) => {
+export const useNotification = ({ locale, voice, notificationMode }: UseNotificationProps) => {
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef<HTMLAudioElement | null>(null);
   const finishAudio = useRef<HTMLAudioElement | null>(null);
@@ -26,10 +26,10 @@ export const useNotification = ({ language, voice, notificationMode }: UseNotifi
   // Update audio sources when language changes
   useEffect(() => {
     if (nextStepAudio.current && finishAudio.current) {
-      nextStepAudio.current.src = `/audio/${language}-${voice}-next-step.wav`;
-      finishAudio.current.src = `/audio/${language}-${voice}-finish.wav`;
+      nextStepAudio.current.src = `/audio/${locale}-${voice}-next-step.wav`;
+      finishAudio.current.src = `/audio/${locale}-${voice}-finish.wav`;
     }
-  }, [language, voice]);
+  }, [locale, voice]);
 
   const playAudio = (isFinish: boolean) => {
     if (notificationMode === 'none' || isPlayingRef.current) return;

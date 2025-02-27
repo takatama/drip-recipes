@@ -1,15 +1,15 @@
 import React from 'react';
 import { Typography, Accordion, AccordionSummary, Box } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
-import { CoffeeRecipeType, TranslationType } from '../types';
+import { CoffeeRecipeType, LanguageType, TranslationType } from '../types';
 import { useTranslations } from 'next-intl';
 
 type Props = {
+  locale: LanguageType,
   recipe: CoffeeRecipeType,
-  language: 'en' | 'ja',
 };
 
-const RecipeDescription: React.FC<Props> = ({ recipe, language }) => {
+const RecipeDescription: React.FC<Props> = ({ locale, recipe }) => {
   const t = useTranslations('Recipe');
 
   return (
@@ -52,7 +52,7 @@ const RecipeDescription: React.FC<Props> = ({ recipe, language }) => {
               title="Recipe Video"
             />
           </Box>
-          <Typography variant='body2'>{recipe.description[language]}</Typography>
+          <Typography variant='body2'>{recipe.description[locale]}</Typography>
         </Box>
       </AccordionSummary>
     </Accordion>

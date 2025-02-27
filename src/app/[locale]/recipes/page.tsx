@@ -5,7 +5,6 @@ import { hoffmannBetter1CupV60 } from '@/recipes/hoffmann-better-1cup-v60';
 import { fourToSixMethod } from '@/recipes/four-to-six-method';
 import { generateItemListJsonLd } from '@/utils/generateRecipeJsonLd';
 import { Metadata } from 'next';
-import { isValidLanguage } from '@/utils/isValidLanguage';
 import JsonLd from '@/components/JsonLd';
 import { getTranslations } from 'next-intl/server';
 // export const runtime = 'edge';
@@ -26,10 +25,9 @@ const recipes = Object.values(recipeMap);
 export async function generateMetadata({ 
   params 
 }: { 
-  params: Promise<{ lang: string }> 
+  params: Promise<{ locale: string }> 
 }): Promise<Metadata> {
-  const lang = (await params).lang;
-  const typedLang: LanguageType = isValidLanguage(lang) ? lang : 'en';
+  const locale = (await params).locale;
   const t = await getTranslations('RecipeList');
   
   return {
@@ -39,7 +37,7 @@ export async function generateMetadata({
       title: t('title'),
       description: t('description'),
       type: 'website',
-      locale: typedLang === 'en' ? 'en_US' : 'ja_JP',
+      locale,
     }
   };
 }
@@ -47,16 +45,15 @@ export async function generateMetadata({
 export default async function RecipeListPage({
   params,
 }: {
-  params: Promise<{ lang: string }>
+  params: Promise<{ locale: string }>
 }) {
-  const lang = (await params).lang;
-  const typedLang: LanguageType = isValidLanguage(lang) ? lang : 'en';
+  const locale = (await params).locale as LanguageType;
   const t = await getTranslations('RecipeList');
-  const itemListJsonLd = generateItemListJsonLd(recipes, typedLang, t('title'));
+  const itemListJsonLd = generateItemListJsonLd(recipes, locale, t('title'));
   return (
     <>
       <JsonLd data={itemListJsonLd} />
-      <RecipeList lang={typedLang} recipes={recipes}/>
+      <RecipeList locale={locale} recipes={recipes}/>
     </>
   );
 }

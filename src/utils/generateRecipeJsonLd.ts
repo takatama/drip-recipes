@@ -72,7 +72,7 @@ export function generateRecipeJsonLd(recipe: CoffeeRecipeType, lang: LanguageTyp
 
 export function generateItemListJsonLd(
   recipes: CoffeeRecipeType[],
-  lang: LanguageType,
+  locale: LanguageType,
   titie: string,
   baseUrl: string = HOSTNAME
 ) {
@@ -80,8 +80,8 @@ export function generateItemListJsonLd(
     return {
       "@type": "ListItem" as const,
       "position": index + 1,
-      "name": recipe.name[lang],
-      "url": `${baseUrl}/${lang}/recipes/featured/${recipe.id}`
+      "name": recipe.name[locale],
+      "url": `${baseUrl}/${locale}/recipes/featured/${recipe.id}`
     };
   });
 

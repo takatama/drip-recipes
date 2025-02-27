@@ -9,11 +9,11 @@ import { generateSteps } from '@/utils/generateSteps';
 import { useTranslations } from 'next-intl';
 
 interface CoffeeTimerProps {
+  locale: LanguageType;
   recipe: CoffeeRecipeType;
-  language: LanguageType;
 }
 
-const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, language }) => {
+const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ locale, recipe }) => {
   const getDefaultValue = (key: string) => {
     const param = recipe.params.find(p => p.key === key);
     return param?.default || null;
@@ -51,7 +51,7 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, language }) => {
         }}
       />
 
-      {recipe.preparationSteps && recipe.preparationSteps[language]?.length > 0 && (
+      {recipe.preparationSteps && recipe.preparationSteps[locale]?.length > 0 && (
         <Typography
           variant="body2"
           component="div"
@@ -62,7 +62,7 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, language }) => {
           }}
         >
           <div style={{ marginBottom: '8px' }}>{t('preparation')}</div>
-          {recipe.preparationSteps[language].map((step, index) => (
+          {recipe.preparationSteps[locale].map((step, index) => (
             <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
               <span style={{ marginRight: '8px' }}>•</span>
               {step}
@@ -72,7 +72,7 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, language }) => {
       )}
 
       <Timeline
-        language={language}
+        locale={locale}
         steps={steps}
         setSteps={setSteps}
         isDence={recipe.isDence}
