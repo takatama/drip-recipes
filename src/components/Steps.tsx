@@ -1,9 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Box, Typography, useMediaQuery } from '@mui/material';
 import { Step, StepStatus } from '../types';
 import { useSettings } from '../context/SettingsContext';
 import { useNotification } from '../hooks/useNotification';
-import PourAnimation from './PourAnimation';
 
 interface StepsProps {
   steps: Step[];
@@ -11,6 +10,7 @@ interface StepsProps {
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
   onTimerComplete: () => void;
   isDence?: boolean;
+  onStepTransition?: (currentAmount: number, targetAmount: number) => void;
 }
 
 const CONTAINER_HEIGHT = 400;
@@ -23,7 +23,14 @@ const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 3;
 
-const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComplete, isDence }) => {
+const Steps: React.FC<StepsProps> = ({ 
+  steps, 
+  setSteps, 
+  currentTime, 
+  onTimerComplete, 
+  isDence,
+  onStepTransition
+}) => {
   const isPlayingRef = useRef(false);
   const nextStepAudio = useRef<HTMLAudioElement | null>(null);
   const finishAudio = useRef<HTMLAudioElement | null>(null);
@@ -70,54 +77,10 @@ const Steps: React.FC<StepsProps> = ({ steps, setSteps, currentTime, onTimerComp
     return time === 0 ? FIRST_STEP_OFFSET : topPos + FIRST_STEP_OFFSET;
   };
 
-  // レンダリング中のアニメーション状態
-  const [showAnimation, setShowAnimation] = useState(false);
-  const [currentWaterAmount, setCurrentWaterAmount] = useState(0);
-  const [targetWaterAmount, setTargetWaterAmount] = useState(0);
-
-  // トリガーフラグとして使用する状態変数を追加
-  const [triggerAnimation, setTriggerAnimation] = useState(0);
-// 次のステップに移るときのデータを保存するref
-const nextStepDataRef = useRef<{
-  currentAmount: number;
-  targetAmount: number;
-}>({
-  currentAmount: 0,
-  targetAmount: 0
-});
-
-// トリガー処理を副作用に移動
-useEffect(() => {
-  if (triggerAnimation > 0) {
-    // アニメーション表示
-    setCurrentWaterAmount(nextStepDataRef.current.currentAmount);
-    setTargetWaterAmount(nextStepDataRef.current.targetAmount);
-    setShowAnimation(true);
-    
-    // 3秒後に自動的にアニメーションを非表示にする
-    const timer = setTimeout(() => {
-      setShowAnimation(false);
-    }, 3000);
-    
-    // クリーンアップ関数でタイマーをクリア
-    return () => clearTimeout(timer);
-  }
-}, [triggerAnimation]);
-
-// アニメーションを設定するだけで、状態は更新しない関数
-const triggerWaterAnimation = (currentStep: Step, nextStep: Step | undefined) => {
-  // refにデータを保存
-  nextStepDataRef.current = {
-    currentAmount: currentStep.cumulative || 0,
-    targetAmount: nextStep?.cumulative || currentStep.cumulative || 0
-  };
-  
-  // トリガーのカウンターを増加させて副作用を実行
-  setTriggerAnimation(prev => prev + 1);
-};
-
+  // ステップのステータス追跡用の参照を追加
+  const previousStepsStatusRef = useRef<Record<number, StepStatus>>({});
   // Add function to update step statuses
-  const updateStepStatuses = (currentTimeValue: number) => {
+  const updateStepStatuses = useCallback((currentTimeValue: number) => {
     if (steps.length === 0) return;
 
     const lastStep = steps[steps.length - 1];
@@ -126,47 +89,49 @@ const triggerWaterAnimation = (currentStep: Step, nextStep: Step | undefined) =>
     }
 
     const updatedSteps = steps.map((step, index) => {
-      const nextStep = index < steps.length - 1 ? steps[index + 1] : undefined;
-
+      let newStatus: StepStatus = 'upcoming';
+      
       if (currentTimeValue >= step.timeSec && (index === steps.length - 1 || currentTimeValue < steps[index + 1].timeSec)) {
-        return { ...step, status: 'current' as StepStatus };
+        newStatus = 'current';
+      } else if (currentTimeValue >= step.timeSec) {
+        newStatus = 'completed';
+      } else if (currentTimeValue >= step.timeSec - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.timeSec) {
+        newStatus = 'next';
       }
-
-      if (currentTimeValue >= step.timeSec) {
-        if (step.status === 'current') {
+      
+      // ステータス変更を検出
+      const previousStatus = previousStepsStatusRef.current[index];
+      if (previousStatus !== newStatus) {
+        // 状態が「next」に変わった時だけアニメーションとサウンドを鳴らす
+        if (newStatus === 'next') {
+          const isFinish = index === steps.length - 1;
+          
+          if (onStepTransition) {
+            const currentAmount = index > 0 ? (steps[index - 1].cumulative || 0) : 0;
+            const targetAmount = step.cumulative || 0;
+            onStepTransition(currentAmount, targetAmount);
+          }
+          
+          playAudio(isFinish);
+        } else if (newStatus === 'current' && previousStatus === 'next') {
+          // nextからcurrentになった場合はバイブレーションを実行
           vibrate();
         }
-        return { ...step, status: 'completed' as StepStatus };
+        
+        // ステータスを保存
+        previousStepsStatusRef.current[index] = newStatus;
       }
-
-      if (currentTimeValue >= step.timeSec - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.timeSec) {
-        const isFinish = index === steps.length - 1;
-
-        // 次のステップになる前の3秒間のとき
-        if (step.status !== 'next') {
-          // ステータスが変更される最初の時だけアニメーション設定
-          triggerWaterAnimation(
-            index > 0 ? steps[index - 1] : { ...step, cumulative: 0 },
-            step
-          );
-          playAudio(isFinish);
-        }
-
-        return { ...step, status: 'next' as StepStatus };
-      }
-
-      return { ...step, status: 'upcoming' as StepStatus };
+      
+      return { ...step, status: newStatus };
     });
 
-    // バッチでステップを更新
     setSteps(updatedSteps);
-  };
+  }, [steps, onTimerComplete, playAudio, vibrate, onStepTransition]);
 
   // Update useEffect for timer
   useEffect(() => {
     updateStepStatuses(currentTime);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTime]);
+  }, [currentTime, updateStepStatuses]);
 
   return (
     <Box
@@ -179,13 +144,6 @@ const triggerWaterAnimation = (currentStep: Step, nextStep: Step | undefined) =>
         mb: 10
       }}
     >
-      {/* アニメーションコンポーネント */}
-      <PourAnimation
-        isVisible={showAnimation}
-        currentWaterAmount={currentWaterAmount}
-        targetWaterAmount={targetWaterAmount}
-      />
-
       <Box
         sx={{
           position: 'relative',
