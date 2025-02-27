@@ -90,8 +90,8 @@ Contributions are welcome! Please **open an issue** or **submit a pull request**
 - [James Hoffmann](https://www.jameshoffmann.co.uk/) for creating the V60 technique.
 - [Cloudflare](https://pages.cloudflare.com/) for hosting.
 - [Unsplash](https://unsplash.com/) for images.
-
-# Next.js
+- [Excalidraw](https://excalidraw.com/) for SVG drawings.
+- [LottieFiles](https://lottiefiles.com/) for animations.
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`c3`](https://developers.cloudflare.com/pages/get-started/c3).
 
