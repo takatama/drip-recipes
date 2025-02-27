@@ -115,6 +115,11 @@ const Timeline: React.FC<TimelineProps> = ({
     // すでにアニメーション中の場合は何もしない
     if (showAnimation) return;
     
+    if (currentAmount === targetAmount) {
+      // 量が変化しない場合はアニメーションを表示しない
+      return;
+    }
+    
     setCurrentWaterAmount(currentAmount);
     setTargetWaterAmount(targetAmount);
     setShowAnimation(true);

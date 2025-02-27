@@ -135,7 +135,7 @@ const PourAnimation: React.FC<PourAnimationProps> = ({
         style={{ width: 200, height: 200 }}
       />
       <Typography variant="h4" fontWeight="bold" sx={{ mt: 2 }}>
-        {waterAmount} ml
+        {waterAmount} g
       </Typography>
     </Box>
   );
