@@ -150,7 +150,7 @@ const Steps: React.FC<StepsProps> = ({
         return { ...step, status: newStatus };
       });
     });
-  }, [internalSteps.length, onStepTransition, onTimerComplete, playAudio, vibrate]);
+  }, [internalSteps, onStepTransition, onTimerComplete, playAudio, vibrate]);
 
   // Update useEffect for timer
   useEffect(() => {

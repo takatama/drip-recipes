@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Button } from '@mui/material';
 import { PlayArrow, Pause, Replay } from '@mui/icons-material';
 import { TranslationType } from '../types';
-import { useTimer } from '../hooks/useTimer';
 
 interface ControlsProps {
   t: TranslationType;
