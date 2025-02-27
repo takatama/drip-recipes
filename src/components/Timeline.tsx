@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Controls from './Controls';
 import Steps from './Steps';
+import NotificationManager from './NotificationManager';
 import { useTimer } from '../hooks/useTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
-import { Step, TranslationType } from '../types';
+import { Step, StepStatus, TranslationType } from '../types';
 import { Snackbar } from '@mui/material';
 import dynamic from 'next/dynamic';
 
@@ -38,9 +39,27 @@ const Timeline: React.FC<TimelineProps> = ({
   const [animationStatus, setAnimationStatus] = useState<'idle' | 'initial' | 'step'>(
     'idle'
   );
+  
+  // 通知関連の状態
+  const [isNextStep, setIsNextStep] = useState(false);
+  const [isFinish, setIsFinish] = useState(false);
+  const [shouldVibrate, setShouldVibrate] = useState(false);
 
   // タイマーの状態
   const timerReadyRef = useRef(false);
+
+  // 通知フラグをリセットするタイマー
+  useEffect(() => {
+    if (isNextStep || isFinish || shouldVibrate) {
+      const timer = setTimeout(() => {
+        setIsNextStep(false);
+        setIsFinish(false);
+        setShouldVibrate(false);
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isNextStep, isFinish, shouldVibrate]);
 
   // 初期アニメーション後の開始処理
   useEffect(() => {
@@ -130,6 +149,20 @@ const Timeline: React.FC<TimelineProps> = ({
       setShowAnimation(false);
     }, 3000);
   };
+  
+  // ステップのステータス変更ハンドラ
+  const handleStepStatusChange = (index: number, oldStatus: StepStatus, newStatus: StepStatus) => {
+    const isLastStep = index === steps.length - 1;
+    
+    if (newStatus === 'next') {
+      // 「next」状態になったらサウンド通知
+      setIsNextStep(true);
+      setIsFinish(isLastStep);
+    } else if (newStatus === 'current' && oldStatus === 'next') {
+      // nextからcurrentになったらバイブレーション
+      setShouldVibrate(true);
+    }
+  };
 
   return (
     <>
@@ -148,6 +181,14 @@ const Timeline: React.FC<TimelineProps> = ({
         onTimerComplete={handleTimerComplete}
         isDence={isDence}
         onStepTransition={handleStepTransition}
+        onStepStatusChange={handleStepStatusChange}
+      />
+      
+      {/* 通知マネージャー（非表示） */}
+      <NotificationManager
+        isNextStep={isNextStep}
+        isFinish={isFinish}
+        shouldVibrate={shouldVibrate}
       />
       
       {/* アニメーションコンポーネント */}
