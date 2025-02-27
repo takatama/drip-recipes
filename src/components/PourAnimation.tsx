@@ -22,59 +22,77 @@ const PourAnimation: React.FC<PourAnimationProps> = ({
   const animationTimerRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number>(0);
   const animationFrameRef = useRef<number | null>(null);
+  const previousValueRef = useRef<number>(currentWaterAmount);
+
+  // propsの値が変化したときだけwaterAmountを更新
+  useEffect(() => {
+    previousValueRef.current = currentWaterAmount;
+    setWaterAmount(currentWaterAmount);
+  }, [currentWaterAmount]);
 
   // アニメーション開始時に呼び出される
   useEffect(() => {
-    if (isVisible) {
-      // 初期値を設定
-      setWaterAmount(currentWaterAmount);
+    if (!isVisible) return;
+
+    // 現在時間を記録
+    startTimeRef.current = Date.now();
+    
+    // アニメーションフレームを開始
+    const animate = () => {
+      const elapsed = Date.now() - startTimeRef.current;
       
-      // 現在時間を記録
-      startTimeRef.current = Date.now();
+      // 0.5秒間は現在の値を表示
+      if (elapsed < delayBeforeCount) {
+        animationFrameRef.current = requestAnimationFrame(animate);
+        return;
+      }
       
-      // アニメーションフレームを開始
-      const animate = () => {
-        const elapsed = Date.now() - startTimeRef.current;
+      // 0.5秒～1.5秒の間でカウントアップ
+      const countElapsed = elapsed - delayBeforeCount;
+      if (countElapsed < countDuration) {
+        const progress = countElapsed / countDuration;
+        const newWaterAmount = currentWaterAmount + (targetWaterAmount - currentWaterAmount) * progress;
+        const roundedValue = Math.round(newWaterAmount);
         
-        // 0.5秒間は現在の値を表示
-        if (elapsed < delayBeforeCount) {
-          setWaterAmount(currentWaterAmount);
-          animationFrameRef.current = requestAnimationFrame(animate);
-          return;
+        // 前回と値が違う場合のみ更新（状態更新の最小化）
+        if (previousValueRef.current !== roundedValue) {
+          previousValueRef.current = roundedValue;
+          setWaterAmount(roundedValue);
         }
         
-        // 0.5秒～1.5秒の間でカウントアップ
-        const countElapsed = elapsed - delayBeforeCount;
-        if (countElapsed < countDuration) {
-          const progress = countElapsed / countDuration;
-          const newWaterAmount = currentWaterAmount + (targetWaterAmount - currentWaterAmount) * progress;
-          setWaterAmount(Math.round(newWaterAmount));
-          animationFrameRef.current = requestAnimationFrame(animate);
-          return;
-        }
-        
-        // 1.5秒以降は目標値を表示
+        animationFrameRef.current = requestAnimationFrame(animate);
+        return;
+      }
+      
+      // 1.5秒以降は目標値を表示（一度だけ設定）
+      if (previousValueRef.current !== targetWaterAmount) {
+        previousValueRef.current = targetWaterAmount;
         setWaterAmount(targetWaterAmount);
-        
-        // アニメーションが完了したらフレーム要求をキャンセル
-        if (animationFrameRef.current) {
-          cancelAnimationFrame(animationFrameRef.current);
-          animationFrameRef.current = null;
-        }
-      };
+      }
       
-      // アニメーションを開始
-      animationFrameRef.current = requestAnimationFrame(animate);
+      // アニメーションが完了したらフレーム要求をキャンセル
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+    };
+    
+    // アニメーションを開始
+    animationFrameRef.current = requestAnimationFrame(animate);
+    
+    // 3秒後に自動的にアニメーションを終了するタイマーを設定
+    animationTimerRef.current = setTimeout(() => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
       
-      // 3秒後に自動的にアニメーションを終了するタイマーを設定
-      animationTimerRef.current = setTimeout(() => {
-        if (animationFrameRef.current) {
-          cancelAnimationFrame(animationFrameRef.current);
-          animationFrameRef.current = null;
-        }
+      // タイマー終了時に最終値を設定（最後の更新）
+      if (previousValueRef.current !== targetWaterAmount) {
+        previousValueRef.current = targetWaterAmount;
         setWaterAmount(targetWaterAmount);
-      }, animationDuration);
-    }
+      }
+    }, animationDuration);
     
     // クリーンアップ
     return () => {
@@ -87,7 +105,7 @@ const PourAnimation: React.FC<PourAnimationProps> = ({
         animationFrameRef.current = null;
       }
     };
-  }, [isVisible, currentWaterAmount, targetWaterAmount]);
+  }, [isVisible, currentWaterAmount, targetWaterAmount, delayBeforeCount, countDuration, animationDuration]);
 
   if (!isVisible) return null;
 
