@@ -8,13 +8,18 @@ export const useTimer = (updateInterval: number = 0.1) => {
   const isRunningRef = useRef(false);
   const animationFrameId = useRef<number | null>(null);
   const lastUpdateRef = useRef(0);
+  const lastSetTimeRef = useRef(0); // 最後に設定した時間を追跡
 
   const updateTimer = useCallback(() => {
     if (!startTimeRef.current || !isRunningRef.current) return;
 
     const elapsedTime = (Date.now() - startTimeRef.current) / 1000;
-    if (elapsedTime - lastUpdateRef.current >= updateInterval) {
+    
+    // 前回の更新から十分な時間が経過しており、かつ値が変わる場合だけ更新
+    if (elapsedTime - lastUpdateRef.current >= updateInterval && 
+        Math.abs(elapsedTime - lastSetTimeRef.current) >= 0.01) {
       lastUpdateRef.current = elapsedTime;
+      lastSetTimeRef.current = elapsedTime;
       setCurrentTime(elapsedTime);
     }
 
@@ -27,6 +32,7 @@ export const useTimer = (updateInterval: number = 0.1) => {
     isRunningRef.current = true;
     setIsRunning(true);
     startTimeRef.current = Date.now() - currentTime * 1000;
+    lastSetTimeRef.current = currentTime;
     animationFrameId.current = requestAnimationFrame(updateTimer);
   }, [currentTime, isRunning, updateTimer]);
 
@@ -35,6 +41,7 @@ export const useTimer = (updateInterval: number = 0.1) => {
     setIsRunning(false);
     if (animationFrameId.current !== null) {
       cancelAnimationFrame(animationFrameId.current);
+      animationFrameId.current = null;
     }
   }, []);
 
@@ -42,10 +49,12 @@ export const useTimer = (updateInterval: number = 0.1) => {
     isRunningRef.current = false;
     startTimeRef.current = null;
     setIsRunning(false);
+    lastSetTimeRef.current = 0;
     setCurrentTime(0);
     lastUpdateRef.current = 0;
     if (animationFrameId.current !== null) {
       cancelAnimationFrame(animationFrameId.current);
+      animationFrameId.current = null;
     }
   }, []);
 
