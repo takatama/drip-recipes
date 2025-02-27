@@ -10,7 +10,7 @@ export const hoffmannBetter1CupV60: CoffeeRecipeType = {
     en: "Unlock incredible flavor in your V60 with this simple, repeatable technique by James Hoffmann. Using just 15g of coffee and 250g of water with a finer grind, you'll consistently brew a sweeter, fuller-bodied cup. The secret? Five precise 50g pours with short pauses to maintain optimal temperature and minimize acidity. Stop wasting water and start enjoying a truly exceptional single-cup V60 experience.",
     ja: "V60で驚くほどの風味を引き出す、James Hoffmann氏によるシンプルで再現性の高いテクニックです。コーヒー15gと水250g（細かい挽き）を使い、50gずつ5回に分けて注ぐことで、甘くコクのある一杯を実現。最適な温度維持と短いポーズで酸味を抑え、水の無駄をなくします。"
   },
-  imageUrl: "/images/di-bella-coffee-Ko7PFAommGE-unsplash.jpg",
+  imageUrl: "https://drip-recipes.pages.dev/images/di-bella-coffee-Ko7PFAommGE-unsplash.jpg",
   youTubeVideoId: "1oB1oDrDkHM",
   equipments: {
     en: <>
