@@ -11,11 +11,11 @@ import Footer from './Footer';
 import { useTranslations } from 'next-intl';
 
 const SettingsScreen : React.FC = () => {
-  const { language, setLanguage, darkMode, setDarkMode, notificationMode, setNotificationMode, voice, setVoice } = useSettings();
+  const { locale, setLocale: setLanguage, darkMode, setDarkMode, notificationMode, setNotificationMode, voice, setVoice } = useSettings();
   const router = useRouter();
   const t = useTranslations('Settings');
   const searchParams = useSearchParams();
-  const fromPath = searchParams.get('from') || `/${language}/recipes/featured/new-hybrid-method`;
+  const fromPath = searchParams.get('from') || `/${locale}/recipes`;
 
   const handleBack = () => {
     router.push(fromPath);
@@ -23,7 +23,7 @@ const SettingsScreen : React.FC = () => {
 
   const handleLanguageChange = (_e: React.MouseEvent<HTMLElement>, newLang: LanguageType) => {
     if (newLang) {
-      const newFromPath = fromPath.replace(`/${language}/`, `/${newLang}/`);
+      const newFromPath = fromPath.replace(`/${locale}/`, `/${newLang}/`);
       router.push(`/${newLang}/settings?from=${encodeURIComponent(newFromPath)}`);
       setLanguage(newLang);
     }
@@ -37,14 +37,14 @@ const SettingsScreen : React.FC = () => {
       py: 2,
       width: '100%',
     }}>
-      <Header locale={language} pathname={`/${language}/settings`}/>
+      <Header locale={locale} pathname={`/${locale}/settings`}/>
 
       <Typography variant="h6" sx={{ mb: 2 }}>{t('settings')}</Typography>
 
       {/* Language */}
       <Typography>{t('language')}</Typography>
       <ToggleButtonGroup
-        value={language}
+        value={locale}
         exclusive
         onChange={handleLanguageChange}
         size="small"

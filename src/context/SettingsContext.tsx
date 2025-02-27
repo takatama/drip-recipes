@@ -5,8 +5,8 @@ import Cookies from 'js-cookie';
 import { LanguageType, NotificationMode, VoiceType } from '../types';
 
 interface SettingsContextProps {
-  language: LanguageType;
-  setLanguage: (lang: LanguageType) => void;
+  locale: LanguageType;
+  setLocale: (lang: LanguageType) => void;
   darkMode: boolean;
   setDarkMode: (darkMode: boolean) => void;
   notificationMode: NotificationMode;
@@ -15,52 +15,73 @@ interface SettingsContextProps {
   setVoice: (voice: VoiceType) => void;
 }
 
-const SettingsContext = createContext<SettingsContextProps | undefined>(undefined);
-
-interface Settings {
-  language: LanguageType;
+interface SettingsWithoutLocale {
   darkMode: boolean;
   notificationMode: NotificationMode;
   voice: VoiceType;
 }
 
-// Get initial settings from localStorage or use defaults
-const getInitialSettings = (): Settings => {
+const SettingsContext = createContext<SettingsContextProps | undefined>(undefined);
+
+// Get initial settings from cookies or use defaults
+const getInitialSettings = () => {
+  // Locale from NEXT_LOCALE cookie
+  const nextLocale = Cookies.get('NEXT_LOCALE');
+  const userLang = typeof navigator !== 'undefined' ? (navigator.language || navigator.languages[0]) : "en";
+  const locale: LanguageType = nextLocale as LanguageType || (userLang.startsWith('ja') ? 'ja' : 'en');
+  
+  // Other settings from settings cookie
   const storedSettings = Cookies.get('settings');
+  let settingsWithoutLocale: SettingsWithoutLocale = {
+    darkMode: false,
+    notificationMode: 'none',
+    voice: 'male',
+  };
+  
   if (storedSettings) {
     try {
-      return JSON.parse(storedSettings);
+      settingsWithoutLocale = JSON.parse(storedSettings);
     } catch (error) {
       console.error('Cookie parse error:', error);
     }
+  } else {
+    // Default dark mode from system preference
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      settingsWithoutLocale.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
   }
 
-  // Default settings
-  const userLang = typeof navigator !== 'undefined' ? (navigator.language || navigator.languages[0]) : "en";
-  const defaultLang: LanguageType = userLang.startsWith('ja') ? 'ja' : 'en';
-  let prefersDark = false;
-  if (typeof window !== 'undefined' && window.matchMedia) {
-    prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
-
+  // Combine locale and other settings
   return {
-    language: defaultLang,
-    darkMode: prefersDark,
-    notificationMode: 'none' as NotificationMode,
-    voice: 'male' as VoiceType,
+    locale,
+    ...settingsWithoutLocale
   };
 };
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [settings, setSettings] = useState<Settings>(getInitialSettings());
+  const [settings, setSettings] = useState(getInitialSettings());
 
   // Save settings to cookie whenever they change
   useEffect(() => {
-    Cookies.set('settings', JSON.stringify(settings), { expires: 365 });
+    // Store locale in NEXT_LOCALE cookie
+    Cookies.set('NEXT_LOCALE', settings.locale, { 
+      expires: 365,
+      path: '/',
+      sameSite: 'lax'
+    });
+    
+    // Store other settings in settings cookie
+    const settingsWithoutLocale = {
+      darkMode: settings.darkMode,
+      notificationMode: settings.notificationMode,
+      voice: settings.voice
+    };
+    
+    Cookies.set('settings', JSON.stringify(settingsWithoutLocale), { expires: 365 });
   }, [settings]);
 
-  const setLanguage = (lang: LanguageType) => {
-    setSettings(prev => ({ ...prev, language: lang }));
+  const setLocale = (locale: LanguageType) => {
+    setSettings(prev => ({ ...prev, locale }));
   };
 
   const setDarkMode = (mode: boolean) => {
@@ -78,8 +99,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   return (
     <SettingsContext.Provider
       value={{
-        language: settings.language,
-        setLanguage,
+        locale: settings.locale,
+        setLocale,
         darkMode: settings.darkMode,
         setDarkMode,
         notificationMode: settings.notificationMode,
