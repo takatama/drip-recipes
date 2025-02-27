@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Box, IconButton, Typography } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { LanguageType, TranslationType } from '../types';
+import { LanguageType } from '../types';
 import { useTranslations } from 'next-intl';
 
 interface HeaderProps {

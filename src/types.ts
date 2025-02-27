@@ -1,44 +1,9 @@
 import { JSX } from "react";
 
-export interface TranslationType {
-  beansAmount: string;
-  waterAmount: string;
-  flavor: string;
-  strength: string;
-  sweet: string;
-  neutral: string;
-  medium: string;
-  sour: string;
-  light: string;
-  strong: string;
-  play: string;
-  pause: string;
-  reset: string;
-  language: string;
-  darkMode: string;
-  lightMode: string;
-  roastLevel: string;
-  lightRoast: string;
-  mediumRoast: string;
-  darkRoast: string;
-  waterTemp: string;
-  footerCreatedBy: string;
-  amazonAssociate: string;
-  preparation: string;
-  keepScreenOn: string;
-  aboutThisRecipe: string;
-  settings: string;
-  notification: string;
-  voice: string;
-  backToRecipe: string;
-  recipeListTitle: string;
-  recipeListDescription: string;
-}
-
 export type NotificationMode = 'none' | 'vibrate' | 'sound';
 
 export interface CoffeeParam {
-  key: keyof TranslationType;
+  key: string;
   unit?: string;
   type: 'number' | 'enum';
   input: boolean;

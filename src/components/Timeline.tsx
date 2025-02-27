@@ -3,7 +3,7 @@ import Controls from './Controls';
 import Steps from './Steps';
 import { useTimer } from '../hooks/useTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
-import { LanguageType, Step, TranslationType } from '../types';
+import { LanguageType, Step } from '../types';
 import { Snackbar } from '@mui/material';
 import { useTranslations } from 'next-intl';
 

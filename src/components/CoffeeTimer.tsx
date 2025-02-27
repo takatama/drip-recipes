@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Typography } from '@mui/material';
 import InputParams from './InputParams';
 import Timeline from './Timeline';
-import { CoffeeRecipeType, LanguageType, Step, TranslationType, RoastLevelType } from '../types';
+import { CoffeeRecipeType, LanguageType, Step, RoastLevelType } from '../types';
 import { generateSteps } from '@/utils/generateSteps';
 import { useTranslations } from 'next-intl';
 

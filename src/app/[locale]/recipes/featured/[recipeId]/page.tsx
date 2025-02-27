@@ -7,12 +7,14 @@ import { CoffeeRecipeType } from '@/types';
 import { generateRecipeJsonLd } from '@/utils/generateRecipeJsonLd';
 import { Metadata } from 'next';
 import JsonLd from '@/components/JsonLd';
+import { setRequestLocale } from 'next-intl/server';
 
 // Generate metadata including JSON-LD
 export async function generateMetadata({ params }: { 
   params: Promise<{ locale: string; recipeId: string; }> 
 }): Promise<Metadata> {
   const locale = (await params).locale as LanguageType;
+  setRequestLocale(locale);
   const recipeId = (await params).recipeId;
   const recipe = recipeMap[recipeId];
   
@@ -55,6 +57,7 @@ export default async function CoffeeRecipePage({
   params: Promise<{ locale: string; recipeId: string; }>
 }) {
   const locale = (await params).locale as LanguageType;
+  setRequestLocale(locale);
   const recipeId = (await params).recipeId;
   const recipe = recipeMap[recipeId];
   return (

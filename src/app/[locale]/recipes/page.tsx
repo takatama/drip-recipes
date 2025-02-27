@@ -6,7 +6,8 @@ import { fourToSixMethod } from '@/recipes/four-to-six-method';
 import { generateItemListJsonLd } from '@/utils/generateRecipeJsonLd';
 import { Metadata } from 'next';
 import JsonLd from '@/components/JsonLd';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+
 // export const runtime = 'edge';
 
 export const dynamicParams = false;
@@ -28,6 +29,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }> 
 }): Promise<Metadata> {
   const locale = (await params).locale;
+  setRequestLocale(locale);
   const t = await getTranslations('RecipeList');
   
   return {
@@ -48,6 +50,7 @@ export default async function RecipeListPage({
   params: Promise<{ locale: string }>
 }) {
   const locale = (await params).locale as LanguageType;
+  setRequestLocale(locale);
   const t = await getTranslations('RecipeList');
   const itemListJsonLd = generateItemListJsonLd(recipes, locale, t('title'));
   return (

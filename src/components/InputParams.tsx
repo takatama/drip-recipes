@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { CoffeeParam, RoastLevelType, TranslationType } from '../types';
+import { CoffeeParam, RoastLevelType } from '../types';
 import { useTranslations } from 'next-intl';
 
 interface InputParamsValues {
