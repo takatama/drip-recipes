@@ -7,13 +7,13 @@ import Timeline from './Timeline';
 import { CoffeeRecipeType, LanguageType, CalculatedStep, TranslationType, RoastLevelType } from '../types';
 import { generateSteps } from '@/utils/generateSteps';
 
-interface CoffeeTimerProps {
+interface CoffeeCalculatorProps {
   recipe: CoffeeRecipeType;
   t: TranslationType;
   language: LanguageType;
 }
 
-const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, t, language }) => {
+const CoffeeCalculator: React.FC<CoffeeCalculatorProps> = ({ recipe, t, language }) => {
   const getDefaultValue = (key: string) => {
     const param = recipe.params.find(p => p.key === key);
     return param?.default || null;
@@ -81,4 +81,4 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, t, language }) => {
   );
 };
 
-export default CoffeeTimer;
+export default CoffeeCalculator;
