@@ -40,6 +40,7 @@ const Timeline: React.FC<TimelineProps> = ({
   const [isNextStep, setIsNextStep] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
   const [shouldVibrate, setShouldVibrate] = useState(false);
+  const [isReset, setIsReset] = useState(false);
 
   // タイマーの状態
   const timerReadyRef = useRef(false);
@@ -136,6 +137,14 @@ const Timeline: React.FC<TimelineProps> = ({
     setCurrentWaterAmount(0);
     setTargetWaterAmount(0);
     setCurrentActionType('none');
+    
+    // Set the reset flag to true
+    setIsReset(true);
+    
+    // Reset the flag after a short delay
+    setTimeout(() => {
+      setIsReset(false);
+    }, 100);
   };
 
   const handleTimerComplete = async () => {
@@ -236,6 +245,7 @@ const Timeline: React.FC<TimelineProps> = ({
         isNextStep={isNextStep}
         isFinish={isFinish}
         shouldVibrate={shouldVibrate}
+        isReset={isReset}
       />
 
       {/* アニメーションマネージャー */}
