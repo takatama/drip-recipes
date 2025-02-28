@@ -57,6 +57,7 @@ const generateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, fl
         en: step.action.en.replace('${cumulative}', cumulative.toString()),
         ja: step.action.ja.replace('${cumulative}', cumulative.toString()),
       },
+      actionType: step.actionType,
       status: 'upcoming',
     });
   }

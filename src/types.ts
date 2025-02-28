@@ -33,6 +33,7 @@ export interface TranslationType {
   backToRecipe: string;
   recipeListTitle: string;
   recipeListDescription: string;
+  nextStep: string;
 }
 
 export type NotificationMode = 'none' | 'vibrate' | 'sound';
@@ -48,12 +49,15 @@ export interface CoffeeParam {
   options?: string[];
 }
 
+export type ActionType = 'switch_open' | 'switch_close' | 'switch_open_pour' | 'switch_close_pour'| 'pour' | 'none';
+
 interface CoffeeStep {
   time?: number;
   calcTime?: boolean;
   waterAmountType?: 'fivePour' | 'flavor1' | 'flavor2' |'strength';
   name?: { en: string; ja: string; };
   action: { en: string; ja: string; };
+  actionType: ActionType;
 }
 
 export interface CoffeeRecipeType {
@@ -78,6 +82,7 @@ export interface Step {
   cumulative: number;
   name?: { en: string; ja: string; };
   action: { en: string; ja: string; };
+  actionType: ActionType;
   status: StepStatus;
 }
 

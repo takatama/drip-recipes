@@ -1,6 +1,6 @@
-import { TranslationType } from "../types";
+import { LanguageType, TranslationType } from "../types";
 
-export const translations: Record<'en' | 'ja', TranslationType> = {
+export const translations: Record<LanguageType, TranslationType> = {
   en: {
     beansAmount: "Beans",
     waterAmount: "Water",
@@ -32,8 +32,9 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     notification: "Notification",
     voice: "Voice",
     backToRecipe: "Back to recipe",
-    recipeListTitle: "Coffee Brewing Recipes",
+    recipeListTitle: "Coffee Brewing Recipes | Drip Recipes",
     recipeListDescription: "Collection of coffee brewing recipes for pour-over and drip methods",
+    nextStep: "Next Step is...",
   },
   ja: {
     beansAmount: "豆の量",
@@ -66,7 +67,8 @@ export const translations: Record<'en' | 'ja', TranslationType> = {
     notification: "通知",
     voice: "音声",
     backToRecipe: "レシピに戻る",
-    recipeListTitle: "ハンドドリップレシピ集",
+    recipeListTitle: "ハンドドリップレシピ集 | Drip Recipes",
     recipeListDescription: "ハンドドリップのレシピ集 - 至高の淹れ方をご紹介",
+    nextStep: "次のステップは...",
   }
 };

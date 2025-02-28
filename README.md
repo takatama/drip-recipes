@@ -42,19 +42,22 @@ The app uses **SSML (Speech Synthesis Markup Language)** to create natural-sound
 ```xml
 <speak>
   <par>
-    <media xml:id="three" begin="0s">
+    <media xml:id="five" begin="0s">
+      <speak><prosody rate="x-fast">5</prosody></speak>
+    </media>
+    <media xml:id="four" begin="1s">
+      <speak><prosody rate="x-fast">4</prosody></speak>
+    </media>
+    <media xml:id="three" begin="2s">
       <speak><prosody rate="x-fast">3</prosody></speak>
     </media>
-
-    <media xml:id="two" begin="three.begin+1.0s">
+    <media xml:id="two" begin="3s">
       <speak><prosody rate="x-fast">2</prosody></speak>
     </media>
-
-    <media xml:id="one" begin="two.begin+1.0s">
+    <media xml:id="one" begin="4s">
       <speak><prosody rate="x-fast">1</prosody></speak>
     </media>
-
-    <media begin="one.begin+1.0s">
+    <media begin="5s">
       <speak><prosody rate="medium">Next Step!</prosody></speak>
     </media>
   </par>
@@ -90,8 +93,8 @@ Contributions are welcome! Please **open an issue** or **submit a pull request**
 - [James Hoffmann](https://www.jameshoffmann.co.uk/) for creating the V60 technique.
 - [Cloudflare](https://pages.cloudflare.com/) for hosting.
 - [Unsplash](https://unsplash.com/) for images.
-
-# Next.js
+- [Excalidraw](https://excalidraw.com/) for SVG drawings.
+- [LottieFiles](https://lottiefiles.com/) for animations.
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`c3`](https://developers.cloudflare.com/pages/get-started/c3).
 

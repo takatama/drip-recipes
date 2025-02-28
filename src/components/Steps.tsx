@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Box, Typography, useMediaQuery } from '@mui/material';
 import { Step, StepStatus } from '../types';
 import { useSettings } from '../context/SettingsContext';
-import { useNotification } from '../hooks/useNotification';
 
 interface StepsProps {
   steps: Step[];
@@ -10,7 +9,8 @@ interface StepsProps {
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
   onTimerComplete: () => void;
   isDence?: boolean;
-  onStepTransition?: (currentAmount: number, targetAmount: number) => void;
+  onStepTransition?: (index: number, currentAmount: number, targetAmount: number) => void;
+  onStepStatusChange?: (index: number, oldStatus: StepStatus, newStatus: StepStatus) => void;
 }
 
 const CONTAINER_HEIGHT = 400;
@@ -21,7 +21,7 @@ const SMALL_TIMELINE_WIDTH = 260;
 const STEP_TEXT_MARGIN = 20;
 const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
-const INDICATE_NEXT_STEP_SEC = 3;
+const INDICATE_NEXT_STEP_SEC = 5;
 
 const Steps: React.FC<StepsProps> = ({
   steps,
@@ -29,16 +29,14 @@ const Steps: React.FC<StepsProps> = ({
   currentTime,
   onTimerComplete,
   isDence,
-  onStepTransition
+  onStepTransition,
+  onStepStatusChange
 }) => {
-  const isPlayingRef = useRef(false);
-  const nextStepAudio = useRef<HTMLAudioElement | null>(null);
-  const finishAudio = useRef<HTMLAudioElement | null>(null);
   const isSmallScreen = useMediaQuery('(max-width:465px)');
-  const { darkMode, notificationMode, language, voice } = useSettings();
-  const { playAudio, vibrate } = useNotification({ language, voice, notificationMode });
+  const { darkMode, language } = useSettings();
   const totalTime = steps[steps.length - 1]?.timeSec;
   const arrowHeight = isDence ? 12 : 25;
+
   // ステップの状態を内部で管理し、親コンポーネントへの更新を制御する
   const [internalSteps, setInternalSteps] = useState<Step[]>(steps);
 
@@ -59,25 +57,6 @@ const Steps: React.FC<StepsProps> = ({
 
     return () => clearTimeout(timer);
   }, [internalSteps, setSteps, steps]);
-
-  // Initialize Audio objects on client side
-  useEffect(() => {
-    if (typeof Audio !== 'undefined') {
-      nextStepAudio.current = new Audio();
-      finishAudio.current = new Audio();
-
-      nextStepAudio.current.addEventListener('ended', () => (isPlayingRef.current = false));
-      finishAudio.current.addEventListener('ended', () => (isPlayingRef.current = false));
-    }
-  }, []);
-
-  // Update audio sources when language changes
-  useEffect(() => {
-    if (nextStepAudio.current && finishAudio.current) {
-      nextStepAudio.current.src = `/audio/${language}-${voice}-next-step.wav`;
-      finishAudio.current.src = `/audio/${language}-${voice}-finish.wav`;
-    }
-  }, [language, voice]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -124,33 +103,29 @@ const Steps: React.FC<StepsProps> = ({
           newStatus = 'next';
         }
 
-        // ステータス変更を検出
-        const previousStatus = previousStepsStatusRef.current[index];
-        if (previousStatus !== newStatus) {
-          // 状態が「next」に変わった時だけアニメーションとサウンドを鳴らす
-          if (newStatus === 'next') {
-            const isFinish = index === prevSteps.length - 1;
+       // ステータス変更を検出
+       const previousStatus = previousStepsStatusRef.current[index];
+       if (previousStatus !== newStatus) {
+         // ステータス変更を親に通知
+         if (onStepStatusChange) {
+           onStepStatusChange(index, previousStatus || 'upcoming', newStatus);
+         }
+         
+         // 状態が「next」に変わった時だけアニメーション設定
+         if (newStatus === 'next' && onStepTransition) {
+           const currentAmount = index > 0 ? (prevSteps[index - 1].cumulative || 0) : 0;
+           const targetAmount = step.cumulative || 0;
+           onStepTransition(index, currentAmount, targetAmount);
+         }
 
-            if (onStepTransition) {
-              const currentAmount = index > 0 ? (prevSteps[index - 1].cumulative || 0) : 0;
-              const targetAmount = step.cumulative || 0;
-              onStepTransition(currentAmount, targetAmount);
-            }
+         // ステータスを保存
+         previousStepsStatusRef.current[index] = newStatus;
+       }
 
-            playAudio(isFinish);
-          } else if (newStatus === 'current' && previousStatus === 'next') {
-            // nextからcurrentになった場合はバイブレーションを実行
-            vibrate();
-          }
-
-          // ステータスを保存
-          previousStepsStatusRef.current[index] = newStatus;
-        }
-
-        return { ...step, status: newStatus };
+       return { ...step, status: newStatus };
       });
     });
-  }, [internalSteps, onStepTransition, onTimerComplete, playAudio, vibrate]);
+  }, [internalSteps, onStepTransition, onTimerComplete, onStepStatusChange]);
 
   // Update useEffect for timer
   useEffect(() => {
