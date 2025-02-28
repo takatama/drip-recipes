@@ -12,7 +12,7 @@ const AnimationManager = dynamic(() => import('./AnimationManager'), {
   ssr: false,
 });
 
-interface TimelineProps {
+interface CoffeeTimerProps {
   t: TranslationType;
   language: 'en' | 'ja';
   steps: CalculatedStep[];
@@ -20,7 +20,7 @@ interface TimelineProps {
   isDence?: boolean;
 }
 
-const Timeline: React.FC<TimelineProps> = ({
+const CoffeeTimer: React.FC<CoffeeTimerProps> = ({
   t,
   steps,
   setSteps,
@@ -269,4 +269,4 @@ const Timeline: React.FC<TimelineProps> = ({
   );
 };
 
-export default Timeline;
+export default CoffeeTimer;
