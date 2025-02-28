@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Controls from './Controls';
-import Steps from './Steps';
+import Timeline from './Timeline';
 import NotificationManager from './NotificationManager';
 import { useTimer } from '../hooks/useTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
@@ -230,7 +230,7 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = ({
         disabled={showAnimation}
         isRunning={isRunning}
       />
-      <Steps
+      <Timeline
         steps={steps}
         setSteps={setSteps}
         currentTime={currentTime}

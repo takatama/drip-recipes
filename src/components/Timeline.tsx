@@ -3,7 +3,7 @@ import { Box, Typography, useMediaQuery } from '@mui/material';
 import { CalculatedStep, StepStatus } from '../types';
 import { useSettings } from '../context/SettingsContext';
 
-interface StepsProps {
+interface TimelineProps {
   steps: CalculatedStep[];
   currentTime: number;
   setSteps: React.Dispatch<React.SetStateAction<CalculatedStep[]>>;
@@ -23,7 +23,7 @@ const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
 const INDICATE_NEXT_STEP_SEC = 5;
 
-const Steps: React.FC<StepsProps> = ({
+const Timeline: React.FC<TimelineProps> = ({
   steps,
   setSteps,
   currentTime,
@@ -262,4 +262,4 @@ const Steps: React.FC<StepsProps> = ({
   );
 };
 
-export default Steps;
+export default Timeline;
