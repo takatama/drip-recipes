@@ -255,6 +255,7 @@ const Timeline: React.FC<TimelineProps> = ({
         currentWaterAmount={currentWaterAmount}
         targetWaterAmount={targetWaterAmount}
         onAnimationComplete={handleAnimationComplete}
+        t={t}
       />
 
       <Snackbar

@@ -33,6 +33,7 @@ export interface TranslationType {
   backToRecipe: string;
   recipeListTitle: string;
   recipeListDescription: string;
+  nextStep: string;
 }
 
 export type NotificationMode = 'none' | 'vibrate' | 'sound';

@@ -4,7 +4,7 @@ import Lottie from 'react-lottie-player';
 import pourAnimationData from '@/assets/lottie/pouring.json';
 import switchOpenAnimationData from '@/assets/lottie/switch_open.json';
 import switchCloseAnimationData from '@/assets/lottie/switch_close.json';
-import { ActionType } from '../types';
+import { ActionType, TranslationType } from '../types';
 
 interface AnimationManagerProps {
   isVisible: boolean;
@@ -12,6 +12,7 @@ interface AnimationManagerProps {
   currentWaterAmount: number;
   targetWaterAmount: number;
   onAnimationComplete?: () => void;
+  t: TranslationType;
 }
 
 // Animation sequence types
@@ -22,20 +23,21 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
   actionType,
   currentWaterAmount,
   targetWaterAmount,
-  onAnimationComplete
+  onAnimationComplete,
+  t,
 }) => {
   const [waterAmount, setWaterAmount] = useState(currentWaterAmount);
   const [currentStep, setCurrentStep] = useState<AnimationStep>(null);
   const [animationQueue, setAnimationQueue] = useState<AnimationStep[]>([]);
   const [countingActive, setCountingActive] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
-  
+
   // Ref to track if we're in the middle of a sequence
   const isProcessingQueueRef = useRef(false);
-  
+
   // Ref to track if animations are completed
   const animationsCompletedRef = useRef(false);
-  
+
   // Ref to store the initial props to detect actual changes
   const initialPropsRef = useRef({
     actionType,
@@ -59,7 +61,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
   // Determine the animation sequence based on actionType and water amounts
   useEffect(() => {
     if (!isVisible) return;
-    
+
     // Skip queue creation if we're already processing a queue
     // This prevents restarting when state changes during animation steps
     if (isProcessingQueueRef.current && animationQueue.length > 0) {
@@ -68,7 +70,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
     }
 
     console.log("Animation starting with action type:", actionType);
-    
+
     const queue: AnimationStep[] = [];
 
     // Handle combined action types
@@ -114,7 +116,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
   const handleAnimationComplete = () => {
     const completedStep = currentStep;
     console.log(`Animation step completed:`, completedStep);
-    
+
     // If we were counting, stop
     if (countingActive) {
       setCountingActive(false);
@@ -129,7 +131,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
       // Get the next animation in the queue
       const nextStep = updatedQueue[0];
       console.log("Moving to next animation:", nextStep);
-      
+
       // Important: Update the queue first, then set the current step
       setAnimationQueue(updatedQueue);
       setCurrentStep(nextStep);
@@ -139,7 +141,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
       console.log("All animations completed");
       animationsCompletedRef.current = true;
       isProcessingQueueRef.current = false; // Mark that we're done with this queue
-      
+
       // Call onAnimationComplete immediately
       if (onAnimationComplete) {
         console.log("Calling onAnimationComplete callback");
@@ -199,16 +201,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
     }
   };
 
-  // Get text based on current animation
-  const getAnimationText = () => {
-    switch (currentStep) {
-      case 'switch_open': return "バルブを開く";
-      case 'switch_close': return "バルブを閉じる";
-      case 'pour': return "注水中...";
-      default: return "完了"; // Show "Completed" instead of empty text
-    }
-  };
-
   const animationData = getAnimationData();
 
   return (
@@ -230,14 +222,18 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
         width: 300
       }}
     >
+      <Typography variant="h6" sx={{ mt: 1, mb: 1 }}>
+        {t['nextStep']}
+      </Typography>
+
       {animationData && (
         <Lottie
           key={`animation-${currentStep}-${animationKey}`}
           loop={false}
           animationData={animationData}
           play={!animationsCompletedRef.current}
-          style={{ 
-            width: 200, 
+          style={{
+            width: 200,
             height: 200,
             opacity: animationsCompletedRef.current ? 0 : 1 // Hide animation when complete
           }}
@@ -248,10 +244,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
           }}
         />
       )}
-
-      <Typography variant="h6" sx={{ mt: 1, mb: 1 }}>
-        {getAnimationText()}
-      </Typography>
 
       <Typography variant="h4" fontWeight="bold" sx={{ mt: 1 }}>
         {waterAmount} g
