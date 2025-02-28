@@ -9,7 +9,7 @@ interface StepsProps {
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
   onTimerComplete: () => void;
   isDence?: boolean;
-  onStepTransition?: (currentAmount: number, targetAmount: number) => void;
+  onStepTransition?: (index: number, currentAmount: number, targetAmount: number) => void;
   onStepStatusChange?: (index: number, oldStatus: StepStatus, newStatus: StepStatus) => void;
 }
 
@@ -21,7 +21,7 @@ const SMALL_TIMELINE_WIDTH = 260;
 const STEP_TEXT_MARGIN = 20;
 const FIRST_STEP_OFFSET = 10;
 const FONT_SIZE = '1.1rem';
-const INDICATE_NEXT_STEP_SEC = 3;
+const INDICATE_NEXT_STEP_SEC = 5;
 
 const Steps: React.FC<StepsProps> = ({
   steps,
@@ -103,26 +103,26 @@ const Steps: React.FC<StepsProps> = ({
           newStatus = 'next';
         }
 
-        // ステータス変更を検出
-        const previousStatus = previousStepsStatusRef.current[index];
-        if (previousStatus !== newStatus) {
-          // ステータス変更を親に通知
-          if (onStepStatusChange) {
-            onStepStatusChange(index, previousStatus || 'upcoming', newStatus);
-          }
-          
-          // 状態が「next」に変わった時だけアニメーション設定
-          if (newStatus === 'next' && onStepTransition) {
-            const currentAmount = index > 0 ? (prevSteps[index - 1].cumulative || 0) : 0;
-            const targetAmount = step.cumulative || 0;
-            onStepTransition(currentAmount, targetAmount);
-          }
+       // ステータス変更を検出
+       const previousStatus = previousStepsStatusRef.current[index];
+       if (previousStatus !== newStatus) {
+         // ステータス変更を親に通知
+         if (onStepStatusChange) {
+           onStepStatusChange(index, previousStatus || 'upcoming', newStatus);
+         }
+         
+         // 状態が「next」に変わった時だけアニメーション設定
+         if (newStatus === 'next' && onStepTransition) {
+           const currentAmount = index > 0 ? (prevSteps[index - 1].cumulative || 0) : 0;
+           const targetAmount = step.cumulative || 0;
+           onStepTransition(index, currentAmount, targetAmount);
+         }
 
-          // ステータスを保存
-          previousStepsStatusRef.current[index] = newStatus;
-        }
+         // ステータスを保存
+         previousStepsStatusRef.current[index] = newStatus;
+       }
 
-        return { ...step, status: newStatus };
+       return { ...step, status: newStatus };
       });
     });
   }, [internalSteps, onStepTransition, onTimerComplete, onStepStatusChange]);

@@ -4,12 +4,11 @@ import Steps from './Steps';
 import NotificationManager from './NotificationManager';
 import { useTimer } from '../hooks/useTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
-import { Step, StepStatus, TranslationType } from '../types';
+import { Step, StepStatus, TranslationType, ActionType } from '../types';
 import { Snackbar } from '@mui/material';
 import dynamic from 'next/dynamic';
 
-// PourAnimationをクライアントサイドでのみレンダリングするように動的インポート
-const PourAnimation = dynamic(() => import('./PourAnimation'), {
+const AnimationManager = dynamic(() => import('./AnimationManager'), {
   ssr: false,
 });
 
@@ -35,10 +34,7 @@ const Timeline: React.FC<TimelineProps> = ({
   const [showAnimation, setShowAnimation] = useState(false);
   const [currentWaterAmount, setCurrentWaterAmount] = useState(0);
   const [targetWaterAmount, setTargetWaterAmount] = useState(0);
-  // アニメーション表示のための状態管理
-  const [animationStatus, setAnimationStatus] = useState<'idle' | 'initial' | 'step'>(
-    'idle'
-  );
+  const [currentActionType, setCurrentActionType] = useState<ActionType>('none');
   
   // 通知関連の状態
   const [isNextStep, setIsNextStep] = useState(false);
@@ -63,13 +59,12 @@ const Timeline: React.FC<TimelineProps> = ({
 
   // 初期アニメーション後の開始処理
   useEffect(() => {
-    if (animationStatus === 'initial' && !showAnimation && timerReadyRef.current) {
+    if (!showAnimation && timerReadyRef.current) {
       // 初期アニメーションが終了し、タイマー開始準備完了
       start();
-      setAnimationStatus('idle');
       timerReadyRef.current = false;
     }
-  }, [animationStatus, showAnimation, start]);
+  }, [showAnimation, start]);
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -83,22 +78,36 @@ const Timeline: React.FC<TimelineProps> = ({
     
     if (currentTime === 0 && steps.length > 0) {
       // タイマーが0の場合は最初のアニメーションを表示
+      console.log("Starting initial animation for first step");
+      const firstStep = steps[0];
+      
+      // Get the correct action type from the first step
+      const firstStepActionType = firstStep.actionType || 'none';
+      
+      console.log("First step info:", {
+        step: firstStep,
+        actionType: firstStepActionType,
+        waterAmount: firstStep.cumulative || 0
+      });
+      
+      // Set up animation with the correct action type
       setCurrentWaterAmount(0);
-      setTargetWaterAmount(steps[0].cumulative || 0);
+      setTargetWaterAmount(firstStep.cumulative || 0);
+      setCurrentActionType(firstStepActionType);
       setShowAnimation(true);
-      setAnimationStatus('initial');
       timerReadyRef.current = true;
       
-      // アニメーションが終わったら自動的に非表示にする
-      setTimeout(() => {
-        setShowAnimation(false);
-      }, 3000);
+      // Remove the timeout that automatically hides the animation
+      // and rely on the onAnimationComplete callback instead
+      // setTimeout(() => {
+      //   setShowAnimation(false);
+      // }, 3000);
     } else {
       // それ以外の場合は直接タイマーを開始
       start();
     }
   };
-
+  
   const handlePause = async () => {
     setSnackbarOpen(false);
     await releaseWakeLock();
@@ -107,21 +116,23 @@ const Timeline: React.FC<TimelineProps> = ({
     // アニメーション中の場合は状態をリセット
     if (showAnimation) {
       setShowAnimation(false);
-      setAnimationStatus('idle');
       timerReadyRef.current = false;
     }
   };
 
   // Reset the timer
   const handleReset = async () => {
+    console.log("Reset button pressed");
     setSnackbarOpen(false);
     await releaseWakeLock();
     reset();
     
     // アニメーション関連の状態をリセット
+    console.log("Resetting animation state");
     setShowAnimation(false);
-    setAnimationStatus('idle');
-    timerReadyRef.current = false;
+    setCurrentWaterAmount(0);
+    setTargetWaterAmount(0);
+    setCurrentActionType('none');
   };
 
   const handleTimerComplete = async () => {
@@ -129,28 +140,53 @@ const Timeline: React.FC<TimelineProps> = ({
     pause();
   };
 
-  // ステップ間のアニメーション表示用のハンドラ
-  const handleStepTransition = (currentAmount: number, targetAmount: number) => {
-    // すでにアニメーション中の場合は何もしない
-    if (showAnimation) return;
-    
-    if (currentAmount === targetAmount) {
-      // 量が変化しない場合はアニメーションを表示しない
-      return;
-    }
-    
-    setCurrentWaterAmount(currentAmount);
-    setTargetWaterAmount(targetAmount);
-    setShowAnimation(true);
-    setAnimationStatus('step');
-    
-    // 3秒後にアニメーションを非表示にする
-    setTimeout(() => {
-      setShowAnimation(false);
-    }, 3000);
-  };
+// ステップ間のアニメーション表示用のハンドラ
+const handleStepTransition = (index: number, currentAmount: number, targetAmount: number) => {
+  console.log("handleStepTransition called:", { 
+    index, 
+    currentAmount, 
+    targetAmount, 
+    showAnimation, 
+    step: steps[index]
+  });
   
-  // ステップのステータス変更ハンドラ
+  // すでにアニメーション中の場合は何もしない
+  if (showAnimation) {
+    console.log("Animation already in progress, ignoring");
+    return;
+  }
+  
+  // ステップからアクションタイプを取得
+  const step = steps[index];
+  const actionType = step.actionType || 'none';
+  const hasChange = currentAmount !== targetAmount;
+  
+  console.log("Action analysis:", { 
+    actionType, 
+    hasChange,
+    step
+  });
+  
+  // アニメーションが必要ない場合は何もしない
+  if (actionType === 'none' && !hasChange) {
+    console.log("No animation needed");
+    return;
+  }
+  
+  // アニメーション表示に必要な状態を設定
+  console.log("Starting animation with:", {
+    currentWaterAmount: currentAmount,
+    targetWaterAmount: targetAmount,
+    actionType
+  });
+  
+  setCurrentWaterAmount(currentAmount);
+  setTargetWaterAmount(targetAmount);
+  setCurrentActionType(actionType);
+  setShowAnimation(true);
+};
+
+  // アニメーション完了ハンドラ
   const handleStepStatusChange = (index: number, oldStatus: StepStatus, newStatus: StepStatus) => {
     const isLastStep = index === steps.length - 1;
     
@@ -164,6 +200,11 @@ const Timeline: React.FC<TimelineProps> = ({
     }
   };
 
+  const handleAnimationComplete = () => {
+    console.log("Animation completed");
+    setShowAnimation(false);
+  };
+    
   return (
     <>
       <Controls
@@ -171,7 +212,7 @@ const Timeline: React.FC<TimelineProps> = ({
         onPlay={handlePlay}
         onPause={handlePause}
         onReset={handleReset}
-        disabled={animationStatus === 'initial' && showAnimation}
+        disabled={showAnimation}
         isRunning={isRunning}
       />
       <Steps
@@ -191,11 +232,13 @@ const Timeline: React.FC<TimelineProps> = ({
         shouldVibrate={shouldVibrate}
       />
       
-      {/* アニメーションコンポーネント */}
-      <PourAnimation
+      {/* アニメーションマネージャー */}
+      <AnimationManager
         isVisible={showAnimation}
+        actionType={currentActionType}
         currentWaterAmount={currentWaterAmount}
         targetWaterAmount={targetWaterAmount}
+        onAnimationComplete={handleAnimationComplete}
       />
       
       <Snackbar
