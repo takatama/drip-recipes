@@ -31,7 +31,7 @@ export function generateRecipeJsonLd(recipe: CoffeeRecipeType, lang: LanguageTyp
 
   // Get the final water amount
   const finalWaterAmount = calculatedSteps.length > 0 
-    ? calculatedSteps[calculatedSteps.length - 1].cumulative 
+    ? calculatedSteps[calculatedSteps.length - 1].cumulativeMl 
     : Number(beansAmount) * recipe.waterRatio;
 
   const jsonLd = {

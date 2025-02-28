@@ -4,7 +4,7 @@ import Steps from './Steps';
 import NotificationManager from './NotificationManager';
 import { useTimer } from '../hooks/useTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
-import { Step, StepStatus, TranslationType, ActionType } from '../types';
+import { CalculatedStep, StepStatus, TranslationType, ActionType } from '../types';
 import { Snackbar } from '@mui/material';
 import dynamic from 'next/dynamic';
 
@@ -15,8 +15,8 @@ const AnimationManager = dynamic(() => import('./AnimationManager'), {
 interface TimelineProps {
   t: TranslationType;
   language: 'en' | 'ja';
-  steps: Step[];
-  setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
+  steps: CalculatedStep[];
+  setSteps: React.Dispatch<React.SetStateAction<CalculatedStep[]>>;
   isDence?: boolean;
 }
 
@@ -91,12 +91,12 @@ const Timeline: React.FC<TimelineProps> = ({
       console.log("First step info:", {
         step: firstStep,
         actionType: firstStepActionType,
-        waterAmount: firstStep.cumulative || 0
+        waterAmount: firstStep.cumulativeMl || 0
       });
 
       // Set up animation with the correct action type
       setCurrentWaterAmount(0);
-      setTargetWaterAmount(firstStep.cumulative || 0);
+      setTargetWaterAmount(firstStep.cumulativeMl || 0);
       setCurrentActionType(firstStepActionType);
       setShowAnimation(true);
       timerReadyRef.current = true;

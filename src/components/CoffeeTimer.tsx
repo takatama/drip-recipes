@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Typography } from '@mui/material';
 import InputParams from './InputParams';
 import Timeline from './Timeline';
-import { CoffeeRecipeType, LanguageType, Step, TranslationType, RoastLevelType } from '../types';
+import { CoffeeRecipeType, LanguageType, CalculatedStep, TranslationType, RoastLevelType } from '../types';
 import { generateSteps } from '@/utils/generateSteps';
 
 interface CoffeeTimerProps {
@@ -23,7 +23,7 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = ({ recipe, t, language }) => {
   const [beansAmount, setBeansAmount] = useState<number>(Number(getDefaultValue('beansAmount')) || 20);
   const [flavor, setFlavor] = useState<string>(String(getDefaultValue('flavor')) || 'neutral');
   const [strength, setStrength] = useState<string>(String(getDefaultValue('strength')) || 'medium');
-  const [steps, setSteps] = useState<Step[]>([]);
+  const [steps, setSteps] = useState<CalculatedStep[]>([]);
 
   useEffect(() => {
     const newSteps = generateSteps(recipe, beansAmount, flavor, strength);

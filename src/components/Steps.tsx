@@ -1,12 +1,12 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Box, Typography, useMediaQuery } from '@mui/material';
-import { Step, StepStatus } from '../types';
+import { CalculatedStep, StepStatus } from '../types';
 import { useSettings } from '../context/SettingsContext';
 
 interface StepsProps {
-  steps: Step[];
+  steps: CalculatedStep[];
   currentTime: number;
-  setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
+  setSteps: React.Dispatch<React.SetStateAction<CalculatedStep[]>>;
   onTimerComplete: () => void;
   isDence?: boolean;
   onStepTransition?: (index: number, currentAmount: number, targetAmount: number) => void;
@@ -38,7 +38,7 @@ const Steps: React.FC<StepsProps> = ({
   const arrowHeight = isDence ? 12 : 25;
 
   // ステップの状態を内部で管理し、親コンポーネントへの更新を制御する
-  const [internalSteps, setInternalSteps] = useState<Step[]>(steps);
+  const [internalSteps, setInternalSteps] = useState<CalculatedStep[]>(steps);
 
   // 親のstepsが変更されたときだけ内部状態を更新
   useEffect(() => {
@@ -113,8 +113,8 @@ const Steps: React.FC<StepsProps> = ({
          
          // 状態が「next」に変わった時だけアニメーション設定
          if (newStatus === 'next' && onStepTransition) {
-           const currentAmount = index > 0 ? (prevSteps[index - 1].cumulative || 0) : 0;
-           const targetAmount = step.cumulative || 0;
+           const currentAmount = index > 0 ? (prevSteps[index - 1].cumulativeMl || 0) : 0;
+           const targetAmount = step.cumulativeMl || 0;
            onStepTransition(index, currentAmount, targetAmount);
          }
 

@@ -51,7 +51,7 @@ export interface CoffeeParam {
 
 export type ActionType = 'switch_open' | 'switch_close' | 'switch_open_pour' | 'switch_close_pour'| 'pour' | 'pour_cool' | 'none';
 
-interface CoffeeStep {
+interface CoffeeRecipeStep {
   time?: number;
   calcTime?: boolean;
   waterAmountType?: 'fivePour' | 'flavor1' | 'flavor2' |'strength';
@@ -70,16 +70,16 @@ export interface CoffeeRecipeType {
   params: CoffeeParam[];
   waterRatio: number;
   preparationSteps?: { en: string[]; ja: string[] };
-  steps: CoffeeStep[];
+  steps: CoffeeRecipeStep[];
   isDence?: boolean;
 }
 
 export type StepStatus = 'completed' | 'current' | 'upcoming' | 'next';
 
-export interface Step {
+export interface CalculatedStep {
   timeSec: number;
-  pourWaterMl: number;
-  cumulative: number;
+  incrementMl: number;
+  cumulativeMl: number;
   name?: { en: string; ja: string; };
   action: { en: string; ja: string; };
   actionType: ActionType;
