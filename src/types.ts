@@ -49,7 +49,7 @@ export interface CoffeeParam {
   options?: string[];
 }
 
-export type ActionType = 'switch_open' | 'switch_close' | 'switch_open_pour' | 'switch_close_pour'| 'pour' | 'none';
+export type ActionType = 'switch_open' | 'switch_close' | 'switch_open_pour' | 'switch_close_pour'| 'pour' | 'pour_cool' | 'none';
 
 interface CoffeeStep {
   time?: number;

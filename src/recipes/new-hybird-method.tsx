@@ -52,8 +52,8 @@ export const newHybridMethod: CoffeeRecipeType = {
         ja: "蒸らし",
       },
       action: {
-        en: "(Close / Up) Pour up to ${cumulative}g",
-        ja: "(Close / Up) ${cumulative}g まで注湯",
+        en: "Close then pour up to ${cumulative}g",
+        ja: "Closeして ${cumulative}g まで注湯",
       },
       actionType: 'switch_close_pour',
     },
@@ -65,8 +65,8 @@ export const newHybridMethod: CoffeeRecipeType = {
         ja: "風味を抽出",
       },
       action: {
-        en: "(Open / Down) Pour up to ${cumulative}g",
-        ja: "(Open / Down) ${cumulative}g まで注湯",
+        en: "Open then pour up to ${cumulative}g",
+        ja: "Openして ${cumulative}g まで注湯",
       },
       actionType: 'switch_open_pour',
     },
@@ -81,7 +81,7 @@ export const newHybridMethod: CoffeeRecipeType = {
         en: "Pour up to ${cumulative}g then cool to 70℃",
         ja: "${cumulative}g まで注湯後、70℃まで下げる",
       },
-      actionType: 'pour',
+      actionType: 'pour_cool',
     },
     {
       time: 130,
@@ -91,20 +91,20 @@ export const newHybridMethod: CoffeeRecipeType = {
         ja: "低温の浸漬式で抽出",
       },
       action: {
-        en: "(Close / Up) Pour up to ${cumulative}g",
-        ja: "(Close / Up) ${cumulative}g まで注湯",
+        en: "Close then pour up to ${cumulative}g",
+        ja: "Closeして ${cumulative}g まで注湯",
       },
       actionType: 'switch_close_pour',
     },
     {
       time: 165,
       name: {
-        en: "Open the valve",
-        ja: "バルブを開ける",
+        en: "Open the switch",
+        ja: "スイッチを開ける",
       },
       action: {
-        en: "(Open / Down) Wait until the water drains",
-        ja: "(Open / Down) お湯が落ち切るまで待つ",
+        en: "Open and wait until the water drains",
+        ja: "Openしてお湯が落ち切るまで待つ",
       },
       actionType: 'switch_open',
     },
