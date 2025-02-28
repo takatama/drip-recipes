@@ -28,22 +28,50 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
   const [currentStep, setCurrentStep] = useState<AnimationStep>(null);
   const [animationQueue, setAnimationQueue] = useState<AnimationStep[]>([]);
   const [countingActive, setCountingActive] = useState(false);
-  const [animationKey, setAnimationKey] = useState(0); // Add key for forcing re-render
+  const [animationKey, setAnimationKey] = useState(0);
+  
+  // Ref to track if we're in the middle of a sequence
+  const isProcessingQueueRef = useRef(false);
+  
+  // Ref to track if animations are completed
+  const animationsCompletedRef = useRef(false);
+  
+  // Ref to store the initial props to detect actual changes
+  const initialPropsRef = useRef({
+    actionType,
+    currentWaterAmount,
+    targetWaterAmount
+  });
+
+  // Reset state when visibility changes
+  useEffect(() => {
+    if (isVisible) {
+      animationsCompletedRef.current = false;
+      isProcessingQueueRef.current = false;
+      initialPropsRef.current = {
+        actionType,
+        currentWaterAmount,
+        targetWaterAmount
+      };
+    }
+  }, [isVisible, actionType, currentWaterAmount, targetWaterAmount]);
 
   // Determine the animation sequence based on actionType and water amounts
   useEffect(() => {
     if (!isVisible) return;
+    
+    // Skip queue creation if we're already processing a queue
+    // This prevents restarting when state changes during animation steps
+    if (isProcessingQueueRef.current && animationQueue.length > 0) {
+      console.log("Already processing animation queue, skipping queue creation");
+      return;
+    }
 
-    // Add more detailed logging to debug the issue
     console.log("Animation starting with action type:", actionType);
-    console.log("Action type type:", typeof actionType);
-    console.log("Contains 'switch_close':", actionType.includes('switch_close'));
-    console.log("Contains 'pour':", actionType.includes('pour'));
-    console.log("Direct comparison:", actionType === 'switch_close_pour');
-
+    
     const queue: AnimationStep[] = [];
 
-    // Try a more direct approach for combined action types
+    // Handle combined action types
     if (actionType === 'switch_close_pour') {
       queue.push('switch_close');
       queue.push('pour');
@@ -71,54 +99,52 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
 
     // Start the animation sequence if we have animations
     if (queue.length > 0) {
-      setCurrentStep(queue[0]);
+      isProcessingQueueRef.current = true;
+      const firstStep = queue[0];
+      setCurrentStep(firstStep);
       setAnimationKey(prevKey => prevKey + 1); // Force Lottie to re-render
+      console.log("Starting first animation:", firstStep);
     } else if (onAnimationComplete) {
       // If no animations needed, complete immediately
       onAnimationComplete();
     }
-  }, [isVisible, actionType, currentWaterAmount, targetWaterAmount]);
-
-  // Effect to update animation key when current step changes
-  useEffect(() => {
-    if (currentStep) {
-      console.log("Current step changed, incrementing animation key");
-      setAnimationKey(prevKey => prevKey + 1);
-    }
-  }, [currentStep]);
+  }, [isVisible, actionType, currentWaterAmount, targetWaterAmount, onAnimationComplete]);
 
   // Handle animation completion
   const handleAnimationComplete = () => {
-    console.log(`Animation step completed: ${currentStep}`);
-
+    const completedStep = currentStep;
+    console.log(`Animation step completed:`, completedStep);
+    
     // If we were counting, stop
     if (countingActive) {
       setCountingActive(false);
       setWaterAmount(targetWaterAmount);
     }
 
-    // Remove the current animation from the queue
-    const updatedQueue = [...animationQueue];
-    updatedQueue.shift();
+    // Remove the current animation from the queue and get the next one
+    const updatedQueue = animationQueue.slice(1);
     console.log("Updated queue after completion:", updatedQueue);
 
     if (updatedQueue.length > 0) {
-      // Move to the next animation
-      console.log("Moving to next animation:", updatedQueue[0]);
+      // Get the next animation in the queue
+      const nextStep = updatedQueue[0];
+      console.log("Moving to next animation:", nextStep);
+      
+      // Important: Update the queue first, then set the current step
       setAnimationQueue(updatedQueue);
-      setCurrentStep(updatedQueue[0]);
+      setCurrentStep(nextStep);
+      setAnimationKey(prevKey => prevKey + 1); // Force Lottie component to re-render
     } else {
       // All animations complete
       console.log("All animations completed");
-      setCurrentStep(null);
-
-      // Allow some time to see the final state before completing
-      setTimeout(() => {
-        if (onAnimationComplete) {
-          console.log("Calling onAnimationComplete callback");
-          onAnimationComplete();
-        }
-      }, 1000);
+      animationsCompletedRef.current = true;
+      isProcessingQueueRef.current = false; // Mark that we're done with this queue
+      
+      // Call onAnimationComplete immediately
+      if (onAnimationComplete) {
+        console.log("Calling onAnimationComplete callback");
+        onAnimationComplete();
+      }
     }
   };
 
@@ -169,7 +195,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
       case 'switch_open': return switchOpenAnimationData;
       case 'switch_close': return switchCloseAnimationData;
       case 'pour': return pourAnimationData;
-      default: return null;
+      default: return pourAnimationData; // Default to pour animation instead of null
     }
   };
 
@@ -179,7 +205,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
       case 'switch_open': return "バルブを開く";
       case 'switch_close': return "バルブを閉じる";
       case 'pour': return "注水中...";
-      default: return "";
+      default: return "完了"; // Show "Completed" instead of empty text
     }
   };
 
@@ -209,9 +235,17 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
           key={`animation-${currentStep}-${animationKey}`}
           loop={false}
           animationData={animationData}
-          play={true}
-          style={{ width: 200, height: 200 }}
+          play={!animationsCompletedRef.current}
+          style={{ 
+            width: 200, 
+            height: 200,
+            opacity: animationsCompletedRef.current ? 0 : 1 // Hide animation when complete
+          }}
           onComplete={handleAnimationComplete}
+          segments={[0, 100]} // Ensure we play the full animation
+          rendererSettings={{
+            preserveAspectRatio: 'xMidYMid slice'
+          }}
         />
       )}
 
