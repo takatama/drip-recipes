@@ -29,13 +29,13 @@ const Timeline: React.FC<TimelineProps> = ({
   const { currentTime, isRunning, start, pause, reset } = useTimer();
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  
+
   // アニメーション関連の状態
   const [showAnimation, setShowAnimation] = useState(false);
   const [currentWaterAmount, setCurrentWaterAmount] = useState(0);
   const [targetWaterAmount, setTargetWaterAmount] = useState(0);
   const [currentActionType, setCurrentActionType] = useState<ActionType>('none');
-  
+
   // 通知関連の状態
   const [isNextStep, setIsNextStep] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
@@ -46,13 +46,16 @@ const Timeline: React.FC<TimelineProps> = ({
 
   // 通知フラグをリセットするタイマー
   useEffect(() => {
+    // Set a longer timeout for the finish sound (it's typically longer)
+    const timeout = isFinish ? 3000 : 1000;
+
     if (isNextStep || isFinish || shouldVibrate) {
       const timer = setTimeout(() => {
-        setIsNextStep(false);
-        setIsFinish(false);
-        setShouldVibrate(false);
-      }, 500);
-      
+        if (isFinish) setIsFinish(false);
+        if (isNextStep) setIsNextStep(false);
+        if (shouldVibrate) setShouldVibrate(false);
+      }, timeout);
+
       return () => clearTimeout(timer);
     }
   }, [isNextStep, isFinish, shouldVibrate]);
@@ -72,31 +75,31 @@ const Timeline: React.FC<TimelineProps> = ({
 
   const handlePlay = async () => {
     if (isRunning) return;
-    
+
     setSnackbarOpen(true);
     await requestWakeLock();
-    
+
     if (currentTime === 0 && steps.length > 0) {
       // タイマーが0の場合は最初のアニメーションを表示
       console.log("Starting initial animation for first step");
       const firstStep = steps[0];
-      
+
       // Get the correct action type from the first step
       const firstStepActionType = firstStep.actionType || 'none';
-      
+
       console.log("First step info:", {
         step: firstStep,
         actionType: firstStepActionType,
         waterAmount: firstStep.cumulative || 0
       });
-      
+
       // Set up animation with the correct action type
       setCurrentWaterAmount(0);
       setTargetWaterAmount(firstStep.cumulative || 0);
       setCurrentActionType(firstStepActionType);
       setShowAnimation(true);
       timerReadyRef.current = true;
-      
+
       // Remove the timeout that automatically hides the animation
       // and rely on the onAnimationComplete callback instead
       // setTimeout(() => {
@@ -107,12 +110,12 @@ const Timeline: React.FC<TimelineProps> = ({
       start();
     }
   };
-  
+
   const handlePause = async () => {
     setSnackbarOpen(false);
     await releaseWakeLock();
     pause();
-    
+
     // アニメーション中の場合は状態をリセット
     if (showAnimation) {
       setShowAnimation(false);
@@ -126,7 +129,7 @@ const Timeline: React.FC<TimelineProps> = ({
     setSnackbarOpen(false);
     await releaseWakeLock();
     reset();
-    
+
     // アニメーション関連の状態をリセット
     console.log("Resetting animation state");
     setShowAnimation(false);
@@ -140,60 +143,63 @@ const Timeline: React.FC<TimelineProps> = ({
     pause();
   };
 
-// ステップ間のアニメーション表示用のハンドラ
-const handleStepTransition = (index: number, currentAmount: number, targetAmount: number) => {
-  console.log("handleStepTransition called:", { 
-    index, 
-    currentAmount, 
-    targetAmount, 
-    showAnimation, 
-    step: steps[index]
-  });
-  
-  // すでにアニメーション中の場合は何もしない
-  if (showAnimation) {
-    console.log("Animation already in progress, ignoring");
-    return;
-  }
-  
-  // ステップからアクションタイプを取得
-  const step = steps[index];
-  const actionType = step.actionType || 'none';
-  const hasChange = currentAmount !== targetAmount;
-  
-  console.log("Action analysis:", { 
-    actionType, 
-    hasChange,
-    step
-  });
-  
-  // アニメーションが必要ない場合は何もしない
-  if (actionType === 'none' && !hasChange) {
-    console.log("No animation needed");
-    return;
-  }
-  
-  // アニメーション表示に必要な状態を設定
-  console.log("Starting animation with:", {
-    currentWaterAmount: currentAmount,
-    targetWaterAmount: targetAmount,
-    actionType
-  });
-  
-  setCurrentWaterAmount(currentAmount);
-  setTargetWaterAmount(targetAmount);
-  setCurrentActionType(actionType);
-  setShowAnimation(true);
-};
+  // ステップ間のアニメーション表示用のハンドラ
+  const handleStepTransition = (index: number, currentAmount: number, targetAmount: number) => {
+    console.log("handleStepTransition called:", {
+      index,
+      currentAmount,
+      targetAmount,
+      showAnimation,
+      step: steps[index]
+    });
+
+    // すでにアニメーション中の場合は何もしない
+    if (showAnimation) {
+      console.log("Animation already in progress, ignoring");
+      return;
+    }
+
+    // ステップからアクションタイプを取得
+    const step = steps[index];
+    const actionType = step.actionType || 'none';
+    const hasChange = currentAmount !== targetAmount;
+
+    console.log("Action analysis:", {
+      actionType,
+      hasChange,
+      step
+    });
+
+    // アニメーションが必要ない場合は何もしない
+    if (actionType === 'none' && !hasChange) {
+      console.log("No animation needed");
+      return;
+    }
+
+    // アニメーション表示に必要な状態を設定
+    console.log("Starting animation with:", {
+      currentWaterAmount: currentAmount,
+      targetWaterAmount: targetAmount,
+      actionType
+    });
+
+    setCurrentWaterAmount(currentAmount);
+    setTargetWaterAmount(targetAmount);
+    setCurrentActionType(actionType);
+    setShowAnimation(true);
+  };
 
   // アニメーション完了ハンドラ
   const handleStepStatusChange = (index: number, oldStatus: StepStatus, newStatus: StepStatus) => {
     const isLastStep = index === steps.length - 1;
-    
+
     if (newStatus === 'next') {
-      // 「next」状態になったらサウンド通知
-      setIsNextStep(true);
-      setIsFinish(isLastStep);
+      // Only set one flag at a time, prioritizing "finish" for the last step
+      if (isLastStep) {
+        setIsFinish(true);
+      } else {
+        setIsNextStep(true);
+      }
     } else if (newStatus === 'current' && oldStatus === 'next') {
       // nextからcurrentになったらバイブレーション
       setShouldVibrate(true);
@@ -204,7 +210,7 @@ const handleStepTransition = (index: number, currentAmount: number, targetAmount
     console.log("Animation completed");
     setShowAnimation(false);
   };
-    
+
   return (
     <>
       <Controls
@@ -224,14 +230,14 @@ const handleStepTransition = (index: number, currentAmount: number, targetAmount
         onStepTransition={handleStepTransition}
         onStepStatusChange={handleStepStatusChange}
       />
-      
+
       {/* 通知マネージャー（非表示） */}
       <NotificationManager
         isNextStep={isNextStep}
         isFinish={isFinish}
         shouldVibrate={shouldVibrate}
       />
-      
+
       {/* アニメーションマネージャー */}
       <AnimationManager
         isVisible={showAnimation}
@@ -240,7 +246,7 @@ const handleStepTransition = (index: number, currentAmount: number, targetAmount
         targetWaterAmount={targetWaterAmount}
         onAnimationComplete={handleAnimationComplete}
       />
-      
+
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={5000}
