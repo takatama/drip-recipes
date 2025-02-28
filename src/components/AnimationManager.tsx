@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
 import Lottie from 'react-lottie-player';
-import pourAnimationData from '@/assets/lottie/pouring.json';
+import pourAnimationData from '@/assets/lottie/pour.json';
 import switchOpenAnimationData from '@/assets/lottie/switch_open.json';
 import switchCloseAnimationData from '@/assets/lottie/switch_close.json';
 import coolAnimationData from '@/assets/lottie/cool.json';
