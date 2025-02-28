@@ -81,7 +81,7 @@ export const newHybridMethod: CoffeeRecipeType = {
         en: "Pour up to ${cumulative}g then cool to 70℃",
         ja: "${cumulative}g まで注湯後、70℃まで下げる",
       },
-      actionType: 'pour',
+      actionType: 'pour_cool',
     },
     {
       time: 130,

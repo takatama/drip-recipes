@@ -4,6 +4,7 @@ import Lottie from 'react-lottie-player';
 import pourAnimationData from '@/assets/lottie/pouring.json';
 import switchOpenAnimationData from '@/assets/lottie/switch_open.json';
 import switchCloseAnimationData from '@/assets/lottie/switch_close.json';
+import coolAnimationData from '@/assets/lottie/cool.json';
 import { ActionType, TranslationType } from '../types';
 
 interface AnimationManagerProps {
@@ -16,7 +17,7 @@ interface AnimationManagerProps {
 }
 
 // Animation sequence types
-type AnimationStep = 'switch_open' | 'switch_close' | 'pour' | null;
+type AnimationStep = 'switch_open' | 'switch_close' | 'pour' | 'cool' | null;
 
 const AnimationManager: React.FC<AnimationManagerProps> = ({
   isVisible,
@@ -80,6 +81,9 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
     } else if (actionType === 'switch_open_pour') {
       queue.push('switch_open');
       queue.push('pour');
+    } else if (actionType === 'pour_cool') {
+      queue.push('pour');
+      queue.push('cool');
     } else {
       // Handle individual actions
       if (actionType.includes('switch_close')) {
@@ -197,6 +201,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
       case 'switch_open': return switchOpenAnimationData;
       case 'switch_close': return switchCloseAnimationData;
       case 'pour': return pourAnimationData;
+      case 'cool': return coolAnimationData;
       default: return pourAnimationData; // Default to pour animation instead of null
     }
   };
@@ -238,7 +243,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
             opacity: animationsCompletedRef.current ? 0 : 1 // Hide animation when complete
           }}
           onComplete={handleAnimationComplete}
-          segments={[0, 100]} // Ensure we play the full animation
           rendererSettings={{
             preserveAspectRatio: 'xMidYMid slice'
           }}
