@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useSettings } from "../context/SettingsContext";
+import { useSettings } from "../contexts/SettingsContext";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 

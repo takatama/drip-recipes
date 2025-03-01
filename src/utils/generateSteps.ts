@@ -1,4 +1,4 @@
-import { CoffeeRecipeType, Step } from "../types";
+import { CoffeeRecipeType, CalculatedStep } from "../types";
 
 const calcTimeForStrengthStep = (strengthSteps: number, stepCount: number) => strengthSteps > stepCount ? 90 + (210 - 90) / strengthSteps * stepCount: null;
 
@@ -19,7 +19,7 @@ const calcFivePourWaterAmount = (beansAmount: number, waterRatio: number) => {
 };
 
 const generateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, flavor: string, strengthSteps: number) => {
-  const outputSteps: Step[] = [];
+  const outputSteps: CalculatedStep[] = [];
   let cumulative = 0;
   let stepCount = 0;
 
@@ -50,8 +50,8 @@ const generateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, fl
 
     outputSteps.push({
       timeSec: stepTime,
-      pourWaterMl: increment,
-      cumulative: cumulative,
+      incrementMl: increment,
+      cumulativeMl: cumulative,
       name: step.name,
       action: {
         en: step.action.en.replace('${cumulative}', cumulative.toString()),
@@ -69,7 +69,7 @@ export function generateSteps(
   beansAmount: number,
   flavor: string,
   strength?: string
-): Step[] {
+): CalculatedStep[] {
   const strengthSteps = strength === 'light' ? 1 : strength === 'strong' ? 3 : 2;
   return generateStrengthSteps(recipe, beansAmount, flavor, strengthSteps);
 }

@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-export const useTimer = (updateInterval: number = 0.1) => {
+export const useSystemTimer = (updateInterval: number = 0.1) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
 

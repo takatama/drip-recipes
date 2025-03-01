@@ -1,271 +1,264 @@
-import React, { useState, useRef, useEffect } from 'react';
-import Controls from './Controls';
-import Steps from './Steps';
-import NotificationManager from './NotificationManager';
-import { useTimer } from '../hooks/useTimer';
-import { useWakeLock } from '../hooks/useWakeLock';
-import { Step, StepStatus, TranslationType, ActionType } from '../types';
-import { Snackbar } from '@mui/material';
-import dynamic from 'next/dynamic';
-
-const AnimationManager = dynamic(() => import('./AnimationManager'), {
-  ssr: false,
-});
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { Box, Typography, useMediaQuery } from '@mui/material';
+import { CalculatedStep, StepStatus } from '../types';
+import { useSettings } from '../contexts/SettingsContext';
 
 interface TimelineProps {
-  t: TranslationType;
-  language: 'en' | 'ja';
-  steps: Step[];
-  setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
+  steps: CalculatedStep[];
+  currentTime: number;
+  setSteps: React.Dispatch<React.SetStateAction<CalculatedStep[]>>;
+  onTimerComplete: () => void;
   isDence?: boolean;
+  onStepTransition?: (index: number, currentAmount: number, targetAmount: number) => void;
+  onStepStatusChange?: (index: number, oldStatus: StepStatus, newStatus: StepStatus) => void;
 }
 
+const CONTAINER_HEIGHT = 400;
+const MARKER_SIZE = 8;
+const ARROW_OFFSET = 45;
+const TIMELINE_WIDTH = 340;
+const SMALL_TIMELINE_WIDTH = 260;
+const STEP_TEXT_MARGIN = 20;
+const FIRST_STEP_OFFSET = 10;
+const FONT_SIZE = '1.1rem';
+const INDICATE_NEXT_STEP_SEC = 5;
+
 const Timeline: React.FC<TimelineProps> = ({
-  t,
   steps,
   setSteps,
+  currentTime,
+  onTimerComplete,
   isDence,
+  onStepTransition,
+  onStepStatusChange
 }) => {
-  const { currentTime, isRunning, start, pause, reset } = useTimer();
-  const { requestWakeLock, releaseWakeLock } = useWakeLock();
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const isSmallScreen = useMediaQuery('(max-width:465px)');
+  const { darkMode, language } = useSettings();
+  const totalTime = steps[steps.length - 1]?.timeSec;
+  const arrowHeight = isDence ? 12 : 25;
 
-  // アニメーション関連の状態
-  const [showAnimation, setShowAnimation] = useState(false);
-  const [currentWaterAmount, setCurrentWaterAmount] = useState(0);
-  const [targetWaterAmount, setTargetWaterAmount] = useState(0);
-  const [currentActionType, setCurrentActionType] = useState<ActionType>('none');
+  // ステップの状態を内部で管理し、親コンポーネントへの更新を制御する
+  const [internalSteps, setInternalSteps] = useState<CalculatedStep[]>(steps);
 
-  // 通知関連の状態
-  const [isNextStep, setIsNextStep] = useState(false);
-  const [isFinish, setIsFinish] = useState(false);
-  const [shouldVibrate, setShouldVibrate] = useState(false);
-  const [isReset, setIsReset] = useState(false);
-
-  // タイマーの状態
-  const timerReadyRef = useRef(false);
-
-  // 通知フラグをリセットするタイマー
+  // 親のstepsが変更されたときだけ内部状態を更新
   useEffect(() => {
-    // Set a longer timeout for the finish sound (it's typically longer)
-    const timeout = isFinish ? 3000 : 1000;
+    setInternalSteps(steps);
+  }, [steps]);
 
-    if (isNextStep || isFinish || shouldVibrate) {
-      const timer = setTimeout(() => {
-        if (isFinish) setIsFinish(false);
-        if (isNextStep) setIsNextStep(false);
-        if (shouldVibrate) setShouldVibrate(false);
-      }, timeout);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isNextStep, isFinish, shouldVibrate]);
-
-  // 初期アニメーション後の開始処理
+  // 内部的なステップ状態の更新が完了したら親に通知する
+  // throttleを使って更新頻度を制限
   useEffect(() => {
-    if (!showAnimation && timerReadyRef.current) {
-      // 初期アニメーションが終了し、タイマー開始準備完了
-      start();
-      timerReadyRef.current = false;
-    }
-  }, [showAnimation, start]);
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-
-  const handlePlay = async () => {
-    if (isRunning) return;
-
-    setSnackbarOpen(true);
-    await requestWakeLock();
-
-    if (currentTime === 0 && steps.length > 0) {
-      // タイマーが0の場合は最初のアニメーションを表示
-      console.log("Starting initial animation for first step");
-      const firstStep = steps[0];
-
-      // Get the correct action type from the first step
-      const firstStepActionType = firstStep.actionType || 'none';
-
-      console.log("First step info:", {
-        step: firstStep,
-        actionType: firstStepActionType,
-        waterAmount: firstStep.cumulative || 0
-      });
-
-      // Set up animation with the correct action type
-      setCurrentWaterAmount(0);
-      setTargetWaterAmount(firstStep.cumulative || 0);
-      setCurrentActionType(firstStepActionType);
-      setShowAnimation(true);
-      timerReadyRef.current = true;
-
-      // Remove the timeout that automatically hides the animation
-      // and rely on the onAnimationComplete callback instead
-      // setTimeout(() => {
-      //   setShowAnimation(false);
-      // }, 3000);
-    } else {
-      // それ以外の場合は直接タイマーを開始
-      start();
-    }
-  };
-
-  const handlePause = async () => {
-    setSnackbarOpen(false);
-    await releaseWakeLock();
-    pause();
-
-    // アニメーション中の場合は状態をリセット
-    if (showAnimation) {
-      setShowAnimation(false);
-      timerReadyRef.current = false;
-    }
-  };
-
-  // Reset the timer
-  const handleReset = async () => {
-    console.log("Reset button pressed");
-    setSnackbarOpen(false);
-    await releaseWakeLock();
-    reset();
-
-    // アニメーション関連の状態をリセット
-    console.log("Resetting animation state");
-    setShowAnimation(false);
-    setCurrentWaterAmount(0);
-    setTargetWaterAmount(0);
-    setCurrentActionType('none');
-    
-    // Set the reset flag to true
-    setIsReset(true);
-    
-    // Reset the flag after a short delay
-    setTimeout(() => {
-      setIsReset(false);
-    }, 100);
-  };
-
-  const handleTimerComplete = async () => {
-    await releaseWakeLock();
-    pause();
-  };
-
-  // ステップ間のアニメーション表示用のハンドラ
-  const handleStepTransition = (index: number, currentAmount: number, targetAmount: number) => {
-    console.log("handleStepTransition called:", {
-      index,
-      currentAmount,
-      targetAmount,
-      showAnimation,
-      step: steps[index]
-    });
-
-    // すでにアニメーション中の場合は何もしない
-    if (showAnimation) {
-      console.log("Animation already in progress, ignoring");
-      return;
-    }
-
-    // ステップからアクションタイプを取得
-    const step = steps[index];
-    const actionType = step.actionType || 'none';
-    const hasChange = currentAmount !== targetAmount;
-
-    console.log("Action analysis:", {
-      actionType,
-      hasChange,
-      step
-    });
-
-    // アニメーションが必要ない場合は何もしない
-    if (actionType === 'none' && !hasChange) {
-      console.log("No animation needed");
-      return;
-    }
-
-    // アニメーション表示に必要な状態を設定
-    console.log("Starting animation with:", {
-      currentWaterAmount: currentAmount,
-      targetWaterAmount: targetAmount,
-      actionType
-    });
-
-    setCurrentWaterAmount(currentAmount);
-    setTargetWaterAmount(targetAmount);
-    setCurrentActionType(actionType);
-    setShowAnimation(true);
-  };
-
-  // アニメーション完了ハンドラ
-  const handleStepStatusChange = (index: number, oldStatus: StepStatus, newStatus: StepStatus) => {
-    const isLastStep = index === steps.length - 1;
-
-    if (newStatus === 'next') {
-      // Only set one flag at a time, prioritizing "finish" for the last step
-      if (isLastStep) {
-        setIsFinish(true);
-      } else {
-        setIsNextStep(true);
+    const timer = setTimeout(() => {
+      // 内部ステップと外部ステップが異なる場合のみ更新
+      if (JSON.stringify(internalSteps) !== JSON.stringify(steps)) {
+        setSteps(internalSteps);
       }
-    } else if (newStatus === 'current' && oldStatus === 'next') {
-      // nextからcurrentになったらバイブレーション
-      setShouldVibrate(true);
-    }
+    }, 100); // 100ms間隔で制限
+
+    return () => clearTimeout(timer);
+  }, [internalSteps, setSteps, steps]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return m + ":" + (s < 10 ? "0" + s : s);
   };
 
-  const handleAnimationComplete = () => {
-    console.log("Animation completed");
-    setShowAnimation(false);
+  // Calculate arrow position (for timeline progress)
+  const getArrowTop = () => {
+    const clampedTime = Math.min(currentTime, totalTime);
+    return (clampedTime / totalTime) * CONTAINER_HEIGHT - arrowHeight + FIRST_STEP_OFFSET;
   };
+
+  // Add function to update step statuses
+  const getStepPosition = (time: number) => {
+    const topPos = (time / totalTime) * CONTAINER_HEIGHT;
+    return time === 0 ? FIRST_STEP_OFFSET : topPos + FIRST_STEP_OFFSET;
+  };
+
+  // ステップのステータス追跡用の参照を追加
+  const previousStepsStatusRef = useRef<Record<number, StepStatus>>({});
+  const previousTimeRef = useRef<number>(currentTime);
+
+  // ステップ状態を更新する関数（内部状態のみを更新）
+  const updateStepStatuses = useCallback((currentTimeValue: number) => {
+    // 前回と同じ時間の場合は更新しない
+    if (previousTimeRef.current === currentTimeValue || internalSteps.length === 0) return;
+    previousTimeRef.current = currentTimeValue;
+
+    const lastStep = internalSteps[internalSteps.length - 1];
+    if (currentTimeValue >= lastStep.timeSec) {
+      onTimerComplete();
+    }
+
+    setInternalSteps(prevSteps => {
+      return prevSteps.map((step, index) => {
+        let newStatus: StepStatus = 'upcoming';
+
+        if (currentTimeValue >= step.timeSec && (index === prevSteps.length - 1 || currentTimeValue < prevSteps[index + 1].timeSec)) {
+          newStatus = 'current';
+        } else if (currentTimeValue >= step.timeSec) {
+          newStatus = 'completed';
+        } else if (currentTimeValue >= step.timeSec - INDICATE_NEXT_STEP_SEC && currentTimeValue < step.timeSec) {
+          newStatus = 'next';
+        }
+
+       // ステータス変更を検出
+       const previousStatus = previousStepsStatusRef.current[index];
+       if (previousStatus !== newStatus) {
+         // ステータス変更を親に通知
+         if (onStepStatusChange) {
+           onStepStatusChange(index, previousStatus || 'upcoming', newStatus);
+         }
+         
+         // 状態が「next」に変わった時だけアニメーション設定
+         if (newStatus === 'next' && onStepTransition) {
+           const currentAmount = index > 0 ? (prevSteps[index - 1].cumulativeMl || 0) : 0;
+           const targetAmount = step.cumulativeMl || 0;
+           onStepTransition(index, currentAmount, targetAmount);
+         }
+
+         // ステータスを保存
+         previousStepsStatusRef.current[index] = newStatus;
+       }
+
+       return { ...step, status: newStatus };
+      });
+    });
+  }, [internalSteps, onStepTransition, onTimerComplete, onStepStatusChange]);
+
+  // Update useEffect for timer
+  useEffect(() => {
+    updateStepStatuses(currentTime);
+  }, [currentTime, updateStepStatuses]);
 
   return (
-    <>
-      <Controls
-        t={t}
-        onPlay={handlePlay}
-        onPause={handlePause}
-        onReset={handleReset}
-        disabled={showAnimation}
-        isRunning={isRunning}
-      />
-      <Steps
-        steps={steps}
-        setSteps={setSteps}
-        currentTime={currentTime}
-        onTimerComplete={handleTimerComplete}
-        isDence={isDence}
-        onStepTransition={handleStepTransition}
-        onStepStatusChange={handleStepStatusChange}
-      />
-
-      {/* 通知マネージャー（非表示） */}
-      <NotificationManager
-        isNextStep={isNextStep}
-        isFinish={isFinish}
-        shouldVibrate={shouldVibrate}
-        isReset={isReset}
-      />
-
-      {/* アニメーションマネージャー */}
-      <AnimationManager
-        isVisible={showAnimation}
-        actionType={currentActionType}
-        currentWaterAmount={currentWaterAmount}
-        targetWaterAmount={targetWaterAmount}
-        onAnimationComplete={handleAnimationComplete}
-        t={t}
-      />
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={5000}
-        onClose={handleSnackbarClose}
-        message={t.keepScreenOn}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      />
-    </>
+    <Box
+      sx={{
+        position: 'relative',
+        height: `${CONTAINER_HEIGHT}px`,
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
+        mb: 10
+      }}
+    >
+      <Box
+        sx={{
+          position: 'relative',
+          height: '100%',
+          width: isSmallScreen ? SMALL_TIMELINE_WIDTH : TIMELINE_WIDTH,
+          minWidth: isSmallScreen ? SMALL_TIMELINE_WIDTH : TIMELINE_WIDTH,
+        }}
+      >
+        {/* Timeline vertical line */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: `${isDence ? FIRST_STEP_OFFSET : FIRST_STEP_OFFSET - 16}px`,
+            left: -2,
+            height: `${CONTAINER_HEIGHT}px`,
+            borderLeft: '3px solid #ccc'
+          }}
+        />
+        {/* Render each step using absolute positioning */}
+        {internalSteps.map((step, index) => {
+          const topPos = getStepPosition(step.timeSec);
+          return (
+            <Box
+              key={index}
+              sx={{
+                position: 'absolute',
+                top: `${topPos}px`,
+                left: '0px',
+                transform: 'translateY(-50%)'
+              }}
+            >
+              <Box
+                sx={{
+                  position: 'absolute',
+                  left: -1,
+                  top: `${isDence ? '50%' : '20%'}`,
+                  width: `${MARKER_SIZE}px`,
+                  height: `${MARKER_SIZE}px`,
+                  bgcolor: darkMode ? 'white' : 'black',
+                  borderRadius: '50%',
+                  transform: 'translate(-50%, -50%)'
+                }}
+              />
+              {isDence ? (
+                <Typography
+                  variant="body2"
+                  sx={{
+                    ml: `${STEP_TEXT_MARGIN}px`,
+                    fontSize: FONT_SIZE,
+                    ...{
+                      current: { fontWeight: 'bold' },
+                      next: { fontWeight: 'bold', color: 'primary.main' },
+                      completed: { textDecoration: 'line-through', color: 'text.secondary' },
+                      upcoming: { color: 'text.primary' }
+                    }[step.status]
+                  }}
+                >
+                  {formatTime(step.timeSec)} {step.action[language]}
+                </Typography>
+              ) : (
+                <>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      ml: `${STEP_TEXT_MARGIN}px`,
+                      fontSize: FONT_SIZE,
+                      ...{
+                        current: { fontWeight: 'bold' },
+                        next: { fontWeight: 'bold', color: 'primary.main' },
+                        completed: { textDecoration: 'line-through', color: 'text.secondary' },
+                        upcoming: { color: 'text.primary' }
+                      }[step.status]
+                    }}
+                  >
+                    {formatTime(step.timeSec)}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      ml: `${STEP_TEXT_MARGIN}px`,
+                      fontSize: FONT_SIZE,
+                      ...{
+                        current: { fontWeight: 'bold' },
+                        next: { fontWeight: 'bold', color: 'primary.main' },
+                        completed: { textDecoration: 'line-through', color: 'text.secondary' },
+                        upcoming: { color: 'text.primary' }
+                      }[step.status]
+                    }}
+                  >
+                    {step.action[language]}
+                  </Typography>
+                </>
+              )}
+            </Box>
+          );
+        })}
+        {/* Progress arrow with timer display */}
+        <Box
+          id="arrowContainer"
+          sx={{
+            position: 'absolute',
+            left: `-${ARROW_OFFSET}px`,
+            top: `${getArrowTop()}px`,
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <Typography variant="body1" sx={{ fontSize: FONT_SIZE }}>
+            {formatTime(currentTime)}
+          </Typography>
+          <Typography variant="body1" sx={{ fontSize: FONT_SIZE }} className="blinking">
+            ▼
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

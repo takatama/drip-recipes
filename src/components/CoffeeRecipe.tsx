@@ -5,7 +5,7 @@ import Footer from './Footer';
 import RecipeDescription from './RecipeDescription';
 import { translations } from '../translations';
 import { CoffeeRecipeType, LanguageType } from '../types';
-import CoffeeTimer from './CoffeeTimer';
+import CoffeeCalculator from './CoffeeCalculator';
 
 interface CoffeeRecipeProps {
   lang: LanguageType;
@@ -42,7 +42,7 @@ const CoffeeRecipe: React.FC<CoffeeRecipeProps> = ({ lang, recipe }) => {
         {recipe.equipments[lang]}
       </Typography>
 
-      <CoffeeTimer recipe={recipe} t={t} language={lang} />
+      <CoffeeCalculator recipe={recipe} t={t} language={lang} />
 
       <Footer t={t} />
     </Container>
