@@ -31,7 +31,7 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
 }) => {
   const { currentTime, isRunning, start, pause, reset } = useSystemTimer();
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
-  const { state: timerState, dispatch: timerDispatch } = useTimer();
+  const { dispatch: timerDispatch } = useTimer();
   const { showAnimation, startAnimation, resetAnimation } = useAnimationManager();
   const { openSnackbar, closeSnackbar, resetNotifications } = useNotificationManager();
   

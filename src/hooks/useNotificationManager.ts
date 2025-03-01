@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { NotificationContext } from '@/contexts/NotificationContext';
 import { TimerContext } from '@/contexts/TimerContext';
 import { useSettings } from '@/contexts/SettingsContext';
@@ -12,7 +12,6 @@ export const useNotificationManager = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isPlayingRef = useRef(false);
   const currentTypeRef = useRef<'finish' | 'next-step' | null>(null);
-  const [currentAudioType, setCurrentAudioType] = useState<'finish' | 'next-step' | null>(null);
   
   // Track the last notified step to prevent duplicate notifications
   const lastNotifiedStepRef = useRef(-1);
@@ -198,7 +197,6 @@ export const useNotificationManager = () => {
       const audioPath = `/audio/${language}-${voice}-${type}.wav`;
       
       audio.src = audioPath;
-      setCurrentAudioType(type);
       audio.oncanplaythrough = playAudio;
       audio.load();
     }
@@ -219,7 +217,6 @@ export const useNotificationManager = () => {
       notificationLockRef.current = false;
       lastNotifiedStepRef.current = -1;
       lastDispatchedActionRef.current = { type: '', stepIndex: -1, timestamp: 0 };
-      setCurrentAudioType(null);
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }

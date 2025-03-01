@@ -180,7 +180,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     
     const state = animationStateRef.current;
     let startTime: number;
-    let animationFrameId: number;
     const duration = 1000; // 1 second counting duration
 
     setTimeout(() => {
@@ -196,14 +195,14 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
         setWaterAmount(Math.round(newAmount));
 
         if (progress < 1) {
-          animationFrameId = requestAnimationFrame(updateCounter);
+          requestAnimationFrame(updateCounter);
         } else {
           state.waterAmount = targetWaterAmount;
           setWaterAmount(targetWaterAmount);
         }
       };
 
-      animationFrameId = requestAnimationFrame(updateCounter);
+      requestAnimationFrame(updateCounter);
     }, 500);
   };
 

@@ -122,6 +122,6 @@ export interface CoffeeTimerAction {
     | 'SET_CURRENT_WATER_AMOUNT'
     | 'SET_TARGET_WATER_AMOUNT'
     | 'SET_ACTION_TYPE';
-  payload?: any; // Define specific payload types as needed
+  payload?: { currentWaterAmount: number; targetWaterAmount: number; currentActionType: ActionType };
 }
 

@@ -1,5 +1,3 @@
-import { CalculatedStep } from '../types';
-
 export interface TimerState {
   stepIndex: number;
   status: 'initial' | 'upcoming' | 'running' | 'finished';
