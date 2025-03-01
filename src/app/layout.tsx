@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 import React from "react";
-import { SettingsProvider } from "../context/SettingsContext";
+import { SettingsProvider } from "../contexts/SettingsContext";
 import AppThemeWrapper from "../components/AppThemeWrapper";
 
 export default function RootLayout({

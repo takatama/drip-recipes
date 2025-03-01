@@ -6,27 +6,19 @@ import switchOpenAnimationData from '@/assets/lottie/switch_open.json';
 import switchCloseAnimationData from '@/assets/lottie/switch_close.json';
 import coolAnimationData from '@/assets/lottie/cool.json';
 import { ActionType, TranslationType } from '../types';
+import { useAnimationManager } from '../hooks/useAnimationManager';
 
 interface AnimationManagerProps {
-  isVisible: boolean;
-  actionType: ActionType;
-  currentWaterAmount: number;
-  targetWaterAmount: number;
-  onAnimationComplete?: () => void;
   t: TranslationType;
 }
 
 // Animation sequence types
 type AnimationStep = 'switch_open' | 'switch_close' | 'pour' | 'cool' | null;
 
-const AnimationManager: React.FC<AnimationManagerProps> = ({
-  isVisible,
-  actionType,
-  currentWaterAmount,
-  targetWaterAmount,
-  onAnimationComplete,
-  t,
-}) => {
+const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
+  // コンテキストから状態を取得
+  const { showAnimation, currentWaterAmount, targetWaterAmount, currentActionType, completeAnimation } = useAnimationManager();
+  
   const [waterAmount, setWaterAmount] = useState(currentWaterAmount);
   const [currentStep, setCurrentStep] = useState<AnimationStep>(null);
   const [animationQueue, setAnimationQueue] = useState<AnimationStep[]>([]);
@@ -41,60 +33,59 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
 
   // Ref to store the initial props to detect actual changes
   const initialPropsRef = useRef({
-    actionType,
+    currentActionType,
     currentWaterAmount,
     targetWaterAmount
   });
 
   // Reset state when visibility changes
   useEffect(() => {
-    if (isVisible) {
+    if (showAnimation) {
       animationsCompletedRef.current = false;
       isProcessingQueueRef.current = false;
       initialPropsRef.current = {
-        actionType,
+        currentActionType,
         currentWaterAmount,
         targetWaterAmount
       };
     }
-  }, [isVisible, actionType, currentWaterAmount, targetWaterAmount]);
+  }, [showAnimation, currentActionType, currentWaterAmount, targetWaterAmount]);
 
   // Determine the animation sequence based on actionType and water amounts
   useEffect(() => {
-    if (!isVisible) return;
+    if (!showAnimation) return;
 
     // Skip queue creation if we're already processing a queue
-    // This prevents restarting when state changes during animation steps
     if (isProcessingQueueRef.current && animationQueue.length > 0) {
       console.log("Already processing animation queue, skipping queue creation");
       return;
     }
 
-    console.log("Animation starting with action type:", actionType);
+    console.log("Animation starting with action type:", currentActionType);
 
     const queue: AnimationStep[] = [];
 
     // Handle combined action types
-    if (actionType === 'switch_close_pour') {
+    if (currentActionType === 'switch_close_pour') {
       queue.push('switch_close');
       queue.push('pour');
-    } else if (actionType === 'switch_open_pour') {
+    } else if (currentActionType === 'switch_open_pour') {
       queue.push('switch_open');
       queue.push('pour');
-    } else if (actionType === 'pour_cool') {
+    } else if (currentActionType === 'pour_cool') {
       queue.push('pour');
       queue.push('cool');
     } else {
       // Handle individual actions
-      if (actionType.includes('switch_close')) {
+      if (currentActionType.includes('switch_close')) {
         queue.push('switch_close');
-      } else if (actionType.includes('switch_open')) {
+      } else if (currentActionType.includes('switch_open')) {
         queue.push('switch_open');
       }
 
       // Add pour animation if needed
       const hasWaterChange = currentWaterAmount !== targetWaterAmount;
-      if (actionType === 'pour' || actionType.includes('pour') || hasWaterChange) {
+      if (currentActionType === 'pour' || currentActionType.includes('pour') || hasWaterChange) {
         queue.push('pour');
       }
     }
@@ -110,11 +101,11 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
       setCurrentStep(firstStep);
       setAnimationKey(prevKey => prevKey + 1); // Force Lottie to re-render
       console.log("Starting first animation:", firstStep);
-    } else if (onAnimationComplete) {
+    } else {
       // If no animations needed, complete immediately
-      onAnimationComplete();
+      completeAnimation();
     }
-  }, [isVisible, actionType, currentWaterAmount, targetWaterAmount, onAnimationComplete]);
+  }, [showAnimation, currentActionType, currentWaterAmount, targetWaterAmount, completeAnimation]);
 
   // Handle animation completion
   const handleAnimationComplete = () => {
@@ -146,17 +137,14 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
       animationsCompletedRef.current = true;
       isProcessingQueueRef.current = false; // Mark that we're done with this queue
 
-      // Call onAnimationComplete immediately
-      if (onAnimationComplete) {
-        console.log("Calling onAnimationComplete callback");
-        onAnimationComplete();
-      }
+      // Call completeAnimation to update context state
+      completeAnimation();
     }
   };
 
   // Water counting effect
   useEffect(() => {
-    if (!isVisible || currentStep !== 'pour') return;
+    if (!showAnimation || currentStep !== 'pour') return;
 
     let startTime: number;
     let animationFrameId: number;
@@ -190,10 +178,10 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, [currentStep, currentWaterAmount, targetWaterAmount, isVisible]);
+  }, [currentStep, currentWaterAmount, targetWaterAmount, showAnimation]);
 
   // If not visible, don't render anything
-  if (!isVisible) return null;
+  if (!showAnimation) return null;
 
   // Get the appropriate animation data
   const getAnimationData = () => {
@@ -202,7 +190,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({
       case 'switch_close': return switchCloseAnimationData;
       case 'pour': return pourAnimationData;
       case 'cool': return coolAnimationData;
-      default: return pourAnimationData; // Default to pour animation instead of null
+      default: return pourAnimationData; // Default to pour animation
     }
   };
 

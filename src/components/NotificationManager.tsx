@@ -1,25 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useSettings } from '../context/SettingsContext';
+import { useSettings } from '../contexts/SettingsContext';
+import { useNotificationManager } from '../hooks/useNotificationManager';
 
-interface NotificationManagerProps {
-  isNextStep: boolean;
-  isFinish: boolean;
-  shouldVibrate: boolean;
-  isReset?: boolean;
-}
-
-const NotificationManager: React.FC<NotificationManagerProps> = ({
-  isNextStep,
-  isFinish,
-  shouldVibrate,
-  isReset = false
-}) => {
+const NotificationManager: React.FC = () => {
+  // コンテキストから状態を取得
+  const { isNextStep, isFinish, shouldVibrate, isReset } = useNotificationManager();
   const { notificationMode, language, voice } = useSettings();
+  
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isPlayingRef = useRef(false);
   const currentTypeRef = useRef<'finish' | 'next-step' | null>(null);
-
-  // Keep track of which audio type we're currently working with
   const [currentAudioType, setCurrentAudioType] = useState<'finish' | 'next-step' | null>(null);
   
   // Initialize audio

@@ -49,7 +49,14 @@ export interface CoffeeParam {
   options?: string[];
 }
 
-export type ActionType = 'switch_open' | 'switch_close' | 'switch_open_pour' | 'switch_close_pour'| 'pour' | 'pour_cool' | 'none';
+export type ActionType = 
+  | 'none'
+  | 'pour'
+  | 'switch_open'
+  | 'switch_close'
+  | 'pour_cool'
+  | 'switch_open_pour'
+  | 'switch_close_pour';
 
 interface CoffeeRecipeStep {
   time?: number;
@@ -91,3 +98,30 @@ export type LanguageType = 'en' | 'ja';
 export type VoiceType = 'male' | 'female';
 
 export type RoastLevelType = 'lightRoast' | 'mediumRoast' | 'darkRoast';
+
+
+export interface CoffeeTimerState {
+  currentWaterAmount: number;
+  targetWaterAmount: number;
+  currentActionType: ActionType;
+  isNextStep: boolean;
+  isFinish: boolean;
+  shouldVibrate: boolean;
+  isReset: boolean;
+  showAnimation: boolean;
+}
+
+export interface CoffeeTimerAction {
+  type: 
+    | 'START'
+    | 'ANIMATION_COMPLETE'
+    | 'NEXT_STEP_UPCOMING'
+    | 'NEXT_STEP_RUNNING'
+    | 'FINISH'
+    | 'RESET'
+    | 'SET_CURRENT_WATER_AMOUNT'
+    | 'SET_TARGET_WATER_AMOUNT'
+    | 'SET_ACTION_TYPE';
+  payload?: any; // Define specific payload types as needed
+}
+

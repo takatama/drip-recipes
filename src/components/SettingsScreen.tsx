@@ -4,7 +4,7 @@ import React from 'react';
 import { Container, Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Brightness4, Brightness7, VolumeOff, Vibration, VolumeUp, Man, Woman } from '@mui/icons-material';
-import { useSettings } from '../context/SettingsContext';
+import { useSettings } from '../contexts/SettingsContext';
 import { translations } from '../translations/index';
 import { LanguageType } from '../types';
 import Header from './Header';

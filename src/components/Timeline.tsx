@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Box, Typography, useMediaQuery } from '@mui/material';
 import { CalculatedStep, StepStatus } from '../types';
-import { useSettings } from '../context/SettingsContext';
+import { useSettings } from '../contexts/SettingsContext';
 
 interface TimelineProps {
   steps: CalculatedStep[];
