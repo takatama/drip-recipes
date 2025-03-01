@@ -8,27 +8,19 @@ export const useNotificationManager = () => {
   const { state: timerState } = useContext(TimerContext);
   const { notificationMode, language, voice } = useSettings();
   
-  // Audio関連
+  // Audio related references
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isPlayingRef = useRef(false);
   const currentTypeRef = useRef<'finish' | 'next-step' | null>(null);
   const [currentAudioType, setCurrentAudioType] = useState<'finish' | 'next-step' | null>(null);
   
-  // 最後に通知したstepIndexを追跡
+  // Track the last notified step to prevent duplicate notifications
   const lastNotifiedStepRef = useRef(-1);
   
-  // 最後に通知した状態を追跡
-  const lastStateRef = useRef({
-    stepIndex: -1,
-    status: 'initial' as 'initial' | 'upcoming' | 'running' | 'finished',
-    isNextStep: false,
-    isFinish: false,
-  });
-  
-  // 通知ロックを追加 - 同時に複数の通知が処理されないようにする
+  // Notification lock to prevent multiple notifications being processed simultaneously
   const notificationLockRef = useRef(false);
 
-  // オーディオの初期化
+  // Initialize audio
   useEffect(() => {
     if (typeof window !== 'undefined') {
       audioRef.current = new Audio();
@@ -38,7 +30,7 @@ export const useNotificationManager = () => {
         isPlayingRef.current = false;
         notificationLockRef.current = false;
         
-        // 再生完了後にフラグをリセット
+        // Reset notification flag after playback completes
         if (currentTypeRef.current === 'next-step') {
           dispatch({ type: 'NEXT_STEP_HANDLED' });
         } else if (currentTypeRef.current === 'finish') {
@@ -52,7 +44,7 @@ export const useNotificationManager = () => {
         isPlayingRef.current = false;
         notificationLockRef.current = false;
         
-        // エラー時もフラグリセット
+        // Reset notification flag on error
         if (currentTypeRef.current === 'next-step') {
           dispatch({ type: 'NEXT_STEP_HANDLED' });
         } else if (currentTypeRef.current === 'finish') {
@@ -74,69 +66,51 @@ export const useNotificationManager = () => {
     }
   }, [dispatch]);
 
-  // タイマーの状態変化を監視して通知をトリガー
+  // Monitor timer state changes and trigger notifications
   useEffect(() => {
-    // 前回と同じ状態なら無視
-    if (
-      lastStateRef.current.stepIndex === timerState.stepIndex &&
-      lastStateRef.current.status === timerState.status
-    ) {
+    // Ignore if same state as before
+    if (lastNotifiedStepRef.current === timerState.stepIndex) {
       return;
     }
     
     console.log(`Timer state changed: ${timerState.status}, stepIndex: ${timerState.stepIndex}`);
     
-    // 次のステップの通知
+    // Notification for upcoming step
     if (timerState.status === 'upcoming' && timerState.stepIndex >= 0) {
-      // 既にこのステップの通知を行っていたら、二重通知を防止
-      if (lastNotifiedStepRef.current !== timerState.stepIndex) {
-        console.log(`Dispatching NEXT_STEP for step ${timerState.stepIndex}`);
-        dispatch({ type: 'NEXT_STEP' });
-        lastNotifiedStepRef.current = timerState.stepIndex;
-      } else {
-        console.log(`Skipping duplicate NEXT_STEP for step ${timerState.stepIndex}`);
-      }
+      console.log(`Dispatching NEXT_STEP for step ${timerState.stepIndex}`);
+      dispatch({ type: 'NEXT_STEP' });
+      lastNotifiedStepRef.current = timerState.stepIndex;
     }
     
-    // 完了通知
+    // Notification for completion
     if (timerState.status === 'finished') {
       console.log('Dispatching FINISH');
       dispatch({ type: 'FINISH' });
     }
-    
-    // 状態を記録
-    lastStateRef.current = {
-      stepIndex: timerState.stepIndex,
-      status: timerState.status,
-      isNextStep: state.isNextStep,
-      isFinish: state.isFinish,
-    };
-  }, [timerState.status, timerState.stepIndex, dispatch, state.isNextStep, state.isFinish]);
+  }, [timerState.status, timerState.stepIndex, dispatch]);
 
-  // 通知状態の変化を監視して実際に通知を実行
+  // Handle notification state changes and play actual notifications
   useEffect(() => {
-    // ロックされていたら何もしない（既に処理中）
+    // Skip if already processing a notification
     if (notificationLockRef.current) {
       console.log('Notification locked - skipping');
       return;
     }
 
-    // 状態がなければ何もしない
-    if (!state.isNextStep && !state.isFinish) {
+    // Nothing to do if no notification flags are set
+    if (!state.isNextStep && !state.isFinish && !state.shouldVibrate) {
       return;
     }
     
-    console.log(`Notification state: isNextStep=${state.isNextStep}, isFinish=${state.isFinish}`);
-    
-    // 1. 音声通知
+    // Sound notifications
     if (notificationMode === 'sound' && (state.isNextStep || state.isFinish) && audioRef.current) {
-      // ロックを設定
+      // Set lock to prevent multiple notifications
       notificationLockRef.current = true;
       
       const type = state.isFinish ? 'finish' : 'next-step';
       console.log(`Preparing to play ${type} audio`);
       
-      // 既に再生中なら、現在の再生を中止して新しい音を再生
+      // Stop current playback if any
       if (isPlayingRef.current && audioRef.current) {
         console.log('Stopping current audio playback to start new one');
         audioRef.current.pause();
@@ -163,10 +137,10 @@ export const useNotificationManager = () => {
           currentTypeRef.current = null;
           notificationLockRef.current = false;
           
-          // 音声再生に失敗したら振動にフォールバック
+          // Fall back to vibration if audio fails
           vibrate();
           
-          // フラグをリセット
+          // Reset notification flags
           if (type === 'next-step') {
             dispatch({ type: 'NEXT_STEP_HANDLED' });
           } else if (type === 'finish') {
@@ -175,25 +149,23 @@ export const useNotificationManager = () => {
         });
       };
       
-      // オーディオソースの設定
+      // Setup audio source
       const audioPath = `/audio/${language}-${voice}-${type}.wav`;
-      console.log(`Setting audio source: ${audioPath}`);
       
-      // ソース更新
       audio.src = audioPath;
       setCurrentAudioType(type);
       audio.oncanplaythrough = playAudio;
       audio.load();
     }
     
-    // 2. 振動通知
+    // Vibration notifications
     if (notificationMode === 'vibrate' && state.shouldVibrate) {
       vibrate();
+      dispatch({ type: 'VIBRATE_HANDLED' });
     }
-    
   }, [state.isNextStep, state.isFinish, state.shouldVibrate, notificationMode, language, voice, dispatch]);
 
-  // 通知のリセット時の処理
+  // Handle reset state
   useEffect(() => {
     if (state.isReset && audioRef.current) {
       console.log('Resetting notification state');
@@ -204,18 +176,10 @@ export const useNotificationManager = () => {
       setCurrentAudioType(null);
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
-      
-      // 参照状態もリセット
-      lastStateRef.current = {
-        stepIndex: -1,
-        status: 'initial',
-        isNextStep: false,
-        isFinish: false,
-      };
     }
   }, [state.isReset]);
 
-  // 振動機能
+  // Vibration function
   const vibrate = () => {
     if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
       console.log('Vibrating device');
@@ -223,6 +187,7 @@ export const useNotificationManager = () => {
     }
   };
 
+  // Public API functions
   const triggerVibration = () => {
     dispatch({ type: 'VIBRATE' });
   };

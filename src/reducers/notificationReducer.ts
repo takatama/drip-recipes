@@ -14,7 +14,8 @@ export type NotificationAction =
   | { type: 'OPEN_SNACKBAR' }
   | { type: 'CLOSE_SNACKBAR' }
   | { type: 'NEXT_STEP_HANDLED' }
-  | { type: 'FINISH_HANDLED' };
+  | { type: 'FINISH_HANDLED' }
+  | { type: 'VIBRATE_HANDLED' };
 
 export const initialNotificationState: NotificationState = {
   isNextStep: false,
