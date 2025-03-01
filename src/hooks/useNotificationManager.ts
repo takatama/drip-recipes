@@ -17,6 +17,13 @@ export const useNotificationManager = () => {
   // Track the last notified step to prevent duplicate notifications
   const lastNotifiedStepRef = useRef(-1);
   
+  // Track the last dispatched action to prevent duplicate dispatches
+  const lastDispatchedActionRef = useRef({
+    type: '',
+    stepIndex: -1,
+    timestamp: 0
+  });
+  
   // Notification lock to prevent multiple notifications being processed simultaneously
   const notificationLockRef = useRef(false);
 
@@ -66,9 +73,47 @@ export const useNotificationManager = () => {
     }
   }, [dispatch]);
 
+  // Define the valid notification action types
+  type NotificationAction = 
+    | { type: 'NEXT_STEP' } 
+    | { type: 'NEXT_STEP_HANDLED' }
+    | { type: 'FINISH' }
+    | { type: 'FINISH_HANDLED' }
+    | { type: 'VIBRATE' }
+    | { type: 'VIBRATE_HANDLED' }
+    | { type: 'RESET' }
+    | { type: 'OPEN_SNACKBAR' }
+    | { type: 'CLOSE_SNACKBAR' };
+
+  // Safe dispatch function to prevent duplicate actions
+  const safeDispatch = (action: NotificationAction, stepIndex = -1) => {
+    const now = Date.now();
+    const lastDispatch = lastDispatchedActionRef.current;
+    
+    // Prevent duplicate dispatches within 500ms for the same action and step
+    if (
+      action.type === lastDispatch.type && 
+      (stepIndex === lastDispatch.stepIndex || stepIndex === -1) &&
+      now - lastDispatch.timestamp < 500
+    ) {
+      console.log(`Preventing duplicate dispatch of ${action.type} for step ${stepIndex}`);
+      return;
+    }
+    
+    // Update the last dispatched action
+    lastDispatchedActionRef.current = {
+      type: action.type,
+      stepIndex,
+      timestamp: now
+    };
+    
+    // Perform the actual dispatch
+    dispatch(action);
+  };
+
   // Monitor timer state changes and trigger notifications
   useEffect(() => {
-    // Ignore if same state as before
+    // Ignore if same step index as before
     if (lastNotifiedStepRef.current === timerState.stepIndex) {
       return;
     }
@@ -78,16 +123,16 @@ export const useNotificationManager = () => {
     // Notification for upcoming step
     if (timerState.status === 'upcoming' && timerState.stepIndex >= 0) {
       console.log(`Dispatching NEXT_STEP for step ${timerState.stepIndex}`);
-      dispatch({ type: 'NEXT_STEP' });
+      safeDispatch({ type: 'NEXT_STEP' }, timerState.stepIndex);
       lastNotifiedStepRef.current = timerState.stepIndex;
     }
     
     // Notification for completion
     if (timerState.status === 'finished') {
       console.log('Dispatching FINISH');
-      dispatch({ type: 'FINISH' });
+      safeDispatch({ type: 'FINISH' });
     }
-  }, [timerState.status, timerState.stepIndex, dispatch]);
+  }, [timerState.status, timerState.stepIndex]);
 
   // Handle notification state changes and play actual notifications
   useEffect(() => {
@@ -142,9 +187,9 @@ export const useNotificationManager = () => {
           
           // Reset notification flags
           if (type === 'next-step') {
-            dispatch({ type: 'NEXT_STEP_HANDLED' });
+            safeDispatch({ type: 'NEXT_STEP_HANDLED' });
           } else if (type === 'finish') {
-            dispatch({ type: 'FINISH_HANDLED' });
+            safeDispatch({ type: 'FINISH_HANDLED' });
           }
         });
       };
@@ -161,9 +206,9 @@ export const useNotificationManager = () => {
     // Vibration notifications
     if (notificationMode === 'vibrate' && state.shouldVibrate) {
       vibrate();
-      dispatch({ type: 'VIBRATE_HANDLED' });
+      safeDispatch({ type: 'VIBRATE_HANDLED' });
     }
-  }, [state.isNextStep, state.isFinish, state.shouldVibrate, notificationMode, language, voice, dispatch]);
+  }, [state.isNextStep, state.isFinish, state.shouldVibrate, notificationMode, language, voice]);
 
   // Handle reset state
   useEffect(() => {
@@ -173,6 +218,7 @@ export const useNotificationManager = () => {
       currentTypeRef.current = null;
       notificationLockRef.current = false;
       lastNotifiedStepRef.current = -1;
+      lastDispatchedActionRef.current = { type: '', stepIndex: -1, timestamp: 0 };
       setCurrentAudioType(null);
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -189,19 +235,19 @@ export const useNotificationManager = () => {
 
   // Public API functions
   const triggerVibration = () => {
-    dispatch({ type: 'VIBRATE' });
+    safeDispatch({ type: 'VIBRATE' });
   };
 
   const resetNotifications = () => {
-    dispatch({ type: 'RESET' });
+    safeDispatch({ type: 'RESET' });
   };
 
   const openSnackbar = () => {
-    dispatch({ type: 'OPEN_SNACKBAR' });
+    safeDispatch({ type: 'OPEN_SNACKBAR' });
   };
 
   const closeSnackbar = () => {
-    dispatch({ type: 'CLOSE_SNACKBAR' });
+    safeDispatch({ type: 'CLOSE_SNACKBAR' });
   };
 
   return {
