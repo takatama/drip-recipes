@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
+import { TranslationType } from '../types';
+import { useAnimationManager } from '../hooks/useAnimationManager';
+
 import Lottie from 'react-lottie-player';
 import pourAnimationData from '@/assets/lottie/pour.json';
 import switchOpenAnimationData from '@/assets/lottie/switch_open.json';
 import switchCloseAnimationData from '@/assets/lottie/switch_close.json';
 import coolAnimationData from '@/assets/lottie/cool.json';
-import { ActionType, TranslationType } from '../types';
-import { useAnimationManager } from '../hooks/useAnimationManager';
 
 interface AnimationManagerProps {
   t: TranslationType;
@@ -16,7 +17,6 @@ interface AnimationManagerProps {
 type AnimationStep = 'switch_open' | 'switch_close' | 'pour' | 'cool' | null;
 
 const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
-  // コンテキストから状態を取得
   const { showAnimation, currentWaterAmount, targetWaterAmount, currentActionType, completeAnimation } = useAnimationManager();
   
   const [waterAmount, setWaterAmount] = useState(currentWaterAmount);

@@ -12,7 +12,9 @@ export type NotificationAction =
   | { type: 'VIBRATE' }
   | { type: 'RESET' }
   | { type: 'OPEN_SNACKBAR' }
-  | { type: 'CLOSE_SNACKBAR' };
+  | { type: 'CLOSE_SNACKBAR' }
+  | { type: 'NEXT_STEP_HANDLED' }
+  | { type: 'FINISH_HANDLED' };
 
 export const initialNotificationState: NotificationState = {
   isNextStep: false,
@@ -36,6 +38,10 @@ export const notificationReducer = (state: NotificationState, action: Notificati
       return { ...state, snackbarOpen: true };
     case 'CLOSE_SNACKBAR':
       return { ...state, snackbarOpen: false };
+    case 'NEXT_STEP_HANDLED':
+      return { ...state, isNextStep: false };
+    case 'FINISH_HANDLED':
+      return { ...state, isFinish: false };
     default:
       return state;
   }
