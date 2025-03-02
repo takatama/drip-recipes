@@ -27,7 +27,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   
   // Ref to track all animation state to prevent update loops
   const animationStateRef = useRef({
-    isProcessingQueue: false,
     animationsCompleted: false,
     lastActionType: '',
     lastCurrentAmount: 0,
@@ -49,7 +48,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     if (!showAnimation) {
       // Reset animation state when hiding
       const state = animationStateRef.current;
-      state.isProcessingQueue = false;
       state.animationsCompleted = false;
       state.animationQueue = [];
       state.currentStep = null;
@@ -68,7 +66,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     
     // Check if we need to create a new animation sequence
     const shouldCreateNewQueue = 
-      !state.isProcessingQueue || 
       state.lastActionType !== currentActionType ||
       state.lastCurrentAmount !== currentWaterAmount ||
       state.lastTargetAmount !== targetWaterAmount;
@@ -117,7 +114,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     // If we have animations, start the sequence
     if (queue.length > 0) {
       console.log("Starting animation sequence:", queue);
-      state.isProcessingQueue = true;
       state.animationQueue = queue;
       state.currentStep = queue[0];
       state.animationKey += 1;
@@ -166,7 +162,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     } else {
       // All animations complete
       console.log("All animations completed");
-      state.isProcessingQueue = false;
       state.animationsCompleted = true;
       
       // Call completeAnimation to update context state
