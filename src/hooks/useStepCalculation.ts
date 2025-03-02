@@ -4,26 +4,18 @@ import { CalculatedStep, StepStatus } from '../types';
 const INDICATE_NEXT_STEP_SEC = 5;
 
 export const useStepCalculation = (
-  steps: CalculatedStep[],
   onStepStatusChange?: (index: number, oldStatus: StepStatus, newStatus: StepStatus) => void,
   onStepTransition?: (index: number, currentAmount: number, targetAmount: number) => void,
   onTimerComplete?: () => void,
 ) => {
   const previousStepsStatusRef = useRef<Record<number, StepStatus>>({});
-  const previousTimeRef = useRef<number>(0);
 
   const calculateStepStatuses = useCallback((
     currentTimeValue: number, 
     currentSteps: CalculatedStep[]
   ): CalculatedStep[] => {
-    if (previousTimeRef.current === currentTimeValue || currentSteps.length === 0) {
-      return currentSteps;
-    }
-    
-    previousTimeRef.current = currentTimeValue;
-
     const lastStep = currentSteps[currentSteps.length - 1];
-    if (currentTimeValue >= lastStep.timeSec && onTimerComplete) {
+    if (currentTimeValue >= lastStep?.timeSec && onTimerComplete) {
       onTimerComplete();
     }
 

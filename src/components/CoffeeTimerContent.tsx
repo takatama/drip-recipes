@@ -36,7 +36,8 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
   const [showSnackbar, setShowSnackbar] = useState(false);
   const { playNextStep, playFinish, vibrate } = useNotification();
   const timerReadyRef = useRef(false);
-  const [internalSteps, setInternalSteps] = useState<CalculatedStep[]>(steps);
+  const [calculatedSteps, setCalculatedSteps] = useState<CalculatedStep[]>(steps);
+  const prevCalculatedStepsRef = useRef<string>('');
 
   useEffect(() => {
     if (!showAnimation && timerReadyRef.current) {
@@ -92,14 +93,11 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
       playNextStep();
     }
 
-    if (showAnimation) return;
-
     const step = steps[index];
     const actionType = step.actionType || 'none';
     const hasChange = currentAmount !== targetAmount;
-    
+
     if (actionType === 'none' && !hasChange) return;
-    
     startAnimation(currentAmount, targetAmount, actionType);
   };
 
@@ -119,27 +117,23 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
   };
 
   const { calculateStepStatuses } = useStepCalculation(
-    internalSteps,
     handleStepStatusChange,
     handleStepTransition,
     handleTimerComplete
   );
 
-    // Update steps when parent steps changes
-    useEffect(() => {
-      setInternalSteps(steps);
-    }, [steps]);
-
-      // Update parent steps when internal steps change (throttled)
+  // Calculate step statuses when time changes
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (JSON.stringify(internalSteps) !== JSON.stringify(steps)) {
-        setSteps(internalSteps);
-      }
-    }, 100);
-    
-    return () => clearTimeout(timer);
-  }, [internalSteps, setSteps, steps]);
+    const updatedSteps = calculateStepStatuses(currentTime, steps);
+
+    // Notifiy only when the status changes
+    const updatedStepsJson = JSON.stringify(updatedSteps);
+    if (updatedStepsJson !== prevCalculatedStepsRef.current) {
+      prevCalculatedStepsRef.current = updatedStepsJson;
+      console.log('updatedSteps', updatedSteps);
+      setCalculatedSteps(updatedSteps);
+    }
+  }, [currentTime, calculateStepStatuses, steps]);
 
   const closeSnackbar = () => {
     setShowSnackbar(false);
@@ -156,7 +150,7 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
         isRunning={isRunning}
       />
       <Timeline
-        steps={internalSteps}
+        steps={calculatedSteps}
         currentTime={currentTime}
         isDence={isDence}
       />
