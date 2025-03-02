@@ -6,9 +6,7 @@ import { CoffeeTimerContent } from './CoffeeTimerContent';
 
 interface CoffeeTimerProps {
   t: TranslationType;
-  language: 'en' | 'ja';
   steps: CalculatedStep[];
-  setSteps: React.Dispatch<React.SetStateAction<CalculatedStep[]>>;
   isDence?: boolean;
 }
 

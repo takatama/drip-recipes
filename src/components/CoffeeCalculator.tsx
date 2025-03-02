@@ -72,9 +72,7 @@ const CoffeeCalculator: React.FC<CoffeeCalculatorProps> = ({ recipe, t, language
 
       <CoffeeTimer
         t={t}
-        language={language}
         steps={steps}
-        setSteps={setSteps}
         isDence={recipe.isDence}
       />
     </>

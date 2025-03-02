@@ -7,7 +7,7 @@ import { useWakeLock } from '../hooks/useWakeLock';
 import { useTimer } from '../contexts/TimerContext';
 import { useAnimationManager } from '@/hooks/useAnimationManager';
 import { useNotification } from '@/hooks/useNotification';
-import { TranslationType, CalculatedStep, LanguageType } from '../types';
+import { TranslationType, CalculatedStep } from '../types';
 import dynamic from 'next/dynamic';
 import { useStepCalculation } from '../hooks/useStepCalculation';
 
@@ -17,16 +17,13 @@ const AnimationManager = dynamic(() => import('./AnimationManager'), {
 
 interface CoffeeTimerContentProps {
   t: TranslationType;
-  language: LanguageType;
   steps: CalculatedStep[];
-  setSteps: React.Dispatch<React.SetStateAction<CalculatedStep[]>>;
   isDence?: boolean;
 }
 
 export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
   t,
   steps,
-  setSteps,
   isDence,
 }) => {
   const { currentTime, isRunning, start, pause, reset } = useSystemTimer();
