@@ -111,7 +111,7 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
         timerDispatch({ type: 'NEXT_STEP_UPCOMING' });
       }
     } else if (newStatus === 'current' && oldStatus === 'next') {
-      // ここでステップ切り替えのロジック
+      vibrate();
       timerDispatch({ type: 'NEXT_STEP_RUNNING' });
     }
   };
