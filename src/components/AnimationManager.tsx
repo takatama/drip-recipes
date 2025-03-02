@@ -27,8 +27,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   
   // Ref to track all animation state to prevent update loops
   const animationStateRef = useRef({
-    lastActionType: '',
-    lastTargetAmount: 0,
     currentStep: null as AnimationStep | null,
     animationQueue: [] as AnimationStep[],
     countingActive: false,
@@ -57,19 +55,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   // Setup animation queue - called manually to avoid dependency loops
   const setupAnimationQueue = () => {
     const state = animationStateRef.current;
-    
-    // Check if we need to create a new animation sequence
-    const shouldCreateNewQueue = 
-      state.lastActionType !== currentActionType ||
-      state.lastTargetAmount !== targetWaterAmount;
-    
-    if (!shouldCreateNewQueue) {
-      return;
-    }
-    
-    // Store the new animation parameters
-    state.lastActionType = currentActionType;
-    state.lastTargetAmount = targetWaterAmount;
     setWaterAmount(currentWaterAmount);
     
     // Create the animation queue
