@@ -29,9 +29,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   const animationStateRef = useRef({
     animationsCompleted: false,
     lastActionType: '',
-    lastCurrentAmount: 0,
     lastTargetAmount: 0,
-    waterAmount: 0,
     currentStep: null as AnimationStep | null,
     animationQueue: [] as AnimationStep[],
     countingActive: false,
@@ -67,7 +65,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     // Check if we need to create a new animation sequence
     const shouldCreateNewQueue = 
       state.lastActionType !== currentActionType ||
-      state.lastCurrentAmount !== currentWaterAmount ||
       state.lastTargetAmount !== targetWaterAmount;
     
     if (!shouldCreateNewQueue) {
@@ -76,10 +73,8 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     
     // Store the new animation parameters
     state.lastActionType = currentActionType;
-    state.lastCurrentAmount = currentWaterAmount;
     state.lastTargetAmount = targetWaterAmount;
     state.animationsCompleted = false;
-    state.waterAmount = currentWaterAmount;
     setWaterAmount(currentWaterAmount);
     
     // Create the animation queue
@@ -135,7 +130,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     // If we were counting, stop and set final water amount
     if (state.countingActive) {
       state.countingActive = false;
-      state.waterAmount = targetWaterAmount;
       setWaterAmount(targetWaterAmount);
     }
 
@@ -186,13 +180,11 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
         const progress = Math.min(elapsed / duration, 1);
 
         const newAmount = currentWaterAmount + (targetWaterAmount - currentWaterAmount) * progress;
-        state.waterAmount = Math.round(newAmount);
         setWaterAmount(Math.round(newAmount));
 
         if (progress < 1) {
           requestAnimationFrame(updateCounter);
         } else {
-          state.waterAmount = targetWaterAmount;
           setWaterAmount(targetWaterAmount);
         }
       };
