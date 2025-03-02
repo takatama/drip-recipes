@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
-import { TranslationType } from '../types';
+import { ActionType, TranslationType } from '../types';
 import { useAnimationManager } from '../hooks/useAnimationManager';
 
 import Lottie from 'react-lottie-player';
@@ -14,7 +14,7 @@ interface AnimationManagerProps {
 }
 
 // Animation sequence types
-type AnimationStep = 'switch_open' | 'switch_close' | 'pour' | 'cool' | null;
+type AnimationType = 'switch_open' | 'switch_close' | 'pour' | 'cool' | null;
 
 const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   const { 
@@ -27,13 +27,13 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   
   // Ref to track all animation state to prevent update loops
   const animationStateRef = useRef({
-    animationQueue: [] as AnimationStep[],
+    animationQueue: [] as AnimationType[],
     countingActive: false,
   });
   
   // Component state - minimized to reduce update cycles
   const [waterAmount, setWaterAmount] = useState(0);
-  const [currentStep, setCurrentStep] = useState<AnimationStep | null>(null);
+  const [currentAnimationType, setAnimationType] = useState<AnimationType | null>(null);
 
   // Effect to initialize animation state when showAnimation changes
   useEffect(() => {
@@ -43,13 +43,30 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
       state.animationQueue = [];
       state.countingActive = false;
       
-      setCurrentStep(null);
+      setAnimationType(null);
       return;
     }
 
     setupAnimationQueue();
   }, [showAnimation]);
 
+  const createAnimationQueue = (actionType: ActionType): AnimationType[] => {
+    if (actionType === 'switch_close_pour') {
+      return ['switch_close', 'pour'];
+    } else if (actionType === 'switch_open_pour') {
+      return ['switch_open', 'pour'];
+    } else if (actionType === 'pour_cool') {
+      return ['pour', 'cool'];
+    } else if (actionType === 'switch_close') {
+      return ['switch_close'];
+    } else if (actionType === 'switch_open') {
+      return ['switch_open'];
+    } else if (actionType === 'pour') {
+      return ['pour'];
+    }
+    return [];
+  };
+  
   // Setup animation queue - called manually to avoid dependency loops
   const setupAnimationQueue = () => {
     const state = animationStateRef.current;
@@ -57,39 +74,14 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     
     // Create the animation queue
     console.log("Creating new animation queue for:", currentActionType);
-    const queue: AnimationStep[] = [];
-
-    // Handle combined action types
-    if (currentActionType === 'switch_close_pour') {
-      queue.push('switch_close');
-      queue.push('pour');
-    } else if (currentActionType === 'switch_open_pour') {
-      queue.push('switch_open');
-      queue.push('pour');
-    } else if (currentActionType === 'pour_cool') {
-      queue.push('pour');
-      queue.push('cool');
-    } else {
-      // Handle individual actions
-      if (currentActionType.includes('switch_close')) {
-        queue.push('switch_close');
-      } else if (currentActionType.includes('switch_open')) {
-        queue.push('switch_open');
-      }
-
-      // Add pour animation if needed
-      const hasWaterChange = currentWaterAmount !== targetWaterAmount;
-      if (currentActionType === 'pour' || currentActionType.includes('pour') || hasWaterChange) {
-        queue.push('pour');
-      }
-    }
+    const queue: AnimationType[] = createAnimationQueue(currentActionType);
 
     // If we have animations, start the sequence
     if (queue.length > 0) {
       console.log("Starting animation sequence:", queue);
       state.animationQueue = queue;
       
-      setCurrentStep(queue[0]);
+      setAnimationType(queue[0]);
     } else {
       // No animations needed, complete immediately
       completeAnimation();
@@ -115,7 +107,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
       // Move to the next animation
       const nextStep = updatedQueue[0];
       console.log("Moving to next animation:", nextStep);      
-      setCurrentStep(nextStep);
+      setAnimationType(nextStep);
       
       // Start water counting if it's a pour step
       if (nextStep === 'pour') {
@@ -132,7 +124,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
 
   // Start water counting animation
   const startWaterCounting = () => {
-    if (!showAnimation || currentStep !== 'pour') return;
+    if (!showAnimation || currentAnimationType !== 'pour') return;
     
     const state = animationStateRef.current;
     let startTime: number;
@@ -162,17 +154,17 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
 
   // Start water counting when pour animation starts
   useEffect(() => {
-    if (currentStep === 'pour') {
+    if (currentAnimationType === 'pour') {
       startWaterCounting();
     }
-  }, [currentStep]);
+  }, [currentAnimationType]);
 
   // If not visible, don't render anything
   if (!showAnimation) return null;
 
   // Get the appropriate animation data
   const getAnimationData = () => {
-    switch (currentStep) {
+    switch (currentAnimationType) {
       case 'switch_open': return switchOpenAnimationData;
       case 'switch_close': return switchCloseAnimationData;
       case 'pour': return pourAnimationData;
@@ -208,7 +200,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
 
       {animationData && (
         <Lottie
-          key={`animation-${currentStep}`}
+          key={`animation-${currentAnimationType}`}
           loop={false}
           animationData={animationData}
           play={showAnimation}
