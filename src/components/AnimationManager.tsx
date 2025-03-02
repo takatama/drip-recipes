@@ -17,7 +17,13 @@ interface AnimationManagerProps {
 type AnimationStep = 'switch_open' | 'switch_close' | 'pour' | 'cool' | null;
 
 const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
-  const { showAnimation, currentWaterAmount, targetWaterAmount, currentActionType, completeAnimation } = useAnimationManager();
+  const { 
+    showAnimation,
+    currentWaterAmount,
+    targetWaterAmount,
+    currentActionType,
+    completeAnimation
+  } = useAnimationManager();
   
   // Ref to track all animation state to prevent update loops
   const animationStateRef = useRef({
@@ -31,7 +37,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     animationQueue: [] as AnimationStep[],
     countingActive: false,
     animationKey: 0,
-    initialSetupDone: false
   });
   
   // Component state - minimized to reduce update cycles
@@ -53,13 +58,9 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
       setCurrentStep(null);
       return;
     }
-    
-    // Run only once per animation display
-    if (!animationStateRef.current.initialSetupDone) {
-      animationStateRef.current.initialSetupDone = true;
-      setupAnimationQueue();
-    }
-  }, [showAnimation]); // Only depend on showAnimation
+
+    setupAnimationQueue();
+  }, [showAnimation]);
 
   // Setup animation queue - called manually to avoid dependency loops
   const setupAnimationQueue = () => {
@@ -167,7 +168,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
       console.log("All animations completed");
       state.isProcessingQueue = false;
       state.animationsCompleted = true;
-      state.initialSetupDone = false;
       
       // Call completeAnimation to update context state
       completeAnimation();
