@@ -1,18 +1,21 @@
 import React from 'react';
 import { Snackbar } from '@mui/material';
 import { TranslationType } from '../types';
-import { useNotificationManager } from '../hooks/useNotificationManager';
 
 interface SnackbarManagerProps {
   t: TranslationType;
+  showSnackbar: boolean;
+  closeSnackbar: () => void;
 }
 
-const SnackbarManager: React.FC<SnackbarManagerProps> = ({ t }) => {
-  const { snackbarOpen, closeSnackbar } = useNotificationManager();
-
+const SnackbarManager: React.FC<SnackbarManagerProps> = ({
+  t,
+  showSnackbar,
+  closeSnackbar,
+}) => {
   return (
     <Snackbar
-      open={snackbarOpen}
+      open={showSnackbar}
       autoHideDuration={5000}
       onClose={closeSnackbar}
       message={t.keepScreenOn}

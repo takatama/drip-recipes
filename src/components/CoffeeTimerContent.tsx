@@ -1,13 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Controls from './Controls';
 import Timeline from './Timeline';
-import NotificationManager from './NotificationManager';
 import SnackbarManager from './SnackbarManager';
 import { useSystemTimer } from '../hooks/useSystemTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { useTimer } from '../contexts/TimerContext';
 import { useAnimationManager } from '@/hooks/useAnimationManager';
-import { useNotificationManager } from '@/hooks/useNotificationManager';
+import { useNotification } from '@/hooks/useNotification';
 import { TranslationType, CalculatedStep, LanguageType } from '../types';
 import dynamic from 'next/dynamic';
 
@@ -33,11 +32,10 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
   const { dispatch: timerDispatch } = useTimer();
   const { showAnimation, startAnimation, resetAnimation } = useAnimationManager();
-  const { openSnackbar, closeSnackbar, resetNotifications } = useNotificationManager();
-  
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const { playNextStep, playFinish, vibrate } = useNotification();
   const timerReadyRef = useRef(false);
 
-  // タイマーとアニメーションの連携
   useEffect(() => {
     if (!showAnimation && timerReadyRef.current) {
       start();
@@ -48,7 +46,7 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
   const handlePlay = async () => {
     if (isRunning) return;
 
-    openSnackbar();
+    setShowSnackbar(true);
     await requestWakeLock();
 
     if (currentTime === 0 && steps.length > 0) {
@@ -78,7 +76,6 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
     await releaseWakeLock();
     reset();
     timerDispatch({ type: 'RESET' });
-    resetNotifications();
   };
 
   const handleTimerComplete = async () => {
@@ -87,14 +84,20 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
   };
 
   const handleStepTransition = (index: number, currentAmount: number, targetAmount: number) => {
+    if (steps.length === index + 1) {
+      playFinish();
+    } else {
+      playNextStep();
+    }
+
     if (showAnimation) return;
 
     const step = steps[index];
     const actionType = step.actionType || 'none';
     const hasChange = currentAmount !== targetAmount;
-
+    
     if (actionType === 'none' && !hasChange) return;
-
+    
     startAnimation(currentAmount, targetAmount, actionType);
   };
 
@@ -111,6 +114,10 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
       // ここでステップ切り替えのロジック
       timerDispatch({ type: 'NEXT_STEP_RUNNING' });
     }
+  };
+
+  const closeSnackbar = () => {
+    setShowSnackbar(false);
   };
 
   return (
@@ -134,9 +141,8 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
         // currentStepIndex={timerState.stepIndex}
         // status={timerState.status}
       />
-      <NotificationManager />
       <AnimationManager t={t} />
-      <SnackbarManager t={t} />
+      <SnackbarManager t={t} showSnackbar={showSnackbar} closeSnackbar={closeSnackbar} />
     </>
   );
 };
