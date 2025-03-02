@@ -27,7 +27,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   
   // Ref to track all animation state to prevent update loops
   const animationStateRef = useRef({
-    currentStep: null as AnimationStep | null,
     animationQueue: [] as AnimationStep[],
     countingActive: false,
   });
@@ -42,7 +41,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
       // Reset animation state when hiding
       const state = animationStateRef.current;
       state.animationQueue = [];
-      state.currentStep = null;
       state.countingActive = false;
       
       setCurrentStep(null);
@@ -90,7 +88,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     if (queue.length > 0) {
       console.log("Starting animation sequence:", queue);
       state.animationQueue = queue;
-      state.currentStep = queue[0];
       
       setCurrentStep(queue[0]);
     } else {
@@ -102,8 +99,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   // Handle animation completion
   const handleAnimationComplete = () => {
     const state = animationStateRef.current;
-    const completedStep = state.currentStep;
-    console.log(`Animation step completed:`, completedStep);
+    console.log(`Animation step completed:`, state.animationQueue[0]);
 
     // If we were counting, stop and set final water amount
     if (state.countingActive) {
@@ -118,11 +114,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     if (updatedQueue.length > 0) {
       // Move to the next animation
       const nextStep = updatedQueue[0];
-      console.log("Moving to next animation:", nextStep);
-      
-      // Update the state
-      state.currentStep = nextStep;
-      
+      console.log("Moving to next animation:", nextStep);      
       setCurrentStep(nextStep);
       
       // Start water counting if it's a pour step
