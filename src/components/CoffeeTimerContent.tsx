@@ -9,6 +9,7 @@ import { useAnimationManager } from '@/hooks/useAnimationManager';
 import { useNotification } from '@/hooks/useNotification';
 import { TranslationType, CalculatedStep, LanguageType } from '../types';
 import dynamic from 'next/dynamic';
+import { useStepCalculation } from '../hooks/useStepCalculation';
 
 const AnimationManager = dynamic(() => import('./AnimationManager'), {
   ssr: false,
@@ -35,6 +36,7 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
   const [showSnackbar, setShowSnackbar] = useState(false);
   const { playNextStep, playFinish, vibrate } = useNotification();
   const timerReadyRef = useRef(false);
+  const [internalSteps, setInternalSteps] = useState<CalculatedStep[]>(steps);
 
   useEffect(() => {
     if (!showAnimation && timerReadyRef.current) {
@@ -116,6 +118,29 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
     }
   };
 
+  const { calculateStepStatuses } = useStepCalculation(
+    internalSteps,
+    handleStepStatusChange,
+    handleStepTransition,
+    handleTimerComplete
+  );
+
+    // Update steps when parent steps changes
+    useEffect(() => {
+      setInternalSteps(steps);
+    }, [steps]);
+
+      // Update parent steps when internal steps change (throttled)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (JSON.stringify(internalSteps) !== JSON.stringify(steps)) {
+        setSteps(internalSteps);
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [internalSteps, setSteps, steps]);
+
   const closeSnackbar = () => {
     setShowSnackbar(false);
   };
@@ -131,15 +156,9 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
         isRunning={isRunning}
       />
       <Timeline
-        steps={steps}
-        setSteps={setSteps}
+        steps={internalSteps}
         currentTime={currentTime}
-        onTimerComplete={handleTimerComplete}
         isDence={isDence}
-        onStepTransition={handleStepTransition}
-        onStepStatusChange={handleStepStatusChange}
-        // currentStepIndex={timerState.stepIndex}
-        // status={timerState.status}
       />
       <AnimationManager t={t} />
       <SnackbarManager t={t} showSnackbar={showSnackbar} closeSnackbar={closeSnackbar} />
