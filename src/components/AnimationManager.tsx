@@ -32,13 +32,11 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     currentStep: null as AnimationStep | null,
     animationQueue: [] as AnimationStep[],
     countingActive: false,
-    animationKey: 0,
   });
   
   // Component state - minimized to reduce update cycles
   const [waterAmount, setWaterAmount] = useState(0);
   const [currentStep, setCurrentStep] = useState<AnimationStep | null>(null);
-  const [animationKey, setAnimationKey] = useState(0);
 
   // Effect to initialize animation state when showAnimation changes
   useEffect(() => {
@@ -108,10 +106,8 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
       console.log("Starting animation sequence:", queue);
       state.animationQueue = queue;
       state.currentStep = queue[0];
-      state.animationKey += 1;
       
       setCurrentStep(queue[0]);
-      setAnimationKey(state.animationKey);
     } else {
       // No animations needed, complete immediately
       completeAnimation();
@@ -141,10 +137,8 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
       
       // Update the state
       state.currentStep = nextStep;
-      state.animationKey += 1;
       
       setCurrentStep(nextStep);
-      setAnimationKey(state.animationKey);
       
       // Start water counting if it's a pour step
       if (nextStep === 'pour') {
@@ -237,7 +231,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
 
       {animationData && (
         <Lottie
-          key={`animation-${currentStep}-${animationKey}`}
+          key={`animation-${currentStep}`}
           loop={false}
           animationData={animationData}
           play={showAnimation}
