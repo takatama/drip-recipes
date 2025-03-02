@@ -1,7 +1,6 @@
 import React from 'react';
 import { TimerProvider } from '@/contexts/TimerContext';
 import { AnimationProvider } from '@/contexts/AnimationContext';
-import { NotificationProvider } from '@/contexts/NotificationContext';
 import { TranslationType, CalculatedStep } from '../types';
 import { CoffeeTimerContent } from './CoffeeTimerContent';
 
@@ -17,9 +16,7 @@ const CoffeeTimer: React.FC<CoffeeTimerProps> = (props) => {
   return (
     <TimerProvider>
       <AnimationProvider>
-        <NotificationProvider>
-          <CoffeeTimerContent {...props} />
-        </NotificationProvider>
+        <CoffeeTimerContent {...props} />
       </AnimationProvider>
     </TimerProvider>
   );

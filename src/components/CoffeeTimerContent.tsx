@@ -1,15 +1,15 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Controls from './Controls';
 import Timeline from './Timeline';
-import NotificationManager from './NotificationManager';
 import SnackbarManager from './SnackbarManager';
 import { useSystemTimer } from '../hooks/useSystemTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { useTimer } from '../contexts/TimerContext';
 import { useAnimationManager } from '@/hooks/useAnimationManager';
-import { useNotificationManager } from '@/hooks/useNotificationManager';
+import { useNotification } from '@/hooks/useNotification';
 import { TranslationType, CalculatedStep, LanguageType } from '../types';
 import dynamic from 'next/dynamic';
+import { useStepCalculation } from '../hooks/useStepCalculation';
 
 const AnimationManager = dynamic(() => import('./AnimationManager'), {
   ssr: false,
@@ -33,11 +33,12 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
   const { dispatch: timerDispatch } = useTimer();
   const { showAnimation, startAnimation, resetAnimation } = useAnimationManager();
-  const { openSnackbar, closeSnackbar, resetNotifications } = useNotificationManager();
-  
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const { playNextStep, playFinish, vibrate } = useNotification();
   const timerReadyRef = useRef(false);
+  const [calculatedSteps, setCalculatedSteps] = useState<CalculatedStep[]>(steps);
+  const prevCalculatedStepsRef = useRef<string>('');
 
-  // タイマーとアニメーションの連携
   useEffect(() => {
     if (!showAnimation && timerReadyRef.current) {
       start();
@@ -48,7 +49,7 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
   const handlePlay = async () => {
     if (isRunning) return;
 
-    openSnackbar();
+    setShowSnackbar(true);
     await requestWakeLock();
 
     if (currentTime === 0 && steps.length > 0) {
@@ -78,7 +79,6 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
     await releaseWakeLock();
     reset();
     timerDispatch({ type: 'RESET' });
-    resetNotifications();
   };
 
   const handleTimerComplete = async () => {
@@ -87,14 +87,17 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
   };
 
   const handleStepTransition = (index: number, currentAmount: number, targetAmount: number) => {
-    if (showAnimation) return;
+    if (steps.length === index + 1) {
+      playFinish();
+    } else {
+      playNextStep();
+    }
 
     const step = steps[index];
     const actionType = step.actionType || 'none';
     const hasChange = currentAmount !== targetAmount;
 
     if (actionType === 'none' && !hasChange) return;
-
     startAnimation(currentAmount, targetAmount, actionType);
   };
 
@@ -108,9 +111,32 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
         timerDispatch({ type: 'NEXT_STEP_UPCOMING' });
       }
     } else if (newStatus === 'current' && oldStatus === 'next') {
-      // ここでステップ切り替えのロジック
+      vibrate();
       timerDispatch({ type: 'NEXT_STEP_RUNNING' });
     }
+  };
+
+  const { calculateStepStatuses } = useStepCalculation(
+    handleStepStatusChange,
+    handleStepTransition,
+    handleTimerComplete
+  );
+
+  // Calculate step statuses when time changes
+  useEffect(() => {
+    const updatedSteps = calculateStepStatuses(currentTime, steps);
+
+    // Notifiy only when the status changes
+    const updatedStepsJson = JSON.stringify(updatedSteps);
+    if (updatedStepsJson !== prevCalculatedStepsRef.current) {
+      prevCalculatedStepsRef.current = updatedStepsJson;
+      console.log('updatedSteps', updatedSteps);
+      setCalculatedSteps(updatedSteps);
+    }
+  }, [currentTime, calculateStepStatuses, steps]);
+
+  const closeSnackbar = () => {
+    setShowSnackbar(false);
   };
 
   return (
@@ -124,19 +150,12 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerContentProps> = ({
         isRunning={isRunning}
       />
       <Timeline
-        steps={steps}
-        setSteps={setSteps}
+        steps={calculatedSteps}
         currentTime={currentTime}
-        onTimerComplete={handleTimerComplete}
         isDence={isDence}
-        onStepTransition={handleStepTransition}
-        onStepStatusChange={handleStepStatusChange}
-        // currentStepIndex={timerState.stepIndex}
-        // status={timerState.status}
       />
-      <NotificationManager />
       <AnimationManager t={t} />
-      <SnackbarManager t={t} />
+      <SnackbarManager t={t} showSnackbar={showSnackbar} closeSnackbar={closeSnackbar} />
     </>
   );
 };
