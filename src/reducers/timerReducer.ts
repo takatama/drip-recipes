@@ -5,7 +5,6 @@ export interface TimerState {
 
 export type TimerAction =
   | { type: 'START' }
-  | { type: 'ANIMATION_COMPLETE' }
   | { type: 'NEXT_STEP_UPCOMING' }
   | { type: 'NEXT_STEP_RUNNING' }
   | { type: 'FINISH' }
@@ -22,12 +21,6 @@ export const timerReducer = (state: TimerState, action: TimerAction): TimerState
       return { 
         ...state, 
         status: 'upcoming', 
-      };
-    case 'ANIMATION_COMPLETE':
-      return {
-        ...state,
-        status: 'running',
-        stepIndex: state.stepIndex === -1 ? 0 : state.stepIndex,
       };
     case 'NEXT_STEP_UPCOMING':
       return {

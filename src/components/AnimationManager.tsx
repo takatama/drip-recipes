@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
-import { TranslationType } from '../types';
+import { ActionType, TranslationType } from '../types';
 import { useAnimationManager } from '../hooks/useAnimationManager';
 
 import Lottie from 'react-lottie-player';
@@ -14,115 +14,74 @@ interface AnimationManagerProps {
 }
 
 // Animation sequence types
-type AnimationStep = 'switch_open' | 'switch_close' | 'pour' | 'cool' | null;
+type AnimationType = 'switch_open' | 'switch_close' | 'pour' | 'cool' | null;
 
 const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
-  const { showAnimation, currentWaterAmount, targetWaterAmount, currentActionType, completeAnimation } = useAnimationManager();
+  const { 
+    showAnimation,
+    currentWaterAmount,
+    targetWaterAmount,
+    currentActionType,
+    completeAnimation
+  } = useAnimationManager();
   
   // Ref to track all animation state to prevent update loops
   const animationStateRef = useRef({
-    isProcessingQueue: false,
-    animationsCompleted: false,
-    lastActionType: '',
-    lastCurrentAmount: 0,
-    lastTargetAmount: 0,
-    waterAmount: 0,
-    currentStep: null as AnimationStep | null,
-    animationQueue: [] as AnimationStep[],
+    animationQueue: [] as AnimationType[],
     countingActive: false,
-    animationKey: 0,
-    initialSetupDone: false
   });
   
   // Component state - minimized to reduce update cycles
   const [waterAmount, setWaterAmount] = useState(0);
-  const [currentStep, setCurrentStep] = useState<AnimationStep | null>(null);
-  const [animationKey, setAnimationKey] = useState(0);
+  const [currentAnimationType, setAnimationType] = useState<AnimationType | null>(null);
 
   // Effect to initialize animation state when showAnimation changes
   useEffect(() => {
     if (!showAnimation) {
       // Reset animation state when hiding
       const state = animationStateRef.current;
-      state.isProcessingQueue = false;
-      state.animationsCompleted = false;
       state.animationQueue = [];
-      state.currentStep = null;
       state.countingActive = false;
       
-      setCurrentStep(null);
+      setAnimationType(null);
       return;
     }
-    
-    // Run only once per animation display
-    if (!animationStateRef.current.initialSetupDone) {
-      animationStateRef.current.initialSetupDone = true;
-      setupAnimationQueue();
-    }
-  }, [showAnimation]); // Only depend on showAnimation
 
+    setupAnimationQueue();
+  }, [showAnimation]);
+
+  const createAnimationQueue = (actionType: ActionType): AnimationType[] => {
+    if (actionType === 'switch_close_pour') {
+      return ['switch_close', 'pour'];
+    } else if (actionType === 'switch_open_pour') {
+      return ['switch_open', 'pour'];
+    } else if (actionType === 'pour_cool') {
+      return ['pour', 'cool'];
+    } else if (actionType === 'switch_close') {
+      return ['switch_close'];
+    } else if (actionType === 'switch_open') {
+      return ['switch_open'];
+    } else if (actionType === 'pour') {
+      return ['pour'];
+    }
+    return [];
+  };
+  
   // Setup animation queue - called manually to avoid dependency loops
   const setupAnimationQueue = () => {
     const state = animationStateRef.current;
-    
-    // Check if we need to create a new animation sequence
-    const shouldCreateNewQueue = 
-      !state.isProcessingQueue || 
-      state.lastActionType !== currentActionType ||
-      state.lastCurrentAmount !== currentWaterAmount ||
-      state.lastTargetAmount !== targetWaterAmount;
-    
-    if (!shouldCreateNewQueue) {
-      return;
-    }
-    
-    // Store the new animation parameters
-    state.lastActionType = currentActionType;
-    state.lastCurrentAmount = currentWaterAmount;
-    state.lastTargetAmount = targetWaterAmount;
-    state.animationsCompleted = false;
-    state.waterAmount = currentWaterAmount;
     setWaterAmount(currentWaterAmount);
     
     // Create the animation queue
     console.log("Creating new animation queue for:", currentActionType);
-    const queue: AnimationStep[] = [];
-
-    // Handle combined action types
-    if (currentActionType === 'switch_close_pour') {
-      queue.push('switch_close');
-      queue.push('pour');
-    } else if (currentActionType === 'switch_open_pour') {
-      queue.push('switch_open');
-      queue.push('pour');
-    } else if (currentActionType === 'pour_cool') {
-      queue.push('pour');
-      queue.push('cool');
-    } else {
-      // Handle individual actions
-      if (currentActionType.includes('switch_close')) {
-        queue.push('switch_close');
-      } else if (currentActionType.includes('switch_open')) {
-        queue.push('switch_open');
-      }
-
-      // Add pour animation if needed
-      const hasWaterChange = currentWaterAmount !== targetWaterAmount;
-      if (currentActionType === 'pour' || currentActionType.includes('pour') || hasWaterChange) {
-        queue.push('pour');
-      }
-    }
+    const queue: AnimationType[] = createAnimationQueue(currentActionType);
 
     // If we have animations, start the sequence
     if (queue.length > 0) {
       console.log("Starting animation sequence:", queue);
-      state.isProcessingQueue = true;
       state.animationQueue = queue;
-      state.currentStep = queue[0];
-      state.animationKey += 1;
       
-      setCurrentStep(queue[0]);
-      setAnimationKey(state.animationKey);
+      setAnimationType(queue[0]);
     } else {
       // No animations needed, complete immediately
       completeAnimation();
@@ -132,13 +91,11 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   // Handle animation completion
   const handleAnimationComplete = () => {
     const state = animationStateRef.current;
-    const completedStep = state.currentStep;
-    console.log(`Animation step completed:`, completedStep);
+    console.log(`Animation step completed:`, state.animationQueue[0]);
 
     // If we were counting, stop and set final water amount
     if (state.countingActive) {
       state.countingActive = false;
-      state.waterAmount = targetWaterAmount;
       setWaterAmount(targetWaterAmount);
     }
 
@@ -149,14 +106,8 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     if (updatedQueue.length > 0) {
       // Move to the next animation
       const nextStep = updatedQueue[0];
-      console.log("Moving to next animation:", nextStep);
-      
-      // Update the state
-      state.currentStep = nextStep;
-      state.animationKey += 1;
-      
-      setCurrentStep(nextStep);
-      setAnimationKey(state.animationKey);
+      console.log("Moving to next animation:", nextStep);      
+      setAnimationType(nextStep);
       
       // Start water counting if it's a pour step
       if (nextStep === 'pour') {
@@ -165,9 +116,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     } else {
       // All animations complete
       console.log("All animations completed");
-      state.isProcessingQueue = false;
-      state.animationsCompleted = true;
-      state.initialSetupDone = false;
       
       // Call completeAnimation to update context state
       completeAnimation();
@@ -176,7 +124,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
 
   // Start water counting animation
   const startWaterCounting = () => {
-    if (!showAnimation || currentStep !== 'pour') return;
+    if (!showAnimation || currentAnimationType !== 'pour') return;
     
     const state = animationStateRef.current;
     let startTime: number;
@@ -191,13 +139,11 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
         const progress = Math.min(elapsed / duration, 1);
 
         const newAmount = currentWaterAmount + (targetWaterAmount - currentWaterAmount) * progress;
-        state.waterAmount = Math.round(newAmount);
         setWaterAmount(Math.round(newAmount));
 
         if (progress < 1) {
           requestAnimationFrame(updateCounter);
         } else {
-          state.waterAmount = targetWaterAmount;
           setWaterAmount(targetWaterAmount);
         }
       };
@@ -208,17 +154,17 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
 
   // Start water counting when pour animation starts
   useEffect(() => {
-    if (currentStep === 'pour') {
+    if (currentAnimationType === 'pour') {
       startWaterCounting();
     }
-  }, [currentStep]);
+  }, [currentAnimationType]);
 
   // If not visible, don't render anything
   if (!showAnimation) return null;
 
   // Get the appropriate animation data
   const getAnimationData = () => {
-    switch (currentStep) {
+    switch (currentAnimationType) {
       case 'switch_open': return switchOpenAnimationData;
       case 'switch_close': return switchCloseAnimationData;
       case 'pour': return pourAnimationData;
@@ -228,7 +174,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   };
 
   const animationData = getAnimationData();
-  const isCompleted = animationStateRef.current.animationsCompleted;
 
   return (
     <Box
@@ -255,14 +200,14 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
 
       {animationData && (
         <Lottie
-          key={`animation-${currentStep}-${animationKey}`}
+          key={`animation-${currentAnimationType}`}
           loop={false}
           animationData={animationData}
-          play={!isCompleted}
+          play={showAnimation}
           style={{
             width: 200,
             height: 200,
-            opacity: isCompleted ? 0 : 1 // Hide animation when complete
+            opacity: showAnimation ? 1 : 0 // Hide animation when complete
           }}
           onComplete={handleAnimationComplete}
           rendererSettings={{
