@@ -27,7 +27,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   
   // Ref to track all animation state to prevent update loops
   const animationStateRef = useRef({
-    animationsCompleted: false,
     lastActionType: '',
     lastTargetAmount: 0,
     currentStep: null as AnimationStep | null,
@@ -46,7 +45,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     if (!showAnimation) {
       // Reset animation state when hiding
       const state = animationStateRef.current;
-      state.animationsCompleted = false;
       state.animationQueue = [];
       state.currentStep = null;
       state.countingActive = false;
@@ -74,7 +72,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     // Store the new animation parameters
     state.lastActionType = currentActionType;
     state.lastTargetAmount = targetWaterAmount;
-    state.animationsCompleted = false;
     setWaterAmount(currentWaterAmount);
     
     // Create the animation queue
@@ -156,7 +153,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     } else {
       // All animations complete
       console.log("All animations completed");
-      state.animationsCompleted = true;
       
       // Call completeAnimation to update context state
       completeAnimation();
@@ -215,7 +211,6 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   };
 
   const animationData = getAnimationData();
-  const isCompleted = animationStateRef.current.animationsCompleted;
 
   return (
     <Box
@@ -245,11 +240,11 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
           key={`animation-${currentStep}-${animationKey}`}
           loop={false}
           animationData={animationData}
-          play={!isCompleted}
+          play={showAnimation}
           style={{
             width: 200,
             height: 200,
-            opacity: isCompleted ? 0 : 1 // Hide animation when complete
+            opacity: showAnimation ? 1 : 0 // Hide animation when complete
           }}
           onComplete={handleAnimationComplete}
           rendererSettings={{
