@@ -8,7 +8,7 @@ import { useWakeLock } from '../hooks/useWakeLock';
 import { useTimer } from '../contexts/TimerContext';
 import { useAnimationManager } from '@/hooks/useAnimationManager';
 import { useNotificationManager } from '@/hooks/useNotificationManager';
-import { TranslationType, CalculatedStep } from '../types';
+import { TranslationType, CalculatedStep, LanguageType } from '../types';
 import dynamic from 'next/dynamic';
 
 const AnimationManager = dynamic(() => import('./AnimationManager'), {
@@ -17,7 +17,7 @@ const AnimationManager = dynamic(() => import('./AnimationManager'), {
 
 interface CoffeeTimerContentProps {
   t: TranslationType;
-  language: 'en' | 'ja';
+  language: LanguageType;
   steps: CalculatedStep[];
   setSteps: React.Dispatch<React.SetStateAction<CalculatedStep[]>>;
   isDence?: boolean;

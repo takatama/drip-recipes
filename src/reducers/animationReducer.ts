@@ -8,7 +8,10 @@ export interface AnimationState {
 }
 
 export type AnimationAction =
-  | { type: 'START_ANIMATION'; payload: { currentWaterAmount: number; targetWaterAmount: number; currentActionType: ActionType } }
+  | { 
+      type: 'START_ANIMATION';
+      payload: { currentWaterAmount: number; targetWaterAmount: number; currentActionType: ActionType }
+    }
   | { type: 'ANIMATION_COMPLETE' }
   | { type: 'RESET_ANIMATION' };
 
