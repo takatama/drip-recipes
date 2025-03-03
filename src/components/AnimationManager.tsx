@@ -17,20 +17,20 @@ interface AnimationManagerProps {
 type AnimationType = 'switch_open' | 'switch_close' | 'pour' | 'cool' | null;
 
 const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
-  const { 
+  const {
     showAnimation,
     currentWaterAmount,
     targetWaterAmount,
     currentActionType,
     completeAnimation
   } = useAnimationManager();
-  
+
   // Ref to track all animation state to prevent update loops
   const animationStateRef = useRef({
     animationQueue: [] as AnimationType[],
     countingActive: false,
   });
-  
+
   // Component state - minimized to reduce update cycles
   const [waterAmount, setWaterAmount] = useState(0);
   const [currentAnimationType, setAnimationType] = useState<AnimationType | null>(null);
@@ -42,7 +42,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
       const state = animationStateRef.current;
       state.animationQueue = [];
       state.countingActive = false;
-      
+
       setAnimationType(null);
       return;
     }
@@ -66,12 +66,12 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     }
     return [];
   };
-  
+
   // Setup animation queue - called manually to avoid dependency loops
   const setupAnimationQueue = () => {
     const state = animationStateRef.current;
     setWaterAmount(currentWaterAmount);
-    
+
     // Create the animation queue
     console.log("Creating new animation queue for:", currentActionType);
     const queue: AnimationType[] = createAnimationQueue(currentActionType);
@@ -80,7 +80,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     if (queue.length > 0) {
       console.log("Starting animation sequence:", queue);
       state.animationQueue = queue;
-      
+
       setAnimationType(queue[0]);
     } else {
       // No animations needed, complete immediately
@@ -102,13 +102,13 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     // Get the next animation in the queue
     const updatedQueue = state.animationQueue.slice(1);
     state.animationQueue = updatedQueue;
-    
+
     if (updatedQueue.length > 0) {
       // Move to the next animation
       const nextStep = updatedQueue[0];
-      console.log("Moving to next animation:", nextStep);      
+      console.log("Moving to next animation:", nextStep);
       setAnimationType(nextStep);
-      
+
       // Start water counting if it's a pour step
       if (nextStep === 'pour') {
         startWaterCounting();
@@ -116,7 +116,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     } else {
       // All animations complete
       console.log("All animations completed");
-      
+
       // Call completeAnimation to update context state
       completeAnimation();
     }
@@ -125,7 +125,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
   // Start water counting animation
   const startWaterCounting = () => {
     if (!showAnimation || currentAnimationType !== 'pour') return;
-    
+
     const state = animationStateRef.current;
     let startTime: number;
     const duration = 1000; // 1 second counting duration
@@ -184,7 +184,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
         transform: 'translate(-50%, -50%)',
         zIndex: 1000,
         backgroundColor: ({ palette }) =>
-          palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.9)',
+          palette.mode === 'dark' ? 'rgba(50, 50, 50, 0.95)' : 'rgba(255, 255, 255, 0.9)',
         borderRadius: '16px',
         padding: 3,
         boxShadow: 3,
@@ -199,21 +199,31 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
       </Typography>
 
       {animationData && (
-        <Lottie
-          key={`animation-${currentAnimationType}`}
-          loop={false}
-          animationData={animationData}
-          play={showAnimation}
-          style={{
-            width: 200,
-            height: 200,
-            opacity: showAnimation ? 1 : 0 // Hide animation when complete
+        <Box
+          sx={{
+            backgroundColor: '#FFFFFF', // White background in both modes
+            color: '#000000', // Black text in both modes
+            borderRadius: '50%',
+            padding: 2,
+            boxShadow: 1
           }}
-          onComplete={handleAnimationComplete}
-          rendererSettings={{
-            preserveAspectRatio: 'xMidYMid slice'
-          }}
-        />
+        >
+          <Lottie
+            key={`animation-${currentAnimationType}`}
+            loop={false}
+            animationData={animationData}
+            play={showAnimation}
+            style={{
+              width: 160,
+              height: 160,
+              opacity: showAnimation ? 1 : 0 // Hide animation when complete
+            }}
+            onComplete={handleAnimationComplete}
+            rendererSettings={{
+              preserveAspectRatio: 'xMidYMid slice'
+            }}
+          />
+        </Box>
       )}
 
       <Typography variant="h4" fontWeight="bold" sx={{ mt: 1 }}>
