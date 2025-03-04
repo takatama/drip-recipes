@@ -8,7 +8,7 @@ import { useAnimation } from '@/hooks/useAnimation';
 import { useNotification } from '@/hooks/useNotification';
 import { TranslationType, CalculatedStep, ActionType } from '../types';
 import dynamic from 'next/dynamic';
-import { useStepCalculation } from '../hooks/useStepCalculation';
+import { useStepStatus } from '../hooks/useStepStatus';
 import { AnimationProvider } from '@/contexts/AnimationContext';
 
 const AnimationManager = dynamic(() => import('./AnimationManager'), {
@@ -92,7 +92,7 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     await releaseWakeLock();
   };
 
-  const { calculateStepStatuses } = useStepCalculation(
+  const { calculateStepStatuses } = useStepStatus(
     handleUpcomingStep,
     handleNextStep,
     handleFinishStep,

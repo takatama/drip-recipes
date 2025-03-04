@@ -3,7 +3,7 @@ import { ActionType, CalculatedStep, StepStatus } from '../types';
 
 const INDICATE_NEXT_STEP_SEC = 5;
 
-export const useStepCalculation = (
+export const useStepStatus = (
   onUpcoming?: (actionType: ActionType, currentAmount: number, targetAmount: number) => void,
   onNext?: () => void,
   onFinish?: () => void,
