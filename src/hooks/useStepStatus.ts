@@ -4,7 +4,7 @@ import { ActionType, CalculatedStep, StepStatus } from '../types';
 const INDICATE_NEXT_STEP_SEC = 5;
 
 export const useStepStatus = (
-  onUpcoming?: (actionType: ActionType, currentAmount: number, targetAmount: number) => void,
+  onUpcoming?: (isFinish: boolean, actionType: ActionType, currentAmount: number, targetAmount: number) => void,
   onNext?: () => void,
   onFinish?: () => void,
 ) => {
@@ -17,6 +17,7 @@ export const useStepStatus = (
     const lastStep = currentSteps[currentSteps.length - 1];
     if (currentTimeValue >= lastStep?.timeSec && onFinish) {
       onFinish();
+      return currentSteps.map(step => ({ ...step, status: 'completed' }));
     }
 
     return currentSteps.map((step, index) => {
@@ -33,9 +34,10 @@ export const useStepStatus = (
       const previousStatus = previousStepsStatusRef.current[index];
       if (previousStatus !== newStatus) {
         if (newStatus === 'next' && onUpcoming) {
+          const isFinish = index === currentSteps.length - 1;
           const currentAmount = index > 0 ? (currentSteps[index - 1].cumulativeMl || 0) : 0;
           const targetAmount = step.cumulativeMl || 0;
-          onUpcoming(step.actionType, currentAmount, targetAmount);
+          onUpcoming(isFinish, step.actionType, currentAmount, targetAmount);
         } else if (newStatus === 'current' && previousStatus === 'next' && onNext) {
           onNext();
         }

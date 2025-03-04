@@ -75,8 +75,12 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     reset();
   };
 
-  const handleUpcomingStep = (actionType: ActionType, currentAmount: number, targetAmount: number) => {
-    playNextStep();
+  const handleUpcomingStep = (isFinish: boolean, actionType: ActionType, currentAmount: number, targetAmount: number) => {
+    if (isFinish) {
+      playFinish();
+    } else {
+      playNextStep();
+    }
     vibrateUpcoming();
     
     const hasChange = currentAmount !== targetAmount;
@@ -89,7 +93,6 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
   };
 
   const handleFinishStep = async () => {
-    playFinish();
     pause();
     await releaseWakeLock();
   };
