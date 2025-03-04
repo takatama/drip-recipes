@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, Suspense } from 'react';
 import Controls from './Controls';
 import Timeline from './Timeline';
 import SnackbarManager from './SnackbarManager';
@@ -15,6 +15,22 @@ import { useSearchParams } from 'next/navigation';
 const AnimationManager = dynamic(() => import('./AnimationManager'), {
   ssr: false,
 });
+
+const TimeParamHandler = ({ setTime }: { setTime: (time: number) => void }) => {
+  const searchParams = useSearchParams();
+  const time = searchParams.get('time');
+
+  useEffect(() => {
+    if (time) {
+      const parsedTime = Number(time);
+      if (!isNaN(parsedTime)) {
+        setTime(parsedTime);
+      }
+    }
+  }, [time, setTime]);
+
+  return null;
+};
 
 interface CoffeeTimerProps {
   t: TranslationType;
@@ -118,16 +134,6 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
   const closeSnackbar = () => {
     setShowSnackbar(false);
   };
-
-  const searchParams = useSearchParams();
-  const time = searchParams.get('time');
-
-  useEffect(() => {
-    if (time && !Array.isArray(time)) {
-      const parsedTime = Number(time);
-      setTime(parsedTime);
-    }
-  }, [time, setTime]);
   
   return (
     <>
@@ -146,6 +152,9 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
       />
       <AnimationManager t={t} />
       <SnackbarManager t={t} showSnackbar={showSnackbar} closeSnackbar={closeSnackbar} />
+      <Suspense fallback={null}>
+        <TimeParamHandler setTime={setTime} />
+      </Suspense>
     </>
   );
 };
