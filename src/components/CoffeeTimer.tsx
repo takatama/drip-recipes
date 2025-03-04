@@ -10,6 +10,7 @@ import { TranslationType, CalculatedStep, ActionType } from '../types';
 import dynamic from 'next/dynamic';
 import { useStepStatus } from '../hooks/useStepStatus';
 import { AnimationProvider } from '@/contexts/AnimationContext';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const AnimationManager = dynamic(() => import('./AnimationManager'), {
   ssr: false,
@@ -26,7 +27,7 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
   steps,
   isDence,
 }) => {
-  const { currentTime, isRunning, start, pause, reset } = useSystemTimer();
+  const { currentTime, isRunning, start, pause, reset, setTime } = useSystemTimer();
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
   const { showAnimation, startAnimation, resetAnimation } = useAnimation();
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -115,6 +116,17 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     setShowSnackbar(false);
   };
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const time = searchParams.get('time');
+
+  useEffect(() => {
+    if (time && !Array.isArray(time)) {
+      const parsedTime = Number(time);
+      setTime(parsedTime);
+    }
+  }, [time, setTime]);
+  
   return (
     <>
       <Controls
