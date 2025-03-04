@@ -44,9 +44,16 @@ export const useNotification = () => {
     isPlayingRef.current = true;
   };
 
-  const vibrate = () => {
+  const vibrateUpcoming = () => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
-      console.log('Vibrating...');
+      console.log('Vibrating upcoming...');
+      navigator.vibrate([100]);
+    }
+  };
+
+  const vibrateNextStep = () => {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      console.log('Vibrating next step...');
       navigator.vibrate([200, 100, 200]);
     }
   };
@@ -54,6 +61,7 @@ export const useNotification = () => {
   return {
     playNextStep,
     playFinish,
-    vibrate,
+    vibrateUpcoming,
+    vibrateNextStep,
   };
 };

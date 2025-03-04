@@ -30,7 +30,7 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
   const { showAnimation, startAnimation, resetAnimation } = useAnimation();
   const [showSnackbar, setShowSnackbar] = useState(false);
-  const { playNextStep, playFinish, vibrate } = useNotification();
+  const { playNextStep, playFinish, vibrateUpcoming, vibrateNextStep } = useNotification();
   const timerReadyRef = useRef(false);
   const [calculatedSteps, setCalculatedSteps] = useState<CalculatedStep[]>(steps);
   const prevCalculatedStepsRef = useRef<string>('');
@@ -76,6 +76,7 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
 
   const handleUpcomingStep = (actionType: ActionType, currentAmount: number, targetAmount: number) => {
     playNextStep();
+    vibrateUpcoming();
     
     const hasChange = currentAmount !== targetAmount;
     if (actionType === 'none' && !hasChange) return;
@@ -83,7 +84,7 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
   };
 
   const handleNextStep = () => {
-    vibrate();
+    vibrateNextStep();
   };
 
   const handleFinishStep = async () => {
