@@ -202,10 +202,8 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
         <Box
           sx={{
             backgroundColor: '#FFFFFF', // White background in both modes
-            color: '#000000', // Black text in both modes
-            borderRadius: '50%',
+            borderRadius: '10%',
             padding: 2,
-            boxShadow: 1
           }}
         >
           <Lottie
