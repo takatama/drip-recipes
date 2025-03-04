@@ -1,8 +1,8 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 
 export const useSystemTimer = (updateInterval: number = 0.1) => {
-  const [currentTime, setCurrentTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
 
   const startTimeRef = useRef<number | null>(null);
   const isRunningRef = useRef(false);
@@ -66,5 +66,9 @@ export const useSystemTimer = (updateInterval: number = 0.1) => {
     };
   }, []);
 
-  return { currentTime, isRunning, start, pause, reset };
+  const setTime = useCallback((newTime: number) => {
+    setCurrentTime(newTime);
+  }, []);
+
+  return { currentTime, isRunning, start, pause, reset, setTime };
 };
