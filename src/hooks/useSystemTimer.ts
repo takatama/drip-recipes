@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 export const useSystemTimer = (updateInterval: number = 0.1) => {
   const [currentTime, setCurrentTime] = useState<number>(0);

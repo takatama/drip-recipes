@@ -10,7 +10,7 @@ import { TranslationType, CalculatedStep, ActionType } from '../types';
 import dynamic from 'next/dynamic';
 import { useStepStatus } from '../hooks/useStepStatus';
 import { AnimationProvider } from '@/contexts/AnimationContext';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 const AnimationManager = dynamic(() => import('./AnimationManager'), {
   ssr: false,
@@ -119,7 +119,6 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     setShowSnackbar(false);
   };
 
-  const router = useRouter();
   const searchParams = useSearchParams();
   const time = searchParams.get('time');
 
