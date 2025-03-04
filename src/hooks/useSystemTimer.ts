@@ -8,14 +8,14 @@ export const useSystemTimer = (updateInterval: number = 0.1) => {
   const isRunningRef = useRef(false);
   const animationFrameId = useRef<number | null>(null);
   const lastUpdateRef = useRef(0);
-  const lastSetTimeRef = useRef(0); // 最後に設定した時間を追跡
+  const lastSetTimeRef = useRef(0);
 
   const updateTimer = useCallback(() => {
     if (!startTimeRef.current || !isRunningRef.current) return;
 
     const elapsedTime = (Date.now() - startTimeRef.current) / 1000;
     
-    // 前回の更新から十分な時間が経過しており、かつ値が変わる場合だけ更新
+    // Update only if enough time has passed since the last update and the value has changed
     if (elapsedTime - lastUpdateRef.current >= updateInterval && 
         Math.abs(elapsedTime - lastSetTimeRef.current) >= 0.01) {
       lastUpdateRef.current = elapsedTime;

@@ -6,13 +6,11 @@ interface AnimationContextType {
   dispatch: React.Dispatch<AnimationAction>;
 }
 
-// デフォルト値を持つコンテキストを作成
 export const AnimationContext = createContext<AnimationContextType>({
   state: initialAnimationState,
   dispatch: () => null,
 });
 
-// Provider コンポーネント
 export const AnimationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(animationReducer, initialAnimationState);
 
@@ -23,5 +21,4 @@ export const AnimationProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   );
 };
 
-// カスタムフック
 export const useAnimation = () => useContext(AnimationContext);
