@@ -74,19 +74,10 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     reset();
   };
 
-  const handleTimerComplete = async () => {
-    await releaseWakeLock();
-    pause();
-  };
-
-  const handleStepTransition = (index: number, currentAmount: number, targetAmount: number) => {
-    if (steps.length === index + 1) {
-      playFinish();
-    } else {
-      playNextStep();
-    }
-
-    const step = steps[index];
+  const handleUpcomingStep = (stepIndex: number, currentAmount: number, targetAmount: number) => {
+    playNextStep();
+    
+    const step = steps[stepIndex];
     const actionType = step.actionType || 'none';
     const hasChange = currentAmount !== targetAmount;
 
@@ -94,16 +85,20 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     startAnimation(currentAmount, targetAmount, actionType);
   };
 
-  const handleStepStatusChange = (index: number, oldStatus: string, newStatus: string) => {
-    if (newStatus === 'current' && oldStatus === 'next') {
-      vibrate();
-    }
+  const handleNextStep = (stepIndex: number) => {
+    vibrate();
+  };
+
+  const handleFinishStep = async () => {
+    playFinish();
+    pause();
+    await releaseWakeLock();
   };
 
   const { calculateStepStatuses } = useStepCalculation(
-    handleStepStatusChange,
-    handleStepTransition,
-    handleTimerComplete
+    handleUpcomingStep,
+    handleNextStep,
+    handleFinishStep,
   );
 
   // Calculate step statuses when time changes
@@ -114,7 +109,6 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     const updatedStepsJson = JSON.stringify(updatedSteps);
     if (updatedStepsJson !== prevCalculatedStepsRef.current) {
       prevCalculatedStepsRef.current = updatedStepsJson;
-      console.log('updatedSteps', updatedSteps);
       setCalculatedSteps(updatedSteps);
     }
   }, [currentTime, calculateStepStatuses, steps]);
