@@ -3,13 +3,13 @@ import { Typography, Accordion, AccordionSummary, Box } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
 import { CoffeeRecipeType, TranslationType } from '../types';
 
-type Props = {
+type RecipeDescriptionProps = {
   recipe: CoffeeRecipeType,
   language: 'en' | 'ja',
   t: TranslationType;
 };
 
-const RecipeDescription: React.FC<Props> = ({ recipe, language, t }) => {
+const RecipeDescription: React.FC<RecipeDescriptionProps> = ({ recipe, language, t }) => {
   return (
     <Accordion
       square

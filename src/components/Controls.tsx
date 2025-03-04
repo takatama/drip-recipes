@@ -8,8 +8,8 @@ interface ControlsProps {
   onPlay: () => void;
   onPause: () => void;
   onReset: () => void;
-  disabled?: boolean; // アニメーション中はボタンを無効化
-  isRunning: boolean; // 外部から現在の実行状態を受け取る
+  disabled?: boolean; // Disabled when animation is running
+  isRunning: boolean; // Running state from the outside
 }
 
 const Controls: React.FC<ControlsProps> = ({ 
@@ -34,7 +34,6 @@ const Controls: React.FC<ControlsProps> = ({
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 5 }}>
-      {/* Play/Pause ボタンを状態に応じて切り替え */}
       {!isRunning ? (
         <Button
           variant="contained"
