@@ -4,7 +4,7 @@ import Timeline from './Timeline';
 import SnackbarManager from './SnackbarManager';
 import { useSystemTimer } from '../hooks/useSystemTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
-import { useAnimationManager } from '@/hooks/useAnimationManager';
+import { useAnimation } from '@/hooks/useAnimation';
 import { useNotification } from '@/hooks/useNotification';
 import { TranslationType, CalculatedStep } from '../types';
 import dynamic from 'next/dynamic';
@@ -21,14 +21,14 @@ interface CoffeeTimerProps {
   isDence?: boolean;
 }
 
-export const CoffeeTimer: React.FC<CoffeeTimerProps> = ({
+const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
   t,
   steps,
   isDence,
 }) => {
   const { currentTime, isRunning, start, pause, reset } = useSystemTimer();
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
-  const { showAnimation, startAnimation, resetAnimation } = useAnimationManager();
+  const { showAnimation, startAnimation, resetAnimation } = useAnimation();
   const [showSnackbar, setShowSnackbar] = useState(false);
   const { playNextStep, playFinish, vibrate } = useNotification();
   const timerReadyRef = useRef(false);
@@ -124,22 +124,30 @@ export const CoffeeTimer: React.FC<CoffeeTimerProps> = ({
   };
 
   return (
-      <AnimationProvider>
-        <Controls
-          t={t}
-          onPlay={handlePlay}
-          onPause={handlePause}
-          onReset={handleReset}
-          disabled={showAnimation}
-          isRunning={isRunning}
-        />
-        <Timeline
-          steps={calculatedSteps}
-          currentTime={currentTime}
-          isDence={isDence}
-        />
-        <AnimationManager t={t} />
-        <SnackbarManager t={t} showSnackbar={showSnackbar} closeSnackbar={closeSnackbar} />
-      </AnimationProvider>
+    <>
+      <Controls
+        t={t}
+        onPlay={handlePlay}
+        onPause={handlePause}
+        onReset={handleReset}
+        disabled={showAnimation}
+        isRunning={isRunning}
+      />
+      <Timeline
+        steps={calculatedSteps}
+        currentTime={currentTime}
+        isDence={isDence}
+      />
+      <AnimationManager t={t} />
+      <SnackbarManager t={t} showSnackbar={showSnackbar} closeSnackbar={closeSnackbar} />
+    </>
+  );
+};
+
+export const CoffeeTimer: React.FC<CoffeeTimerProps> = (props) => {
+  return (
+    <AnimationProvider>
+      <CoffeeTimerContent {...props} />
+    </AnimationProvider>
   );
 };

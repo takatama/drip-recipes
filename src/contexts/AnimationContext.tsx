@@ -1,24 +1,64 @@
-import React, { createContext, useReducer, useContext } from 'react';
-import { animationReducer, initialAnimationState, AnimationState, AnimationAction } from '../reducers/animationReducer';
+import React, { createContext, useState } from 'react';
+import { ActionType } from '@/types';
+
+interface AnimationState {
+  showAnimation: boolean;
+  currentWaterAmount: number;
+  targetWaterAmount: number;
+  currentActionType: ActionType;
+}
 
 interface AnimationContextType {
   state: AnimationState;
-  dispatch: React.Dispatch<AnimationAction>;
+  startAnimation: (currentAmount: number, targetAmount: number, actionType: ActionType) => void;
+  completeAnimation: () => void;
+  resetAnimation: () => void;
 }
 
+const initialState: AnimationState = {
+  showAnimation: false,
+  currentWaterAmount: 0,
+  targetWaterAmount: 0,
+  currentActionType: 'none',
+};
+
 export const AnimationContext = createContext<AnimationContextType>({
-  state: initialAnimationState,
-  dispatch: () => null,
+  state: initialState,
+  startAnimation: () => {},
+  completeAnimation: () => {},
+  resetAnimation: () => {},
 });
 
 export const AnimationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, dispatch] = useReducer(animationReducer, initialAnimationState);
+  const [state, setState] = useState<AnimationState>(initialState);
+
+  const startAnimation = (currentWaterAmount: number, targetWaterAmount: number, currentActionType: ActionType) => {
+    setState({
+      showAnimation: true,
+      currentWaterAmount,
+      targetWaterAmount,
+      currentActionType,
+    });
+  };
+
+  const completeAnimation = () => {
+    setState(prev => ({ ...prev, showAnimation: false }));
+  };
+
+  const resetAnimation = () => {
+    setState(initialState);
+  };
+
+  const contextValue = {
+    state,
+    startAnimation,
+    completeAnimation,
+    resetAnimation,
+  };
 
   return (
-    <AnimationContext.Provider value={{ state, dispatch }}>
+    <AnimationContext.Provider value={contextValue}>
       {children}
     </AnimationContext.Provider>
   );
 };
-
-export const useAnimation = () => useContext(AnimationContext);

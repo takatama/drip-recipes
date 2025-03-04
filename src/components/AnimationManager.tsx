@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
 import { ActionType, TranslationType } from '../types';
-import { useAnimationManager } from '../hooks/useAnimationManager';
+import { useAnimation } from '../hooks/useAnimation';
 
 import Lottie from 'react-lottie-player';
 import pourAnimationData from '@/assets/lottie/pour.json';
@@ -23,7 +23,7 @@ const AnimationManager: React.FC<AnimationManagerProps> = ({ t }) => {
     targetWaterAmount,
     currentActionType,
     completeAnimation
-  } = useAnimationManager();
+  } = useAnimation();
 
   // Ref to track all animation state to prevent update loops
   const animationStateRef = useRef({
