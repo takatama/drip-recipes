@@ -1,11 +1,11 @@
 import { useRef, useCallback } from 'react';
-import { CalculatedStep, StepStatus } from '../types';
+import { ActionType, CalculatedStep, StepStatus } from '../types';
 
 const INDICATE_NEXT_STEP_SEC = 5;
 
 export const useStepCalculation = (
-  onUpcoming?: (stepIndex: number, currentAmount: number, targetAmount: number) => void,
-  onNext?: (stepIndex: number) => void,
+  onUpcoming?: (actionType: ActionType, currentAmount: number, targetAmount: number) => void,
+  onNext?: () => void,
   onFinish?: () => void,
 ) => {
   const previousStepsStatusRef = useRef<Record<number, StepStatus>>({});
@@ -35,9 +35,9 @@ export const useStepCalculation = (
         if (newStatus === 'next' && onUpcoming) {
           const currentAmount = index > 0 ? (currentSteps[index - 1].cumulativeMl || 0) : 0;
           const targetAmount = step.cumulativeMl || 0;
-          onUpcoming(index, currentAmount, targetAmount);
+          onUpcoming(step.actionType, currentAmount, targetAmount);
         } else if (newStatus === 'current' && previousStatus === 'next' && onNext) {
-          onNext(index);
+          onNext();
         }
 
         previousStepsStatusRef.current[index] = newStatus;

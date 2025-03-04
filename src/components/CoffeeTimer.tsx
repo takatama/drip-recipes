@@ -6,7 +6,7 @@ import { useSystemTimer } from '../hooks/useSystemTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { useAnimation } from '@/hooks/useAnimation';
 import { useNotification } from '@/hooks/useNotification';
-import { TranslationType, CalculatedStep } from '../types';
+import { TranslationType, CalculatedStep, ActionType } from '../types';
 import dynamic from 'next/dynamic';
 import { useStepCalculation } from '../hooks/useStepCalculation';
 import { AnimationProvider } from '@/contexts/AnimationContext';
@@ -74,18 +74,15 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     reset();
   };
 
-  const handleUpcomingStep = (stepIndex: number, currentAmount: number, targetAmount: number) => {
+  const handleUpcomingStep = (actionType: ActionType, currentAmount: number, targetAmount: number) => {
     playNextStep();
     
-    const step = steps[stepIndex];
-    const actionType = step.actionType || 'none';
     const hasChange = currentAmount !== targetAmount;
-
     if (actionType === 'none' && !hasChange) return;
     startAnimation(currentAmount, targetAmount, actionType);
   };
 
-  const handleNextStep = (stepIndex: number) => {
+  const handleNextStep = () => {
     vibrate();
   };
 
