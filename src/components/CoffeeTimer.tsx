@@ -4,13 +4,11 @@ import Timeline from './Timeline';
 import SnackbarManager from './SnackbarManager';
 import { useSystemTimer } from '../hooks/useSystemTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
-import { useTimer } from '../contexts/TimerContext';
 import { useAnimationManager } from '@/hooks/useAnimationManager';
 import { useNotification } from '@/hooks/useNotification';
 import { TranslationType, CalculatedStep } from '../types';
 import dynamic from 'next/dynamic';
 import { useStepCalculation } from '../hooks/useStepCalculation';
-import { TimerProvider } from '@/contexts/TimerContext';
 import { AnimationProvider } from '@/contexts/AnimationContext';
 
 const AnimationManager = dynamic(() => import('./AnimationManager'), {
@@ -30,7 +28,6 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
 }) => {
   const { currentTime, isRunning, start, pause, reset } = useSystemTimer();
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
-  const { dispatch: timerDispatch } = useTimer();
   const { showAnimation, startAnimation, resetAnimation } = useAnimationManager();
   const [showSnackbar, setShowSnackbar] = useState(false);
   const { playNextStep, playFinish, vibrate } = useNotification();
@@ -54,8 +51,6 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     if (currentTime === 0 && steps.length > 0) {
       const firstStep = steps[0];
       const firstStepActionType = firstStep.actionType || 'none';
-
-      timerDispatch({ type: 'START' });
       startAnimation(0, firstStep.cumulativeMl || 0, firstStepActionType);
       timerReadyRef.current = true;
     } else {
@@ -77,7 +72,6 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     closeSnackbar();
     await releaseWakeLock();
     reset();
-    timerDispatch({ type: 'RESET' });
   };
 
   const handleTimerComplete = async () => {
@@ -101,17 +95,8 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
   };
 
   const handleStepStatusChange = (index: number, oldStatus: string, newStatus: string) => {
-    const isLastStep = index === steps.length - 1;
-
-    if (newStatus === 'next') {
-      if (isLastStep) {
-        timerDispatch({ type: 'FINISH' });
-      } else {
-        timerDispatch({ type: 'NEXT_STEP_UPCOMING' });
-      }
-    } else if (newStatus === 'current' && oldStatus === 'next') {
+    if (newStatus === 'current' && oldStatus === 'next') {
       vibrate();
-      timerDispatch({ type: 'NEXT_STEP_RUNNING' });
     }
   };
 
@@ -139,7 +124,6 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
   };
 
   return (
-    <TimerProvider>
       <AnimationProvider>
         <Controls
           t={t}
@@ -157,6 +141,5 @@ export const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
         <AnimationManager t={t} />
         <SnackbarManager t={t} showSnackbar={showSnackbar} closeSnackbar={closeSnackbar} />
       </AnimationProvider>
-    </TimerProvider>
   );
 };
