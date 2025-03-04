@@ -21,7 +21,7 @@ interface CoffeeTimerProps {
   isDence?: boolean;
 }
 
-export const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
+export const CoffeeTimer: React.FC<CoffeeTimerProps> = ({
   t,
   steps,
   isDence,

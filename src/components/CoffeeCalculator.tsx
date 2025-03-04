@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Typography } from '@mui/material';
 import InputParams from './InputParams';
-import CoffeeTimer from './CoffeeTimer';
+import { CoffeeTimer } from './CoffeeTimer';
 import { CoffeeRecipeType, LanguageType, CalculatedStep, TranslationType, RoastLevelType } from '../types';
 import { generateSteps } from '@/utils/generateSteps';
 
