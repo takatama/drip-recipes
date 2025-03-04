@@ -18,7 +18,7 @@ const calcFivePourWaterAmount = (beansAmount: number, waterRatio: number) => {
   return beansAmount * waterRatio / 5;
 };
 
-const generateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, flavor: string, strengthSteps: number) => {
+const calculateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, flavor: string, strengthSteps: number) => {
   const outputSteps: CalculatedStep[] = [];
   let cumulative = 0;
   let stepCount = 0;
@@ -64,12 +64,12 @@ const generateStrengthSteps = (recipe: CoffeeRecipeType, beansAmount: number, fl
   return outputSteps;
 }
 
-export function generateSteps(
+export function calculateSteps(
   recipe: CoffeeRecipeType,
   beansAmount: number,
   flavor: string,
   strength?: string
 ): CalculatedStep[] {
   const strengthSteps = strength === 'light' ? 1 : strength === 'strong' ? 3 : 2;
-  return generateStrengthSteps(recipe, beansAmount, flavor, strengthSteps);
+  return calculateStrengthSteps(recipe, beansAmount, flavor, strengthSteps);
 }

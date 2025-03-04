@@ -1,5 +1,5 @@
 import { CoffeeRecipeType, LanguageType } from "../types";
-import { generateSteps } from "./generateSteps";
+import { calculateSteps } from "./calculateSteps";
 import { translations } from "../translations";
 
 const HOSTNAME = "https://drip-recipes.pages.dev";
@@ -10,7 +10,7 @@ export function generateRecipeJsonLd(recipe: CoffeeRecipeType, lang: LanguageTyp
   const defaultStrength = recipe.params.find(p => p.key === "strength")?.default || "medium";
   
   // Using generateSteps function to generate calculated actual steps
-  const calculatedSteps = generateSteps(recipe, Number(beansAmount), String(defaultFlavor), String(defaultStrength));
+  const calculatedSteps = calculateSteps(recipe, Number(beansAmount), String(defaultFlavor), String(defaultStrength));
   
   // Generate JSONLD instructions from calculated steps without Finish step
   const recipeInstructions = calculatedSteps

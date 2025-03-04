@@ -6,9 +6,9 @@ import { useSystemTimer } from '../hooks/useSystemTimer';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { useAnimation } from '@/hooks/useAnimation';
 import { useNotification } from '@/hooks/useNotification';
-import { TranslationType, CalculatedStep } from '../types';
+import { TranslationType, CalculatedStep, ActionType } from '../types';
 import dynamic from 'next/dynamic';
-import { useStepCalculation } from '../hooks/useStepCalculation';
+import { useStepStatus } from '../hooks/useStepStatus';
 import { AnimationProvider } from '@/contexts/AnimationContext';
 
 const AnimationManager = dynamic(() => import('./AnimationManager'), {
@@ -74,36 +74,28 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     reset();
   };
 
-  const handleTimerComplete = async () => {
-    await releaseWakeLock();
-    pause();
-  };
-
-  const handleStepTransition = (index: number, currentAmount: number, targetAmount: number) => {
-    if (steps.length === index + 1) {
-      playFinish();
-    } else {
-      playNextStep();
-    }
-
-    const step = steps[index];
-    const actionType = step.actionType || 'none';
+  const handleUpcomingStep = (actionType: ActionType, currentAmount: number, targetAmount: number) => {
+    playNextStep();
+    
     const hasChange = currentAmount !== targetAmount;
-
     if (actionType === 'none' && !hasChange) return;
     startAnimation(currentAmount, targetAmount, actionType);
   };
 
-  const handleStepStatusChange = (index: number, oldStatus: string, newStatus: string) => {
-    if (newStatus === 'current' && oldStatus === 'next') {
-      vibrate();
-    }
+  const handleNextStep = () => {
+    vibrate();
   };
 
-  const { calculateStepStatuses } = useStepCalculation(
-    handleStepStatusChange,
-    handleStepTransition,
-    handleTimerComplete
+  const handleFinishStep = async () => {
+    playFinish();
+    pause();
+    await releaseWakeLock();
+  };
+
+  const { calculateStepStatuses } = useStepStatus(
+    handleUpcomingStep,
+    handleNextStep,
+    handleFinishStep,
   );
 
   // Calculate step statuses when time changes
@@ -114,7 +106,6 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     const updatedStepsJson = JSON.stringify(updatedSteps);
     if (updatedStepsJson !== prevCalculatedStepsRef.current) {
       prevCalculatedStepsRef.current = updatedStepsJson;
-      console.log('updatedSteps', updatedSteps);
       setCalculatedSteps(updatedSteps);
     }
   }, [currentTime, calculateStepStatuses, steps]);

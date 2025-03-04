@@ -5,7 +5,7 @@ import { Typography } from '@mui/material';
 import InputParams from './InputParams';
 import { CoffeeTimer } from './CoffeeTimer';
 import { CoffeeRecipeType, LanguageType, CalculatedStep, TranslationType, RoastLevelType } from '../types';
-import { generateSteps } from '@/utils/generateSteps';
+import { calculateSteps } from '@/utils/calculateSteps';
 
 interface CoffeeCalculatorProps {
   recipe: CoffeeRecipeType;
@@ -26,7 +26,7 @@ const CoffeeCalculator: React.FC<CoffeeCalculatorProps> = ({ recipe, t, language
   const [steps, setSteps] = useState<CalculatedStep[]>([]);
 
   useEffect(() => {
-    const newSteps = generateSteps(recipe, beansAmount, flavor, strength);
+    const newSteps = calculateSteps(recipe, beansAmount, flavor, strength);
     setSteps(newSteps);
   }, [beansAmount, flavor, strength, recipe]);
 

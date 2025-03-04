@@ -1,12 +1,12 @@
 import { useRef, useCallback } from 'react';
-import { CalculatedStep, StepStatus } from '../types';
+import { ActionType, CalculatedStep, StepStatus } from '../types';
 
 const INDICATE_NEXT_STEP_SEC = 5;
 
-export const useStepCalculation = (
-  onStepStatusChange?: (index: number, oldStatus: StepStatus, newStatus: StepStatus) => void,
-  onStepTransition?: (index: number, currentAmount: number, targetAmount: number) => void,
-  onTimerComplete?: () => void,
+export const useStepStatus = (
+  onUpcoming?: (actionType: ActionType, currentAmount: number, targetAmount: number) => void,
+  onNext?: () => void,
+  onFinish?: () => void,
 ) => {
   const previousStepsStatusRef = useRef<Record<number, StepStatus>>({});
 
@@ -15,8 +15,8 @@ export const useStepCalculation = (
     currentSteps: CalculatedStep[]
   ): CalculatedStep[] => {
     const lastStep = currentSteps[currentSteps.length - 1];
-    if (currentTimeValue >= lastStep?.timeSec && onTimerComplete) {
-      onTimerComplete();
+    if (currentTimeValue >= lastStep?.timeSec && onFinish) {
+      onFinish();
     }
 
     return currentSteps.map((step, index) => {
@@ -32,14 +32,12 @@ export const useStepCalculation = (
 
       const previousStatus = previousStepsStatusRef.current[index];
       if (previousStatus !== newStatus) {
-        if (onStepStatusChange) {
-          onStepStatusChange(index, previousStatus || 'upcoming', newStatus);
-        }
-        
-        if (newStatus === 'next' && onStepTransition) {
+        if (newStatus === 'next' && onUpcoming) {
           const currentAmount = index > 0 ? (currentSteps[index - 1].cumulativeMl || 0) : 0;
           const targetAmount = step.cumulativeMl || 0;
-          onStepTransition(index, currentAmount, targetAmount);
+          onUpcoming(step.actionType, currentAmount, targetAmount);
+        } else if (newStatus === 'current' && previousStatus === 'next' && onNext) {
+          onNext();
         }
 
         previousStepsStatusRef.current[index] = newStatus;
@@ -47,7 +45,7 @@ export const useStepCalculation = (
 
       return { ...step, status: newStatus };
     });
-  }, [onStepStatusChange, onStepTransition, onTimerComplete]);
+  }, [onUpcoming, onNext, onFinish]);
 
   return { calculateStepStatuses };
 };
