@@ -11,6 +11,7 @@ import dynamic from 'next/dynamic';
 import { useStepStatus } from '../hooks/useStepStatus';
 import { AnimationProvider } from '@/contexts/AnimationContext';
 import { useSearchParams } from 'next/navigation';
+import { useSettings } from '@/contexts/SettingsContext';
 
 const AnimationManager = dynamic(() => import('./AnimationManager'), {
   ssr: false,
@@ -51,6 +52,7 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
   const timerReadyRef = useRef(false);
   const [calculatedSteps, setCalculatedSteps] = useState<CalculatedStep[]>(steps);
   const prevCalculatedStepsRef = useRef<string>('');
+  const { showAnimation: animationEnabled } = useSettings();
 
   useEffect(() => {
     if (!showAnimation && timerReadyRef.current) {
@@ -65,14 +67,22 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     setShowSnackbar(true);
     await requestWakeLock();
 
+    // For initial start (time at 0)
     if (currentTime === 0 && steps.length > 0) {
       const firstStep = steps[0];
       const firstStepActionType = firstStep.actionType || 'none';
-      startAnimation(0, firstStep.cumulativeMl || 0, firstStepActionType);
-      timerReadyRef.current = true;
-    } else {
-      start();
+      const initialAmount = firstStep.cumulativeMl || 0;
+
+      if (animationEnabled) {
+        startAnimation(0, initialAmount, firstStepActionType);
+        timerReadyRef.current = true;
+        // Timer will start after animation ends (handled by useEffect above)
+        return;
+      }
     }
+
+    // For continuing after pause or when animation is disabled
+    start();
   };
 
   const handlePause = async () => {
@@ -101,7 +111,11 @@ const CoffeeTimerContent: React.FC<CoffeeTimerProps> = ({
     
     const hasChange = currentAmount !== targetAmount;
     if (actionType === 'none' && !hasChange) return;
-    startAnimation(currentAmount, targetAmount, actionType);
+    if (animationEnabled) {
+      startAnimation(currentAmount, targetAmount, actionType);
+    } else {
+      start();
+    }
   };
 
   const handleNextStep = () => {
