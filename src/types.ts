@@ -34,6 +34,9 @@ export interface TranslationType {
   recipeListTitle: string;
   recipeListDescription: string;
   nextStep: string;
+  animation: string;
+  animationOn: string;
+  animationOff: string;
 }
 
 export type NotificationMode = 'none' | 'vibrate' | 'sound';

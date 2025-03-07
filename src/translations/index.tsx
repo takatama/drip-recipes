@@ -35,6 +35,9 @@ export const translations: Record<LanguageType, TranslationType> = {
     recipeListTitle: "Coffee Brewing Recipes | Drip Recipes",
     recipeListDescription: "Collection of coffee brewing recipes for pour-over and drip methods",
     nextStep: "Next Step is...",
+    animation: "Animation Guide",
+    animationOn: "Show",
+    animationOff: "Hide",
   },
   ja: {
     beansAmount: "豆の量",
@@ -70,5 +73,8 @@ export const translations: Record<LanguageType, TranslationType> = {
     recipeListTitle: "ハンドドリップレシピ集 | Drip Recipes",
     recipeListDescription: "ハンドドリップのレシピ集 - 至高の淹れ方をご紹介",
     nextStep: "次のステップは...",
+    animation: 'アニメーションガイド',
+    animationOn: '表示',
+    animationOff: '非表示',
   }
 };

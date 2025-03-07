@@ -3,15 +3,21 @@
 import React from 'react';
 import { Container, Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Brightness4, Brightness7, VolumeOff, Vibration, VolumeUp, Man, Woman } from '@mui/icons-material';
+import { Brightness4, Brightness7, VolumeOff, Vibration, VolumeUp, Man, Woman, Visibility, VisibilityOff } from '@mui/icons-material';
 import { useSettings } from '../contexts/SettingsContext';
 import { translations } from '../translations/index';
 import { LanguageType } from '../types';
 import Header from './Header';
 import Footer from './Footer';
 
-const SettingsScreen : React.FC = () => {
-  const { language, setLanguage, darkMode, setDarkMode, notificationMode, setNotificationMode, voice, setVoice } = useSettings();
+const SettingsScreen: React.FC = () => {
+  const {
+    language, setLanguage,
+    darkMode, setDarkMode,
+    notificationMode, setNotificationMode,
+    voice, setVoice,
+    showAnimation, setShowAnimation,
+  } = useSettings();
   const t = translations[language];
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -37,7 +43,7 @@ const SettingsScreen : React.FC = () => {
       py: 2,
       width: '100%',
     }}>
-      <Header language={language} t={t} pathname={`/${language}/settings`}/>
+      <Header language={language} t={t} pathname={`/${language}/settings`} />
 
       <Typography variant="h6" sx={{ mb: 2 }}>{t.settings}</Typography>
 
@@ -111,6 +117,27 @@ const SettingsScreen : React.FC = () => {
         </ToggleButton>
         <ToggleButton value="female">
           <Woman />
+        </ToggleButton>
+      </ToggleButtonGroup>
+
+      {/* Animation Guide Settings */}
+      <Typography>{t.animation}</Typography>
+      <ToggleButtonGroup
+        value={showAnimation}
+        exclusive
+        onChange={(_e, newValue) => {
+          if (newValue !== null) setShowAnimation(newValue);
+        }}
+        size="small"
+        sx={{ mb: 2 }}
+      >
+        <ToggleButton value={true}>
+          <Visibility sx={{ mr: 1 }} />
+          {t.animationOn}
+        </ToggleButton>
+        <ToggleButton value={false}>
+          <VisibilityOff sx={{ mr: 1 }} />
+          {t.animationOff}
         </ToggleButton>
       </ToggleButtonGroup>
 

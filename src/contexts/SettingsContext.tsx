@@ -13,6 +13,8 @@ interface SettingsContextProps {
   setNotificationMode: (notification: NotificationMode) => void;
   voice: VoiceType;
   setVoice: (voice: VoiceType) => void;
+  showAnimation: boolean;
+  setShowAnimation: (show: boolean) => void;
 }
 
 const SettingsContext = createContext<SettingsContextProps | undefined>(undefined);
@@ -22,6 +24,7 @@ interface Settings {
   darkMode: boolean;
   notificationMode: NotificationMode;
   voice: VoiceType;
+  showAnimation: boolean;
 }
 
 // Get initial settings from localStorage or use defaults
@@ -48,6 +51,7 @@ const getInitialSettings = (): Settings => {
     darkMode: prefersDark,
     notificationMode: 'none' as NotificationMode,
     voice: 'male' as VoiceType,
+    showAnimation: true,
   };
 };
 
@@ -75,6 +79,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setSettings(prev => ({ ...prev, voice }));
   };
 
+  const setShowAnimation = (show: boolean) => {
+    setSettings(prev => ({ ...prev, showAnimation: show }));
+  };
+
   return (
     <SettingsContext.Provider
       value={{
@@ -86,6 +94,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setNotificationMode,
         voice: settings.voice,
         setVoice,
+        showAnimation: settings.showAnimation === undefined ? true : settings.showAnimation,
+        setShowAnimation,
       }}
     >
       {children}
