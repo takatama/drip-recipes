@@ -3,8 +3,17 @@ import { CoffeeRecipeType, CalculatedStep } from "../types";
 type RecipeStep = CoffeeRecipeType['steps'][number];
 type WaterAmountType = NonNullable<RecipeStep['waterAmountType']>;
 
+type StrengthSetting = 'light' | 'medium' | 'strong';
+
 const STRENGTH_START_TIME = 90;
 const STRENGTH_END_TIME = 210;
+const DEFAULT_STRENGTH_STEPS = 2;
+
+const STRENGTH_STEP_MAP: Record<StrengthSetting, number> = {
+  light: 1,
+  medium: DEFAULT_STRENGTH_STEPS,
+  strong: 3,
+};
 
 interface StepComputationContext {
   beansAmount: number;
@@ -14,6 +23,12 @@ interface StepComputationContext {
 }
 
 const roundMl = (value: number): number => Math.round(value);
+
+const isStrengthSetting = (value: string | undefined): value is StrengthSetting =>
+  value === 'light' || value === 'medium' || value === 'strong';
+
+const getStrengthSteps = (strength?: string): number =>
+  isStrengthSetting(strength) ? STRENGTH_STEP_MAP[strength] : DEFAULT_STRENGTH_STEPS;
 
 const flavorModifier = (flavor: string, sweet: number, sour: number, neutral: number): number => {
   if (flavor === 'sweet') return sweet;
@@ -74,7 +89,7 @@ const getStepTime = (
 };
 
 const replaceCumulativePlaceholder = (text: string, cumulative: number): string =>
-  text.replace('${cumulative}', cumulative.toString());
+  text.replaceAll('${cumulative}', cumulative.toString());
 
 const createCalculatedStep = (
   step: RecipeStep,
@@ -130,7 +145,7 @@ export function calculateSteps(
   flavor: string,
   strength?: string,
 ): CalculatedStep[] {
-  const strengthSteps = strength === 'light' ? 1 : strength === 'strong' ? 3 : 2;
+  const strengthSteps = getStrengthSteps(strength);
   const context: StepComputationContext = {
     beansAmount,
     waterRatio: recipe.waterRatio,
