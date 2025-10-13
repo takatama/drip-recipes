@@ -7,9 +7,9 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"pages:build": "npx @cloudflare/next-on-pages",
-		"preview": "npm run pages:build && wrangler pages dev",
-		"deploy": "npm run pages:build && wrangler pages deploy",
+                "pages:build": "open-next build",
+                "preview": "npm run pages:build && wrangler pages dev",
+                "deploy": "npm run pages:build && wrangler pages deploy",
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
 	},
 	"dependencies": {
@@ -26,7 +26,8 @@
 		"react-lottie-player": "^2.1.0"
 	},
 	"devDependencies": {
-		"@cloudflare/next-on-pages": "^1.13.8",
+                "@opennextjs/cloudflare": "^1.0.0",
+                "open-next": "^3.0.0",
 		"@cloudflare/workers-types": "^4.20250214.0",
 		"@eslint/eslintrc": "^3",
 		"@types/js-cookie": "^3.0.6",
