@@ -1,11 +1,13 @@
-import { setupDevPlatform } from '@opennextjs/cloudflare/next-dev';
-
-// Here we use the OpenNext Cloudflare adapter next-dev module to allow us to
-// use bindings during local development (when running the application with
-// `next dev`). This function is only necessary during development and
-// has no impact outside of that. For more information see:
-// https://opennext.js.org/cloudflare/get-started#local-development
-setupDevPlatform().catch(console.error);
+if (process.env.NODE_ENV === "development") {
+  import("@opennextjs/cloudflare/next-dev")
+    .then(({ setupDevPlatform }) => setupDevPlatform())
+    .catch((error) => {
+      console.warn(
+        "Failed to initialize the OpenNext Cloudflare dev platform bindings.",
+        error,
+      );
+    });
+}
 
 import type { NextConfig } from "next";
 
