@@ -2,16 +2,17 @@
 	"name": "drip-recipes",
 	"version": "0.1.0",
 	"private": true,
-	"scripts": {
-		"dev": "next dev --turbopack",
-		"build": "next build",
-		"start": "next start",
-		"lint": "next lint",
-		"pages:build": "npx @cloudflare/next-on-pages",
-		"preview": "npm run pages:build && wrangler pages dev",
-		"deploy": "npm run pages:build && wrangler pages deploy",
-		"cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
-	},
+        "scripts": {
+                "dev": "next dev --turbopack",
+                "build": "next build",
+                "start": "next start",
+                "lint": "next lint",
+                "test": "tsc -p tsconfig.test.json && node dist-tests/tests/calculateSteps.test.js",
+                "pages:build": "npx @cloudflare/next-on-pages",
+                "preview": "npm run pages:build && wrangler pages dev",
+                "deploy": "npm run pages:build && wrangler pages deploy",
+                "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
+        },
 	"dependencies": {
 		"@emotion/cache": "^11.14.0",
 		"@emotion/react": "^11.14.0",
